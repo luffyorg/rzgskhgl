@@ -97,7 +97,6 @@ public class UserController {
 		u.setIsEnable(user.getIsEnable());
 		String[] trids = req.getParameterValues("rids");
 		List<Integer> rids = new ArrayList<Integer>();
-		UserRole ur = new UserRole();
 		for(String rid:trids) {
 			rids.add(Integer.parseInt(rid));
 		}
