@@ -37,6 +37,52 @@ $(function(){
 			<td class="rightTd">用户密码:</td><td><sf:password path="password" size="30"/></td>
 		</tr>
 		<tr>
+			<td class="rightTd" width="200px">电话:</td>
+			<td class="leftTd"><sf:input path="tel" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">地址:</td>
+			<td class="leftTd"><sf:input path="address" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">性别:</td>
+			<td class="leftTd"><sf:input path="gender" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">总资产:</td>
+			<td class="leftTd"><sf:input path="totalAssets" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">总负债:</td>
+			<td class="leftTd"><sf:input path="totalLiability" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">征信情况:</td>
+			<td class="leftTd"><sf:input path="creditConditions" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">行业:</td>
+			<td class="leftTd"><sf:input path="industry" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">房产:</td>
+			<td class="leftTd"><sf:input path="estate" size="30"/></td>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">动产:</td>
+			<td class="leftTd"><sf:input path="movable" size="30"/></td>
+		</tr>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">公司:</td>
+			<td class="leftTd"><sf:input path="company" size="30"/></td>
+		</tr>
+		</tr>
+		<tr>
+			<td class="rightTd" width="200px">实体铺面:</td>
+			<td class="leftTd"><sf:input path="solidSurfacing" size="30"/></td>
+		</tr>
+		<tr>
 			<td class="rightTd">状态:</td>
 			<td>
 				<sf:select path="isEnable">

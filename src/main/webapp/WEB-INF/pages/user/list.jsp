@@ -17,6 +17,17 @@
 		<tr>
 			<td>用户标识</td>
 			<td>用户名称</td>
+			<td>电话</td>
+			<td>地址</td>
+			<td>性别</td>
+			<td>总资产</td>
+			<td>总负债</td>
+			<td>征信情况</td>
+			<td>行业</td>
+			<td>房产</td>
+			<td>动产</td>
+			<td>公司</td>
+			<td>实体铺面</td>
 			<td>用户状态</td>
 			<td>用户操作</td>
 		</tr>
@@ -26,6 +37,17 @@
 			<tr>
 				<td>${user.id }</td>
 				<td><a href="${user.id }" class="list_link">${user.name }</a></td>
+				<td>${user.tel }</a></td>
+				<td>${user.address }</a></td>
+				<td>${user.gender }</a></td>
+				<td>${user.totalAssets }</a></td>
+				<td>${user.totalLiability }</a></td>
+				<td>${user.creditConditions }</a></td>
+				<td>${user.industry }</a></td>
+				<td>${user.estate }</a></td>
+				<td>${user.movable }</a></td>
+				<td>${user.company }</a></td>
+				<td>${user.solidSurfacing }</a></td>
 				<td>
 					<c:if test="${user.isEnable eq 0 }">
 						<span class="emp">停用</span>
@@ -39,9 +61,9 @@
 				</td>
 				<td><shiro:hasRole name="ADMIN">
 					<a href="update/${user.id }" class="list_op">更新</a>
-					</shiro:hasRole>
 				&nbsp;
 					<a href="listRes/${user.id }" class="list_op">查询管理资源</a>
+					</shiro:hasRole>
 				</td>
 			</tr>
 		</c:forEach>
