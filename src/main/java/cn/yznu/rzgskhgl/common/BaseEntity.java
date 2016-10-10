@@ -16,33 +16,33 @@ public class BaseEntity implements Serializable {
 	private Integer id;
 
 	/** 创建时间 */
-	@Column(name = "create_date", nullable = true)
+	@Column(name = "create_date", columnDefinition =( "datetime default null comment '创建人时间'"))
 	private java.util.Date createDate;
 
-	/** 创建人ID */
-	@Column(name = "create_by", nullable = true, length = 32)
+	/** 创建人id */
+	@Column(name = "create_by", columnDefinition =( "varchar(32) default null comment '创建人id'"))
 	private java.lang.String createBy;
 
 	/** 创建人名称 */
-	@Column(name = "create_name", nullable = true, length = 32)
+	@Column(name = "create_name", columnDefinition =( "varchar(32) default null comment '创建人名称'"))
 	private java.lang.String createName;
 
 	/** 修改时间 */
-	@Column(name = "update_date", nullable = true)
+	@Column(name = "update_date", columnDefinition =( "datetime default null comment '修改时间'"))
 	private java.util.Date updateDate;
 
 	/** 修改人 */
-	@Column(name = "update_by", nullable = true, length = 32)
+	@Column(name = "update_by", columnDefinition =( "varchar(32) default null comment '修改人'"))
 	private java.lang.String updateBy;
 
 	/** 修改人名称 */
-	@Column(name = "update_name", nullable = true, length = 32)
+	@Column(name = "update_name", columnDefinition =( "varchar(32) default null comment '修改人名称'"))
 	private java.lang.String updateName;
 
 	/**
 	 * 是否逻辑删除 0:已删除 1：未删除
 	 */
-	@Column(name = "is_enable", nullable = true, length = 2)
+	@Column(name = "is_enable", columnDefinition =( "int(11) default null comment '是否逻辑删除 0:已删除 1：未删除'"))
 	private Integer isEnable;
 
 

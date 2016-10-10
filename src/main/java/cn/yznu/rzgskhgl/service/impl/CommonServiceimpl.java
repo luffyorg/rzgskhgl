@@ -5,13 +5,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.yznu.rzgskhgl.dao.IBaseDao;
 import cn.yznu.rzgskhgl.service.ICommonService;
-
+@SuppressWarnings("rawtypes")
 @Service("commonService")
 @Transactional
 public class CommonServiceimpl implements ICommonService {
@@ -94,6 +93,7 @@ public class CommonServiceimpl implements ICommonService {
 
 	}
 
+	
 	@Override
 	public <T> void updateEntityById(Class entityName, Serializable id) {
 		dao.updateEntityById(entityName, id);

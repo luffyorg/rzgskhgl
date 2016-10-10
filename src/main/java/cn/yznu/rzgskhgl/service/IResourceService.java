@@ -1,7 +1,6 @@
 package cn.yznu.rzgskhgl.service;
 
 import java.util.List;
-import java.util.Set;
 
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.User;
@@ -10,7 +9,7 @@ import cn.yznu.rzgskhgl.pojo.User;
 
 /**
  *
- * @author  fanhl
+ * @author  张伟
  *
  */
 public interface IResourceService extends ICommonService{

@@ -12,6 +12,9 @@
 	<shiro:hasPermission name="/admin/user/list">
 	<a href="<%=request.getContextPath() %>/admin/user/list" class="admin_link">用户管理</a>
 	</shiro:hasPermission>
+	<shiro:hasPermission name="/admin/product/list">
+	<a href="<%=request.getContextPath() %>/admin/product/list" class="admin_link">产品管理</a>
+	</shiro:hasPermission>
 	<a href="<%=request.getContextPath() %>/logout">退出系统</a>
 	欢迎 <shiro:principal />使用我们的系统!
 </shiro:authenticated>
