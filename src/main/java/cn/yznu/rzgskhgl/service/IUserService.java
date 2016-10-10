@@ -6,6 +6,12 @@ import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
 
+
+/**
+ * 用户服务接口
+ * @author 张伟
+ *
+ */
 public interface IUserService extends ICommonService{
 	/**
 	 * 根据姓名查询对象

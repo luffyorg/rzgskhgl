@@ -17,59 +17,68 @@ public class User extends BaseEntity implements Serializable{
 	/**
 	 * 姓名
 	 */
+	@Column(name="name",columnDefinition=("varchar(50)  default '' comment '姓名'"))
 	private String name;
 	/**
 	 * 密码
 	 */
+	@Column(name="password",columnDefinition=("varchar(50)  default '' comment '密码'"))
 	private String password;
 	/**
 	 * 电话
 	 */
+	@Column(name="tel",columnDefinition=("bigint(20)  default null comment '电话'"))
 	private long tel;
 	/**
-	 * 地址ַ
+	 * 地址
 	 */
+	@Column(columnDefinition =( "varchar(255) default '' comment '地址'"))
 	private String address;
 	/**
 	 * 性别
 	 */
+	@Column(columnDefinition =( "varchar(4) default '' comment '性别'"))
 	private String gender;
 
 	/**
 	 * 总资产
 	 */
-	@Column(name = "total_asset")
+	@Column(name = "total_asset",columnDefinition =( "double default null comment '总资产'"))
 	private double totalAssets;
 	/**
 	 * 总负债
 	 */
-	@Column(name = "total_liability")
+	@Column(name = "total_liability",columnDefinition = ("double default null comment '总负债'"))
 	private double totalLiability;
 	/**
 	 * 征信情况
 	 */
-	@Column(name = "credit_conditions")
+	@Column(name = "credit_conditions",columnDefinition=("varchar(50)  default null comment '征信情况'"))
 	private String creditConditions;
 	/**
 	 * 行业
 	 */
+	@Column(columnDefinition = ("varchar(65) default null comment '行业'"))
 	private String industry;
 	/**
 	 * 房产(1:有,0:无)
 	 */
+	@Column(columnDefinition = ("int(2) default null comment '房产 1:有,0：无'"))
 	private int estate;
 	/**
 	 * 动产(1:有,0:无)
 	 */
+	@Column(columnDefinition = ("int(2) default null comment '动产 1:有,0：无'"))
 	private int movable;
 	/**
 	 * 公司˾(1:有,0:无)
 	 */
+	@Column(columnDefinition = ("int(2) default null comment '公司 1:有,0：无'"))
 	private int company;
 	/**
 	 * 实体铺面(1:有,0:无)
 	 */
-	@Column(name = "solid_surfacing")
+	@Column(name = "solid_surfacing",columnDefinition = ("int(2) default null comment '实体铺面 1:有,0：无'"))
 	private int solidSurfacing;
 	
 	public String getName() {

@@ -3,11 +3,9 @@ package cn.yznu.rzgskhgl.service;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.stereotype.Service;
-
+@SuppressWarnings("rawtypes")
 @Service
 public interface ICommonService {
 	/**
@@ -79,6 +77,7 @@ public interface ICommonService {
 	 * @param id
 	 * @return 实体类
 	 */
+	
 	public <T> T getEntity(Class entityName, Serializable id);
 	/**
 	 * 删除实体根据id

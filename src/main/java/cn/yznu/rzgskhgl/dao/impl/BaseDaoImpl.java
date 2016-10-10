@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import cn.yznu.rzgskhgl.dao.IBaseDao;
-import cn.yznu.rzgskhgl.pojo.User;
 
 @Repository
 @SuppressWarnings({ "unchecked", "rawtypes" })
