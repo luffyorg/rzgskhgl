@@ -65,23 +65,34 @@ $(function(){
 			<td class="leftTd"><sf:input path="industry" size="30"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">房产:</td>
-			<td class="leftTd"><sf:input path="estate" size="30"/></td>
-		</tr>
-		<tr>
-			<td class="rightTd" width="200px">动产:</td>
-			<td class="leftTd"><sf:input path="movable" size="30"/></td>
-		</tr>
-		</tr>
-		<tr>
-			<td class="rightTd" width="200px">公司:</td>
-			<td class="leftTd"><sf:input path="company" size="30"/></td>
-		</tr>
-		</tr>
-		<tr>
-			<td class="rightTd" width="200px">实体铺面:</td>
-			<td class="leftTd"><sf:input path="solidSurfacing" size="30"/></td>
-		</tr>
+					<td class="rightTd" width="200px">房产:</td>
+					<td class="leftTd"><sf:select path="estate">
+							<sf:option value="0">无</sf:option>
+							<sf:option value="1">有</sf:option>
+						</sf:select></td>
+				</tr>
+				<tr>
+					<td class="rightTd" width="200px">动产:</td>
+					<td class="leftTd"><sf:select path="movable">
+							<sf:option value="0">无</sf:option>
+							<sf:option value="1">有</sf:option>
+						</sf:select></td>
+				</tr>
+				</tr>
+				<tr>
+					<td class="rightTd" width="200px">公司:</td>
+					<td class="leftTd"><sf:select path="company">
+							<sf:option value="0">无</sf:option>
+							<sf:option value="1">有</sf:option>
+						</sf:select></td>
+				</tr>
+				<tr>
+					<td class="rightTd" width="200px">实体铺面:</td>
+					<td><sf:select path="solidSurfacing">
+							<sf:option value="0">无</sf:option>
+							<sf:option value="1">有</sf:option>
+						</sf:select></td>
+				</tr>
 		<tr>
 			<td class="rightTd">状态:</td>
 			<td>
