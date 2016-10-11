@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,7 +12,9 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.yznu.rzgskhgl.pojo.Resource;
@@ -41,7 +44,8 @@ public class ShiroRealm extends AuthorizingRealm {
 	    String password = new String((char[])token.getCredentials()); 	//得到密码
 		System.out.println(username+"********shiro-------"+password);
 	    if(null != username && null != password){
-	    	return new SimpleAuthenticationInfo(username, password, getName());
+	    	AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(username, password, getName());
+	    	return authcInfo;
 	    }else{
 	    	return null;
 	    }
@@ -59,6 +63,9 @@ public class ShiroRealm extends AuthorizingRealm {
 			PrincipalCollection principals) {
 		String username = (String)principals.getPrimaryPrincipal();  
 		User user = userService.getUserByName(username);
+		Subject currentUser = SecurityUtils.getSubject();
+    	Session session = currentUser.getSession();
+    	session.setAttribute("user", user); 
 		List<String> roles = userService.listRoleSnByUser(user);
 		List<Resource> reses = resourceService.listResourceByUser(user);
 		List<String> permissions = new ArrayList<String>();

@@ -181,7 +181,7 @@ html, body {
 			success : function(data) {
 				if(data.result == "success"){
 					//alert("登录成功");
-					window.location.href="admin/user/list";
+					window.location.href="process/list";
 				}
 				else if(data.result == "usererror"){
 					alert("用户名或密码有误");

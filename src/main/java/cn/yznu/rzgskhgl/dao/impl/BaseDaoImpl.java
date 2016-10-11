@@ -161,7 +161,7 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	public <T> List<T> findHql(String hql, Object... param) {
-		Query q = getSession().createSQLQuery(hql);
+		Query q = getSession().createQuery(hql);
 
 		if (param != null && param.length > 0) {
 			for (int i = 0; i < param.length; i++) {

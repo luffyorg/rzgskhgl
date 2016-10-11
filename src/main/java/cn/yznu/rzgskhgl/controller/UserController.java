@@ -1,6 +1,7 @@
 package cn.yznu.rzgskhgl.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
@@ -40,8 +41,8 @@ public class UserController {
 		mav.setViewName("user/list");
 		return mav;
 	}
-	
-	@RequestMapping(value="add",method=RequestMethod.GET)
+
+	@RequestMapping(value = "add", method = RequestMethod.GET)
 	public ModelAndView add(Model model) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("user", new User());
@@ -49,21 +50,22 @@ public class UserController {
 		mv.setViewName("user/add");
 		return mv;
 	}
-	@RequestMapping(value="add",method=RequestMethod.POST)
-	public String add(User user,HttpServletRequest req,Model model) {
+
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	public String add(User user, HttpServletRequest req, Model model) {
 		String[] trids = req.getParameterValues("rids");
 		List<Integer> rids = new ArrayList<Integer>();
-		for(String rid:trids) {
+		for (String rid : trids) {
 			rids.add(Integer.parseInt(rid));
 		}
 		userService.add(user, rids);
 		return "redirect:/admin/user/list";
 	}
-	
+
 	@RequestMapping("updateStatus/{id}")
 	public String updateStatus(@PathVariable int id) {
-		User u = userService.load(User.class,id);
-		if(u.getIsEnable()==0) {
+		User u = userService.load(User.class, id);
+		if (u.getIsEnable() == 0) {
 			u.setIsEnable(1);
 		} else {
 			u.setIsEnable(0);
@@ -71,39 +73,50 @@ public class UserController {
 		userService.saveOrUpdate(u);
 		return "redirect:/admin/user/list";
 	}
-	
-	@RequestMapping(value="update/{id}",method=RequestMethod.GET)
-	public String update(@PathVariable int id,Model model) {
-		User user = userService.load(User.class,id);
+
+	@RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+	public String update(@PathVariable int id, Model model) {
+		User user = userService.load(User.class, id);
 		model.addAttribute("user", user);
 		model.addAttribute("roles", roleService.listRole());
 		List<Role> hasRoles = userService.listUserRole(id);
 		List<Integer> rids = new ArrayList<Integer>();
-		for(Role r:hasRoles) {
+		for (Role r : hasRoles) {
 			rids.add(r.getId());
 		}
 		model.addAttribute("hasRole", rids);
 		return "user/update";
 	}
-	
-	@RequestMapping(value="update/{id}",method=RequestMethod.POST)
-	public String update(@PathVariable int id,HttpServletRequest req,User user,Model model) {
-		User u = userService.load(User.class,id);
+
+	@RequestMapping(value = "update/{id}", method = RequestMethod.POST)
+	public String update(@PathVariable int id, HttpServletRequest req, User user, Model model) {
+		User u = userService.load(User.class, id);
 		u.setName(user.getName());
 		u.setIsEnable(user.getIsEnable());
+		u.setAddress(user.getAddress());
+		u.setCompany(user.getCompany());
+		u.setEstate(user.getEstate());
+		u.setGender(user.getGender());
+		u.setIndustry(user.getIndustry());
+		u.setMovable(user.getMovable());
+		u.setSolidSurfacing(user.getSolidSurfacing());
+		u.setPassword(user.getPassword());
+		u.setTotalLiability(user.getTotalLiability());
+		u.setTotalAssets(user.getTotalAssets());
+		u.setTel(user.getTel());
+		u.setUpdateDate(new Date());
 		String[] trids = req.getParameterValues("rids");
 		List<Integer> rids = new ArrayList<Integer>();
-		for(String rid:trids) {
+		for (String rid : trids) {
 			rids.add(Integer.parseInt(rid));
 		}
 		userService.update(u, rids);
 		return "redirect:/admin/user/list";
 	}
-	
-	
-	
+
 	/**
 	 * 得到全部资源
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -113,7 +126,7 @@ public class UserController {
 		List<Resource> hasRes = userService.listAllResource(id);
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("reses", hasRes);
-		mav.addObject("user", userService.get(User.class,id));
+		mav.addObject("user", userService.get(User.class, id));
 		mav.setViewName("user/res");
 		return mav;
 	}

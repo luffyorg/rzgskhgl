@@ -2,16 +2,20 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript"
+	src="<%=request.getContextPath()%>/js/jquery-1.8.0.min.js"></script>
 </head>
 <body>
 	<div id="content">
 		<h3 class="admin_link_bar">
 			<jsp:include page="inc.jsp"></jsp:include>
 		</h3>
+		<h3>${info }</h3>
 		<table width="800" cellspacing="0" cellPadding="0" id="listTable"
 			border="1">
 			<thead>
@@ -64,7 +68,9 @@
 							</c:if> <c:if test="${product.isEnable eq 1 }">
 								上架
 							</c:if></td>
-						<td><a href="buy/${product.id }" class="list_op">购买</a></td>
+						<td><shiro:hasRole name="ADMIN">
+								<a href="queryBuyUser/${product.id }" class="list_op">搜索</a>
+							</shiro:hasRole> &nbsp; <a href="buy/${product.id }" class="list_op">购买</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>

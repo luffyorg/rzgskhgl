@@ -2,6 +2,8 @@ package cn.yznu.rzgskhgl.service;
 
 import java.util.List;
 
+import cn.yznu.rzgskhgl.controller.ProductController;
+import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
@@ -63,5 +65,6 @@ public interface IUserService extends ICommonService{
 	public List<Role> listUserRole(Integer uid);
 	
 	public void update(User user,List<Integer> rids);
+	
 	
 }

@@ -82,6 +82,8 @@
 				/welcome=authc
 				/login=anon
 				/404=anon
+				/process/queryBuyUser/*=authc
+				/process/buy=authc
 				/logout = logout
 				<!-- /toLogin = authc --><!-- authc 表示需要认证才能访问的页面 -->
 				<!-- perms 表示需要该权限才能访问的页面 -->

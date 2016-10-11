@@ -11,8 +11,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.yznu.rzgskhgl.pojo.Product;
-import cn.yznu.rzgskhgl.pojo.Resource;
-import cn.yznu.rzgskhgl.service.ICommonService;
+import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,4 +57,12 @@ public class TestProduct {
 		productService.save(p);
 	}
 	
+	@Test
+	public void testUser(){
+		Product p = productService.load(Product.class, 3);
+		List<User> users = productService.queryBuyUsers(p);
+		for(User u : users){
+			System.out.println(">>>>"+u.getName());
+		}
+	}
 }
