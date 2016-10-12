@@ -15,11 +15,11 @@ import cn.yznu.rzgskhgl.common.BaseEntity;
  *
  */
 @Entity
-@Table(name = "order")
+@Table(name = "product_order")
 public class Order extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/** 订单号 */
-	@Column(name = "order_no", length = 20, nullable = true)
+	@Column(name = "order_no", length = 20)
 	private String orderNo;
 
 	/** 购买人 */
@@ -34,12 +34,15 @@ public class Order extends BaseEntity implements Serializable {
 	@Column(name = "product_name")
 	private String productName;
 	
+	/** 产品描述*/
+	private String description;
+	
 	/** 产品价格*/
-	@Column(name = "product_price")
+	@Column(name = "product_price",columnDefinition =( "double default null comment '产品价格'"))
 	private double productPrice;
 	
 	/** 订单状态 ：1与客户签订合同---2收齐资料---3递交渠道处----4审核阶段---5下款，6收费，7完成服务 */
-	@Column(name = "order_status", length = 20, nullable = true)
+	@Column(name = "order_status" ,columnDefinition =( "int(11) default null comment '1与客户签订合同---2收齐资料---3递交渠道处----4审核阶段---5下款，6收费，7完成服务'"))
 	private int orderStatus;
 
 	public String getOrderNo() {
@@ -48,6 +51,14 @@ public class Order extends BaseEntity implements Serializable {
 
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getBuyName() {

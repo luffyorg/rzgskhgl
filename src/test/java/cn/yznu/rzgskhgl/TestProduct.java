@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
@@ -64,5 +65,11 @@ public class TestProduct {
 		for(User u : users){
 			System.out.println(">>>>"+u.getName());
 		}
+	}
+	
+	@Test
+	public void testOrder(){
+		Order o = new Order();
+		productService.save(o);
 	}
 }

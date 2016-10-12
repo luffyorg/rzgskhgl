@@ -15,6 +15,9 @@
 		<h3 class="admin_link_bar">
 			<jsp:include page="inc.jsp"></jsp:include>
 		</h3>
+		<h3>
+			<input type="text" id="">
+		</h3>
 		<h3>${info }</h3>
 		<table width="800" cellspacing="0" cellPadding="0" id="listTable"
 			border="1">

@@ -52,6 +52,12 @@ public interface IUserService extends ICommonService{
 	 * @return sn
 	 */
 	public List<String> listRoleSnByUser(User user);
+	/**
+	 * 根据用户查询所对应的sn
+	 * @param user 用户对象
+	 * @return sn
+	 */
+	public String RoleSnByUser(User user);
 	
 	/**
 	 * 得到一个用户的所有资源权限

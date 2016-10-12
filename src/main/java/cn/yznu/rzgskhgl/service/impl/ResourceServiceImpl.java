@@ -33,7 +33,6 @@ public class ResourceServiceImpl extends CommonServiceimpl implements IResourceS
 
 	}
 
-
 	@Override
 	public User getUserByUserName(String userName) {
 		User user = new User();
