@@ -15,7 +15,8 @@
 		<h3 class="admin_link_bar">
 			<jsp:include page="inc.jsp"></jsp:include>
 		</h3>
-		<sf:form  action="add" method="post" modelAttribute="order" id="addForm">
+		<sf:form action="add" method="post" modelAttribute="order"
+			id="addForm">
 			<table width="800" cellspacing="0" cellPadding="0">
 				<tr>
 					<td class="rightTd" width="200px">产品名称:</td>
@@ -30,16 +31,15 @@
 					<td class="rightTd">产品描述:</td>
 					<td><sf:input path="description" size="30" /></td>
 				</tr>
-
 				<tr>
 					<td class="rightTd">购买人:</td>
-
-					<td><sf:select path="buyName" id="buyName">
-							<sf:option value="">请选择客户</sf:option>
-							<c:forEach items="${users }" var="user">
-								<sf:option value="${user.name }">${user.name }</sf:option>
-							</c:forEach>
-						</sf:select></td>
+					<td>
+							<sf:input type="text" list="user_list" name="link" path="buyName"/>
+							<datalist id="user_list"> <c:forEach items="${users }"
+								var="user">
+								<option value="${user.name }">${user.name }</option>
+							</c:forEach> </datalist>
+						</td>
 
 				</tr>
 

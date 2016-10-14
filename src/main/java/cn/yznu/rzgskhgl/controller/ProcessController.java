@@ -1,7 +1,9 @@
 package cn.yznu.rzgskhgl.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,12 +13,14 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
+import com.google.gson.Gson;
 
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
@@ -105,14 +109,14 @@ public class ProcessController {
 		User user = (User) session.getAttribute("user");
 		Snippet snippet = new Snippet();
 		String str = snippet.getRandomString();
-		//String hql = "from Order where isEnable = 1 and orderNo = "+str+"";
-		//List<Order> list = productService.findHql(Order.class, hql);
+		// String hql = "from Order where isEnable = 1 and orderNo = "+str+"";
+		// List<Order> list = productService.findHql(Order.class, hql);
 		order.setOrderNo(str);
 		order.setCreateDate(new Date());
 		order.setSalesMan(user.getName());
-		
+
 		productService.save(order);
-		return  "redirect:/process/orderList";
+		return "redirect:/process/orderList";
 	}
 
 	@RequestMapping(value = "orderList")
@@ -122,26 +126,41 @@ public class ProcessController {
 		Session session = currentUser.getSession();
 		User user = (User) session.getAttribute("user");
 		List<Order> orders = null;
+		String msg = "";
 		if (user == null) {
 			mv.addObject("orders", new Order());
 		} else {
 			String sn = userService.RoleSnByUser(user);
 			if (sn.equals("ADMIN")) {
-				String hql = "from Order where isEnable=1 order by desc createDate";
+				msg = "查询成功";
+				String hql = "from Order where isEnable=1 order by  createDate desc";
 				orders = userService.findHql(Order.class, hql);
 			} else if (sn.equals("EMP")) {
-				String hql = "from Order where isEnable=1 where salesMan=" + user.getName()
-						+ " order by desc createDate";
-				orders = userService.findHql(Order.class, hql);
+				msg = "查询成功";
+				String hql = "from Order where isEnable=1 and salesMan=? order by  createDate desc";
+				orders = userService.findHql(hql, user.getName());
 			} else {
-				mv.addObject("msg", "你没有权限查看");
+				msg = "你没有权限查看";
 			}
 
 		}
+		mv.addObject("msg", msg);
 		mv.addObject("orders", orders);
 		mv.setViewName("process/orderList");
 		return mv;
-
 	}
 
+	@RequestMapping(value="updateOrder/{id}")
+	public @ResponseBody String updateOrderStatus(@PathVariable int id){
+		Map<Object, Object> map = new HashMap<Object,Object>();
+		Gson gson = new Gson();
+		Order o = productService.load(Order.class, id);
+		map.put("order",o);
+		map.put("msg","success");
+		log.info(">>>" + map.get("order"));
+		String json = gson.toJson(map);
+		log.info("json===" + json);
+		return json;
+	}
+	
 }

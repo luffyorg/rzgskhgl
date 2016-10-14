@@ -6,6 +6,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript">
+</script>
 </head>
 <body>
 	<div id="content">
@@ -24,7 +26,7 @@
 					<td>征信情况</td>
 					<td>行业</td>
 					<td colspan="4">
-						<table >
+						<table>
 							<td align="center">条件</td>
 							<tr>
 								<td>房产</td>
@@ -64,7 +66,7 @@
 								<a href="updateStatus/${product.id }" class="list_op">上架</a>
 							</c:if> <c:if test="${product.isEnable eq 1 }">
 								<span>上架</span>
-								<a href="updateStatus/${product.id }" class="list_op">下架</a>
+								<a href="updateStatus/${product.id }" class="li st_op">下架</a>
 							</c:if> &nbsp;</td>
 						<td><shiro:hasRole name="ADMIN">
 								<a href="update/${product.id }" class="list_op">更新</a>
@@ -72,7 +74,15 @@
 					</tr>
 				</c:forEach>
 			</tbody>
+
+
 		</table>
+	</div>
+	<div>
+		<a href="list">首页</a> <a href="#"> ◄上一页</a> <a href=""> 下一页► </a> <a
+			href=""> 末页</a> 总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
+		<input size=2 id="goInput" value='' />页,<input type="button"
+			value="搜索" class="goButton" onclick="gotoPageByInput();" />
 	</div>
 </body>
 </html>

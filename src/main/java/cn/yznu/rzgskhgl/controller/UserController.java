@@ -17,6 +17,7 @@ import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IRoleService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.shiro.ShiroKit;
 
 @RequestMapping("/admin/user")
 @Controller
@@ -100,7 +101,7 @@ public class UserController {
 		u.setIndustry(user.getIndustry());
 		u.setMovable(user.getMovable());
 		u.setSolidSurfacing(user.getSolidSurfacing());
-		u.setPassword(user.getPassword());
+		u.setPassword(ShiroKit.md5(user.getPassword(), user.getName()));
 		u.setTotalLiability(user.getTotalLiability());
 		u.setTotalAssets(user.getTotalAssets());
 		u.setTel(user.getTel());

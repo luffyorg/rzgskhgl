@@ -14,10 +14,9 @@
 	<div id="content">
 		<h3 class="admin_link_bar">
 			<jsp:include page="inc.jsp"></jsp:include>
+			 
 		</h3>
-		<h3>
-			<input type="text" id="">
-		</h3>
+		<h3>${msg }</h3>
 		<table width="800" cellspacing="0" cellPadding="0" id="listTable"
 			border="1">
 			<thead>
@@ -37,19 +36,47 @@
 				<c:forEach items="${orders }" var="order" varStatus="status">
 					<tr>
 						<td>${status.index+1 }</td>
-						<td><a href="${order.id }" class="list_link">${order.order_no }</a></td>
-						<td>${order.buyName }</a></td>
-						<td>${order.salesMan }</a></td>
-						<td>${order.productName }</a></td>
-						<td>${order.description }</a></td>
-						<td>${order.productPrice }</a></td>
-						<td>${order.orderStatus }</a></td>
-						<a href="updateOrder/${order.id }" class="list_op">更新状态</a>
-						</td>
+						<td>${order.orderNo }</td>
+						<td>${order.buyName }</td>
+						<td>${order.salesMan }</td>
+						<td>${order.productName }</td>
+						<td>${order.description }</td>
+						<td>${order.productPrice }</td>
+
+						<td><c:if test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
+								test="${order.orderStatus  eq 1 }">与客户签订合同</c:if> <c:if
+								test="${order.orderStatus  eq 2 }">收齐资料</c:if> <c:if
+								test="${order.orderStatus  eq 3 }">递交渠道处</c:if> <c:if
+								test="${order.orderStatus  eq 4 }">审核阶段</c:if> <c:if
+								test="${order.orderStatus  eq 5 }">下款</c:if> <c:if
+								test="${order.orderStatus  eq 6 }">收费</c:if> <c:if
+								test="${order.orderStatus  eq 7 }">完成服务</c:if></td>
+						<td><input type="button" value="更新状态"
+							onclick="updateOrder(${order.id });"></td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
 	</div>
 </body>
+<script type="text/javascript">
+$(function() {
+	  $("#updateOrder").hide();
+});
+
+</script>
+<script type="text/javascript">
+function updateOrder(id){
+	alert(id);
+	// $("#content").hide();
+	$.post("updateOrder/"+id+"", function(data) {
+		alert("===");
+		 $("#updateOrder").show();
+		  $("#updateOrder").html(data);
+		});
+}
+
+</script>
+<jsp:include page="updateOrder.jsp"></jsp:include>
+
 </html>
