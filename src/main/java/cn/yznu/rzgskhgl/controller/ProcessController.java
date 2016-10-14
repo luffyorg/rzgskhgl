@@ -14,6 +14,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -150,17 +151,13 @@ public class ProcessController {
 		return mv;
 	}
 
-	@RequestMapping(value="updateOrder/{id}")
-	public @ResponseBody String updateOrderStatus(@PathVariable int id){
-		Map<Object, Object> map = new HashMap<Object,Object>();
+	@RequestMapping(value = "updateOrder/{id}")
+	public @ResponseBody Order updateOrderStatus(@PathVariable int id) {
+		ModelMap mm = new ModelMap();
 		Gson gson = new Gson();
 		Order o = productService.load(Order.class, id);
-		map.put("order",o);
-		map.put("msg","success");
-		log.info(">>>" + map.get("order"));
-		String json = gson.toJson(map);
-		log.info("json===" + json);
-		return json;
+		mm.addAttribute("order", o);
+		return o;
 	}
-	
+
 }
