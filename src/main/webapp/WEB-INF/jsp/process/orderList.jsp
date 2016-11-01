@@ -14,7 +14,7 @@
 	<div id="content">
 		<h3 class="admin_link_bar">
 			<jsp:include page="inc.jsp"></jsp:include>
-			 
+
 		</h3>
 		<h3>${msg }</h3>
 		<table width="800" cellspacing="0" cellPadding="0" id="listTable"
@@ -68,11 +68,11 @@ $(function() {
 <script type="text/javascript">
 function updateOrder(id){
 	alert(id);
-	// $("#content").hide();
+	 $("#content").hide();
 	$.post("updateOrder/"+id+"", function(data) {
-		alert("===");
+		alert("===" + data);
 		 $("#updateOrder").show();
-		  $("#updateOrder").html(data);
+		 $("#updateOrder").html(data);
 		});
 }
 
