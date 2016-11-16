@@ -102,6 +102,7 @@
 							</c:forEach>
 					</table>
 				</div>
+				<%@ include file="../include/pageSplit.jsp"%>
 			</div>
 		</div>
 		<!--主体内容部分结束-->

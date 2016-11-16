@@ -1,6 +1,6 @@
 /*(C) 2017 ysy.*/
 
-/* 全局通用
+/* 鍏ㄥ眬閫氱敤
 ----------------------------------------------- */
 body {
  background-color: #EEEEEE;
@@ -11,7 +11,7 @@ body {
  padding: 0;
 }
 body, button, input, textarea {
- font-size: 12px;
+ font-size: 14px;
  line-height: 1.531;
  outline: none;
  margin: 0;
@@ -103,7 +103,7 @@ p.cue {
 #vcode {
  cursor: pointer;
 }
-/* 主体框架
+/* 涓讳綋妗嗘灦
 ----------------------------------------------- */
 #dcWrap {
  width: 100%;
@@ -302,7 +302,7 @@ select {
  display: block;
  padding: 0 6px;
 }
-/* 公共顶部
+/* 鍏叡椤堕儴
 ----------------------------------------------- */
 #head .logo {
  border-right: 1px solid #0065B0;
@@ -353,7 +353,7 @@ select {
 #head .nav .noRight {
  border-right: 0;
 }
-/*- 下拉菜单 -*/
+/*- 涓嬫媺鑿滃崟 -*/
 #head .nav .M {
  position: relative;
 }
@@ -413,7 +413,7 @@ select {
  background-color: #F9F9F9;
  color: #0072C6;
 }
-/* 公共管理菜单
+/* 鍏叡绠＄悊鑿滃崟
 ----------------------------------------------- */
 #menu {
  margin-right: -1px;
@@ -544,7 +544,7 @@ select {
 #menu li i.download {
  background-position: 13px -959px;
 }
-/* 当前位置
+/* 褰撳墠浣嶇疆
 ----------------------------------------------- */
 #urHere {
  background-color:#F5F5F5;
@@ -560,7 +560,7 @@ select {
 #urHere b {
  margin: 0 13px;
 }
-/* 公共主区域
+/* 鍏叡涓诲尯鍩�
 ----------------------------------------------- */
 .mainBox {
  border-left: 1px solid #FFF;
@@ -568,7 +568,7 @@ select {
 }
 .mainBox h3 {
  border-bottom: 1px solid #D7D7D7;
- color: #666666;
+ color: #333;
  font-size: 28px;
  padding-bottom: 20px;
  margin-bottom: 30px;
@@ -576,7 +576,7 @@ select {
 .mainBox h3 .actionBtn {
  float: right;
  display: inline-block;
- background-color: #28B779;
+ background-color: #0072C6;
  padding: 0 20px;
  height: 27px;
  line-height: 27px;
@@ -607,7 +607,7 @@ select {
  padding: 10px;
  margin-bottom: 20px;
 }
-/* 公共样式
+/* 鍏叡鏍峰紡
 ----------------------------------------------- */
 #maskBox {
  position: relative;
@@ -658,7 +658,7 @@ select {
  color: #FFF;
  font-weight: bold;
 }
-/* 首页
+/* 棣栭〉
 ----------------------------------------------- */
 #index .indexBox {
  margin-bottom: 20px;
@@ -717,7 +717,7 @@ select {
 #index .help .text {
  line-height: 200%;
 }
-/* 单页面
+/* 鍗曢〉闈�
 ----------------------------------------------- */
 .page dl {
  border: 1px dotted #CCC;
@@ -754,7 +754,7 @@ select {
 .page dd a {
  color: #999;
 }
-/* 首页商品筛选
+/* 棣栭〉鍟嗗搧绛涢��
 ----------------------------------------------- */
 .homeSortLeft {
  margin-right: 70px;
@@ -798,7 +798,7 @@ select {
  text-align: right;
  color: #666;
 }
-/* 图片模块管理
+/* 鍥剧墖妯″潡绠＄悊
 ----------------------------------------------- */
 .imgModule form {
  padding:0 7px;
@@ -817,7 +817,7 @@ select {
 .imgModule .formEdit .btn {
  float:right;
 }
-/* 订单中心
+/* 璁㈠崟涓績
 ----------------------------------------------- */
 #order .tracking .trackingNo {
  float:left;
@@ -853,7 +853,7 @@ select {
 #order .trackingSubmit .edit {
  display:none;
 }
-/* 网站管理员
+/* 缃戠珯绠＄悊鍛�
 ----------------------------------------------- */
 #manager .cloudAccount {
  background: url(../images/icon_cloud_account.png) no-repeat center top;
@@ -876,7 +876,7 @@ select {
  margin-right:20px;
  color:#60BBFF;
 }
-/* 留言板
+/* 鐣欒█鏉�
 ----------------------------------------------- */
 #guestBook .book {
  border: 1px dotted #CCCCCC;
@@ -906,7 +906,7 @@ select {
 #guestBook .replySubmit {
  margin-top: 30px;
 }
-/* 云中心
+/* 浜戜腑蹇�
 ----------------------------------------------- */
 #cloud .filter a {
  margin-right:20px;
@@ -1018,7 +1018,7 @@ select {
 #douFrame .selectBox a {
  margin:0 25px;
 }
-/* 模块扩展
+/* 妯″潡鎵╁睍
 ----------------------------------------------- */
 #module .install {
  margin-top:150px;
@@ -1067,7 +1067,7 @@ select {
 }
 #module .uninstall .list ul li a {
 }
-/* 模板扩展
+/* 妯℃澘鎵╁睍
 ----------------------------------------------- */
 #theme .enable {
  border-bottom: 1px solid #DDD;
@@ -1154,7 +1154,7 @@ select {
  float:right;
  color:#999;
 }
-/* 手机版
+/* 鎵嬫満鐗�
 ----------------------------------------------- */
 #mobileBox {
  background-color:#F5F5F5;
@@ -1190,7 +1190,7 @@ select {
  background-color:#FFF;
  margin-right:-1px;
 }
-/* 用户登录
+/* 鐢ㄦ埛鐧诲綍
 ----------------------------------------------- */
 #login {
  margin: 0px auto;
@@ -1263,7 +1263,7 @@ select {
 #login .reset .inpLi .inpLogin {
  width: 250px;
 }
-/* 分页
+/* 鍒嗛〉
 ----------------------------------------------- */
 .pager {
  text-align: right;
@@ -1274,7 +1274,7 @@ select {
  color: #666;
  text-decoration: underline;
 }
-/* 信息提示
+/* 淇℃伅鎻愮ず
 ----------------------------------------------- */
 /*- douMsg -*/
 #douMsg {
@@ -1326,7 +1326,7 @@ select {
  padding-left: 25px;
  font-size: 14px;
 }
-/* 公共底部
+/* 鍏叡搴曢儴
 ----------------------------------------------- */
 #footer {
  margin-top: -1px;
@@ -1344,4 +1344,13 @@ select {
  text-align: center;
  padding: 15px 0;
 }
-
+.goButton{
+	background-color:#5096fa;
+	color:#fff;
+	font-size:'微软雅黑';
+	height:20px;
+	width:auto;
+	line-height:20px;
+	text-align:20px;
+	border:none;
+}

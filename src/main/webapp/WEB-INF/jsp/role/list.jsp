@@ -18,6 +18,19 @@
 <title>角色管理</title>
 <meta name="Copyright" content="Douco Design." />
 <style type="text/css">
+.updateColor{
+	color:#05cc88;
+	cursor:pointer;
+}
+.deleteColor{
+color:#ee6450;
+cursor:pointer;
+}
+.setReColor{
+color:#ea8010;
+cursor:pointer;
+}
+
 /**弹窗样式开始**/
 .tc {
 	width: 600px;
@@ -165,50 +178,22 @@
 								<td align="center" id="sn">${role.updateName }</td>
 								<td align="center" id="sn">${role.updateDate }</td>
 								
-								<td align="center"><a  onclick="updateRole(this,${role.id});">更新</a> | 
-								<a onclick="delRole(this,${role.id});" >删除</a> |  
-								<a href="listRes/${role.id}" >设置资源</a>
+								<td align="center"><a  onclick="updateRole(this,${role.id});" class="updateColor">更新</a> | 
+								<a onclick="delRole(this,${role.id});" class="deleteColor">删除</a> |  
+								<a href="listRes/${role.id}" class="setReColor" >设置资源</a>
 								</td>
 							</tr>
 						</c:forEach>
 					</table>
 				</div>
-				<div>
-					<c:if test="${pb.currentPage==1 }">
-						<a href="#">首页</a> 
-					</c:if>
-					<c:if test="${pb.currentPage!=1 }">
-						<a href="${basePath }admin/role/list?pageSize=10&page=1">首页</a> 
-					</c:if>
-					<c:if test="${pb.hasPreviousPage==true}">
-						<a href="${basePath }admin/role/list?pageSize=10&page=${pb.currentPage-1}"> ◄上一页</a>
-					</c:if>
-					<c:if test="${pb.hasPreviousPage==false}">
-						<a href="#"> ◄上一页</a>
-					</c:if>
-					<c:if test="${pb.hasNextPage==true }">
-						<a href="${basePath }admin/role/list?pageSize=10&page=${pb.currentPage+1}">下一页► </a> 
-					</c:if>
-					<c:if test="${pb.hasNextPage==false }">
-						<a href="#">下一页► </a> 
-					</c:if>
-					<c:if test="${pb.totalPage==pb.currentPage }">
-						<a href="#">末页</a> 
-					</c:if>
-					<c:if test="${pb.totalPage!=pb.currentPage }">
-						<a href="${basePath }admin/role/list?pageSize=10&page=${pb.totalPage}">末页</a> 
-					</c:if>
-					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
-					<input size=2 id="goInput" value='' />页,<input type="button"
-						value="搜索" class="goButton" onclick="gotoPageByInput(${pb.totalPage });" />
-				</div>
+				<%@ include file="../include/pageSplit.jsp"%>
 			</div>
 		</div>
 		<!--主体内容部分结束-->
 		<!--弹窗开始 -->
 		<div class="tc">
 			<div class="tc1">
-				角色添加<img src="${basePath}images/close.png" onclick="tcclose()"
+				角色添加<img src="${basePath}images/closed.png" onclick="tcclose()"
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>

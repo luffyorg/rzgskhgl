@@ -24,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.yznu.rzgskhgl.common.PageBean;
-import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.service.IResourceService;
@@ -87,14 +86,25 @@ public class RoleController extends BaseController{
 		String msg = "";
 		String roleName = json.getString("roleName");
 		String roleCode = json.getString("roleCode");
-		Role role = new Role();
-		role.setName(roleName);
-		role.setSn(roleCode);
-		role.setCreateBy(getSessionUser().getId().toString());
-		role.setCreateName(getSessionUser().getName());
-		role.setCreateDate(new Date());
-		role.setIsEnable(1);
-		roleService.save(role);
+		String hql = "from Role where name=? or sn=? and isEnable=0";
+		Object[] values = {roleName,roleCode};
+		Role role = roleService.getSingleByHQL(hql, values);
+		if(role != null){
+			role.setIsEnable(1);
+			role.setUpdateBy(getSessionUser().getId().toString());
+			role.setCreateName(getSessionUser().getName());
+			role.setCreateDate(new Date());
+		}
+		else{
+			role = new Role();
+			role.setName(roleName);
+			role.setSn(roleCode);
+			role.setCreateBy(getSessionUser().getId().toString());
+			role.setCreateName(getSessionUser().getName());
+			role.setCreateDate(new Date());
+			role.setIsEnable(1);
+		}
+		roleService.saveOrUpdate(role);
 		msg = "success";
 		map.put("success", msg);
 		return map;

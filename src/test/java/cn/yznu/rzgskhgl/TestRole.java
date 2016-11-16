@@ -78,4 +78,12 @@ public class TestRole {
 		}
 	}
 	
+	@Test
+	public void testSave(){
+		String hql = "from Role where name=? or sn=? and isEnable=0";
+		Object[] values = {"1","test1"};
+		Role role = roleService.getSingleByHQL(hql, values);
+		System.out.println(role);
+	}
+	
 }
