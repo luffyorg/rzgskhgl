@@ -24,7 +24,7 @@ import cn.yznu.rzgskhgl.service.IProductService;
 @Controller
 @RequestMapping("/admin/product")
 public class ProductController {
-	Logger log = Logger.getLogger(UserController.class);
+	Logger log = Logger.getLogger(ProductController.class);
 	
 	@Autowired
 	private IProductService productService;

@@ -132,6 +132,7 @@ public class BaseDaoImpl implements IBaseDao {
 
 	public <T> void deleteEntityById(Class<T> entityName, Serializable id) {
 		delete(get(entityName, id));
+		logger.info("执行了 deleteEntityById");
 		getSession().flush();
 
 	}
