@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
-<link href="${basePath}css/public.css" rel="stylesheet"
+<link href="${basePath}static/css/public.css" rel="stylesheet"
 	type="text/css">
-<script type="text/javascript" src="${basePath}js/jquery.min.js"></script>
-<script type="text/javascript" src="${basePath}js/global.js"></script>
-<script type="text/javascript" src="${basePath}js/jquery.tab.js"></script>
+<script type="text/javascript" src="${basePath}static/js/jquery.min.js"></script>
+<script type="text/javascript" src="${basePath}static/js/global.js"></script>
+<script type="text/javascript" src="${basePath}static/js/jquery.tab.js"></script>
 <!--头部导航开始-->
 <div id="dcHead">
 	<div id="head">
@@ -19,9 +19,9 @@
 						<a href="#">产品</a><a href="#">单页面</a> <a href="#">管理员</a> <a
 							href="link.html"></a>
 					</div></li>
-				<li><a href="#" target="_blank">查看产品</a></li>
-				<li><a href="#">清除缓存</a></li>
-				<li><a href="#" target="_blank">帮助</a></li>
+				<li><a href="${basePath }admin/product/list" >查看产品</a></li>
+				<li><a href="${basePath }process/list">产品购买</a></li>
+				<li><a href="${basePath }process/orderList" >订单</a></li>
 			</ul>
 			<ul class="navRight">
 				<li class="M noLeft"><a href="JavaScript:void(0);">您好， <shiro:principal /></a>

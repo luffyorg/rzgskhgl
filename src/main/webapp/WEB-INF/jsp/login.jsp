@@ -11,13 +11,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>登录</title>
 <meta name="Copyright" content="Douco Design." />
-<link href="<%=basePath%>css/public.css" rel="stylesheet"
+<link href="<%=basePath%>static/css/public.css" rel="stylesheet"
 	type="text/css">
-<link href="<%=basePath%>css/login.css" rel="stylesheet"
+<link href="<%=basePath%>static/css/login.css" rel="stylesheet"
 	type="text/css">
-<script type="text/javascript" src="<%=basePath%>js/jquery.min.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/global.js"></script>
-<script type="text/javascript" src="<%=basePath%>js/jquery.tab.js"></script>
+<script type="text/javascript" src="<%=basePath%>static/js/jquery.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>static/js/global.js"></script>
+<script type="text/javascript" src="<%=basePath%>static/js/jquery.tab.js"></script>
 </head>
 <body>
 	<!--
@@ -55,7 +55,7 @@
 				<div class="rob1" style="margin-bottom: 40px;">后台登录</div>
 				<div class="rob">
 					<div
-						style="width: 319px; height: 36px; background: url('<%=basePath%>images/account.png'); margin: 0 auto;">
+						style="width: 319px; height: 36px; background: url('<%=basePath%>static/images/account.png'); margin: 0 auto;">
 						<input type="text" id="name" placeholder="账号" />
 					</div>
 					<!-- <a href="javascript:void(0)" title="提示" class="warning" id="warn">*</a> -->
@@ -63,7 +63,7 @@
 				<div class="rob">
 					<span class="inputBox">
 						<div
-							style="width: 319px; height: 36px; background: url('<%=basePath%>images/password.png'); margin: 0 auto;">
+							style="width: 319px; height: 36px; background: url('<%=basePath%>static/images/password.png'); margin: 0 auto;">
 							<input type="password" id="password" placeholder="密码" />
 						</div>
 					</span>

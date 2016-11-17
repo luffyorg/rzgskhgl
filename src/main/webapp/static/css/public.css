@@ -565,6 +565,8 @@ select {
 .mainBox {
  border-left: 1px solid #FFF;
  padding: 30px 22px 50px 22px;
+     background: #eee;
+ 
 }
 .mainBox h3 {
  border-bottom: 1px solid #D7D7D7;

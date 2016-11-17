@@ -104,4 +104,20 @@ public class RoleServiceImpl extends CommonServiceimpl implements IRoleService {
 		return common.getSingleByHQL(hql, values);
 	}
 
+	@Override
+	public int deleteRoleResourceByRole(int roleId) {
+		String hql = "delete from RoleResource rr where rr.role.id=?";
+		Object[] values = {roleId};
+		int i = common.executeHql(hql, values);
+		return i;
+	}
+
+	@Override
+	public int deleteRoleUserByRole(int roleId) {
+		String hql = "delete from UserRole ur where ur.role.id=?";
+		Object[] values = {roleId};
+		int i = common.executeHql(hql, values);
+		return i;
+	}
+
 }

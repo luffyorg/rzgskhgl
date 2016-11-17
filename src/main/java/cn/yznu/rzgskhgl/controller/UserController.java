@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
@@ -34,11 +36,35 @@ public class UserController {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("static-access")
 	@RequestMapping(value = "list")
-	public ModelAndView list() {
+	public ModelAndView list(HttpServletRequest request) {
 		log.info("开始执行admin/user/list 方法");
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("users", userService.getAllUsers());
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if(pagesize ==null || pagesize.equals("")){
+			pagesize = "10";
+		}
+		if(page1 ==null || page1.equals("")){
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		int count = userService.getCount(User.class);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		List<User> list = roleService.queryForPage("from User ", offset, length); // 该分页的记录
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		mav.addObject("pb", pb);
+		mav.addObject("users", list);
 		mav.setViewName("user/list");
 		return mav;
 	}
@@ -62,7 +88,11 @@ public class UserController {
 		userService.add(user, rids);
 		return "redirect:/admin/user/list";
 	}
-
+	/**
+	 * 禁用 用户
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping("updateStatus/{id}")
 	public String updateStatus(@PathVariable int id) {
 		User u = userService.load(User.class, id);

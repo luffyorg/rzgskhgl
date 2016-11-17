@@ -26,6 +26,8 @@ import com.alibaba.fastjson.JSONObject;
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
+import cn.yznu.rzgskhgl.pojo.RoleResource;
+import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IResourceService;
 import cn.yznu.rzgskhgl.service.IRoleService;
 /**
@@ -64,7 +66,7 @@ public class RoleController extends BaseController{
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<Role> list = roleService.queryForPage("from Role where isEnable = 1", offset, length); // 该分页的记录
+		List<Role> list = roleService.queryForPage("from Role ", offset, length); // 该分页的记录
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -146,17 +148,45 @@ public class RoleController extends BaseController{
 		return "redirect:/admin/role/list";
 	}
 	
+	@SuppressWarnings("static-access")
 	@RequestMapping("/listRes/{id}")
-	public ModelAndView listRes(@PathVariable int id) {
+	public ModelAndView listRes(@PathVariable int id,HttpServletRequest request) {
 		log.info("开始执行admin/role/listRes/{id} 方法" );
 		ModelAndView mv = new ModelAndView();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if(pagesize ==null || pagesize.equals("")){
+			pagesize = "10";
+		}
+		if(page1 ==null || page1.equals("")){
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		int count = roleService.getCount(Resource.class);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		List<Role> list = roleService.queryForPage("from Role where isEnable = 1", offset, length); // 该分页的记录
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		
+		
+		
 		List<Resource> hasRes = roleService.listRoleResource(id);
 		List<Integer> hrIds = new ArrayList<Integer>();
 		for(Resource r:hasRes) {
 			hrIds.add(r.getId());
 		}
+		mv.addObject("pb", pb);
 		mv.addObject("rids", hrIds);
-		mv.addObject("reses", resourceService.getAllRes());
+		//mv.addObject("reses", resourceService.getAllRes());
+		mv.addObject("reses", resourceService.queryForPage("from Resource where isEnable = 1", offset, length));
 		mv.addObject("role", roleService.load(Role.class,id));
 		mv.setViewName("role/res");
 		return mv;
@@ -173,21 +203,47 @@ public class RoleController extends BaseController{
 		resp.getWriter().println("ok");
 	} 
 	
-	/**
-	 * 禁用角色，将isEnable 设为0
-	 * @param json
-	 * @return
-	 */
+	
 	@RequestMapping(value = "/del", method = RequestMethod.POST)
 	@ResponseBody
 	public Map del(@RequestBody JSONObject json) {
 		log.info("执行方法>>>delete");
 		Map<String,String> map = new HashMap<String,String>();
+		String msg = "";
 		int id =json.getInteger("id");
+		//获取角色
 		Role role = roleService.load(Role.class, id);
-		role.setIsEnable(0);
-		roleService.saveOrUpdate(role);
-		map.put("msg", "success");
+		//删除角色对应的资源
+		int i = roleService.deleteRoleResourceByRole(id);
+		//删除角色对应的用户
+		int j = roleService.deleteRoleUserByRole(id);
+		if(i > 0 && j > 0){
+			log.info("角色资源关系删除成功--用户角色关系删除成功");
+			msg = "success";
+		}else{
+			log.info("角色资源关系删除失败--用户角色关系删除失败");
+			msg = "error";
+		}
+		roleService.delete(role);
+		map.put("msg", msg);
 		return map;
 	}
+	/**
+	 * 禁用角色，将isEnable 设为0
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping("updateStatus/{id}")
+	public String updateStatus(@PathVariable int id) {
+		Role r = roleService.load(Role.class, id);
+		if (r.getIsEnable() == 0) {
+			r.setIsEnable(1);
+		} else {
+			r.setIsEnable(0);
+		}
+		roleService.saveOrUpdate(r);
+		return "redirect:/admin/role/list";
+	}
+		
+	
 }

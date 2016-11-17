@@ -20,6 +20,20 @@
 <script type="text/javascript" src="${basePath }static/js/res.js"></script>
 </head>
 <style type="text/css">
+.updateColor{
+	color:#05cc88;
+	cursor:pointer;
+}
+.deleteColor{
+color:#ee6450;
+cursor:pointer;
+}
+.setReColor{
+color:#ea8010;
+cursor:pointer;
+}
+
+
 /**弹窗样式开始**/
 .tc {
 	width: 600px;
@@ -149,6 +163,7 @@
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
 						<tr>
+							<th align="center">序号</th>
 							<th align="center">资源名称</th>
 							<th align="left">资源地址</th>
 							<th align="left">权限字符串</th>
@@ -156,16 +171,48 @@
 						</tr>
 						<c:forEach items="${ress }" var="res" varStatus="i">
 							<tr>
+								<td align="center">${i.count + (pb.currentPage-1)*10}</td>
 								<td align="center" id="resname">${res.name}</td>
 								<td align="left" id="resurl">${res.url }</td>
 								<td align="left" id="respermission">${res.permission }</td>
-								<td align="center"><input type="button" value="更新" onclick="updateRes(this,${res.id});"> | <input type="button" onclick="delRes(this,${res.id});" value="删除"></td>
+								<td align="center"><a onclick="updateRes(this,${res.id});" class="updateColor">更新</a> | <a onclick="delRes(this,${res.id});" class="deleteColor">删除</a></td>
 							</tr>
 						</c:forEach>
 					</table>
 
 				</div>
-				<%@ include file="../include/pageSplit.jsp"%>
+				 <!-- 分页开始 -->
+				<div style="float:right;margin-top:15px;">
+					<c:if test="${pb.currentPage==1 }">
+						<a href="#">首页</a> 
+					</c:if>
+					<c:if test="${pb.currentPage!=1 }">
+						<a href="${basePath }admin/resource/list?pageSize=10&page=1">首页</a> 
+					</c:if>
+					<c:if test="${pb.hasPreviousPage==true}">
+						<a href="${basePath }admin/resource/list?pageSize=10&page=${pb.currentPage-1}"> ◄上一页</a>
+					</c:if>
+					<c:if test="${pb.hasPreviousPage==false}">
+						<a href="#"> ◄上一页</a>
+					</c:if>
+					<c:if test="${pb.hasNextPage==true }">
+						<a href="${basePath }admin/resource/list?pageSize=10&page=${pb.currentPage+1}">下一页► </a> 
+					</c:if>
+					<c:if test="${pb.hasNextPage==false }">
+						<a href="#">下一页► </a> 
+					</c:if>
+					<c:if test="${pb.totalPage==pb.currentPage }">
+						<a href="#">末页</a> 
+					</c:if>
+					<c:if test="${pb.totalPage!=pb.currentPage }">
+						<a href="${basePath }admin/resource/list?pageSize=10&page=${pb.totalPage}">末页</a> 
+					</c:if>
+					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
+					<input size=2 id="goInput" value='' />页,
+					<input type="button"
+						value="搜索" class="goButton" onclick="gotoPageByInput(${pb.totalPage });" />
+				</div>
+				<!-- 分页结束 -->
 			</div>
 
 		</div>
@@ -173,7 +220,7 @@
 		<!--弹窗开始 -->
 		<div class="tc">
 			<div class="tc1">
-				资源添加<img src="${basePath}images/close.png" onclick="tcclose()"
+				资源添加<img src="${basePath}static/images/closed.png" onclick="tcclose()"
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>
@@ -203,7 +250,7 @@
 		<!--弹窗开始 -->
 		<div class="tcUpdate">
 			<div class="tc1">
-				资源更新<img src="${basePath}images/close.png" onclick="tcupclose()"
+				资源更新<img src="${basePath}static/images/closed.png" onclick="tcupclose()"
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>

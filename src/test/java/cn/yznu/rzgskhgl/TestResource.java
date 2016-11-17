@@ -82,5 +82,10 @@ public class TestResource {
 		res.setUrl("/admin/resource/delete");
 		commonService.save(res);
 	}
+	public void delete(){
+		Resource r = commonService.load(Resource.class, 19);
+		System.out.println(r);
+		commonService.delete(r);
+	}
 	
 }

@@ -153,12 +153,13 @@ cursor:pointer;
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="tc()" class="actionBtn">添加角色</a>自定义角色
+					<a onclick="tc()" class="actionBtn" style="cursor: pointer;">添加角色</a>自定义角色
 				</h3>
 				<div class="navList">
-					<table width="100%" border="0" cellpadding="10" cellspacing="0"
+ 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
-						<tr>
+						<tr >
+							<th  align="center">序号</th>
 							<th  align="center">角色名称</th>
 							<th align="center">角色代码</th>
 							
@@ -166,10 +167,12 @@ cursor:pointer;
 							<th align="center">创建时间</th>
 							<th  align="center">更新人</th>
 							<th  align="center">更新时间</th>
+							<th  align="center">角色状态</th>
 							<th  align="center">操作</th>
 						</tr>
 						<c:forEach items="${roles }" var="role" varStatus="i">
-							<tr>
+							<tr class="success">
+								<td align="center">${i.count + (pb.currentPage-1)*10}</td>
 								<td align="center" id="name">${role.name}</td>
 								<td align="center" id="sn">${role.sn }</td>
 								
@@ -177,7 +180,13 @@ cursor:pointer;
 								<td align="center" id="sn">${role.createDate }</td>
 								<td align="center" id="sn">${role.updateName }</td>
 								<td align="center" id="sn">${role.updateDate }</td>
-								
+								<td align="center"><c:if test="${role.isEnable eq 0 }">
+											<span class="emp">停用  | </span>
+											<a href="updateStatus/${role.id }"  class="updateColor">启用</a> 
+										</c:if> <c:if test="${role.isEnable eq 1 }">
+											<span>启用 | </span>
+											<a href="updateStatus/${role.id }" class="updateColor">停用</a>
+										</c:if> &nbsp;</td>
 								<td align="center"><a  onclick="updateRole(this,${role.id});" class="updateColor">更新</a> | 
 								<a onclick="delRole(this,${role.id});" class="deleteColor">删除</a> |  
 								<a href="listRes/${role.id}" class="setReColor" >设置资源</a>
@@ -193,7 +202,7 @@ cursor:pointer;
 		<!--弹窗开始 -->
 		<div class="tc">
 			<div class="tc1">
-				角色添加<img src="${basePath}images/closed.png" onclick="tcclose()"
+				角色添加<img src="${basePath}static/images/closed.png" onclick="tcclose()"
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>
@@ -219,7 +228,7 @@ cursor:pointer;
 <!--弹窗开始 -->
 		<div class="tcUpdate">
 			<div class="tc1">
-				角色更新<img src="${basePath}images/close.png" onclick="tcupclose()"
+				角色更新<img src="${basePath}static/images/closed.png" onclick="tcupclose()"
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>
@@ -302,6 +311,8 @@ function delRole(obj,id){
 					if(data.msg="success"){
 						tbody.removeChild(tr); 
 					}
+					else 
+						alert("删除失败！");
 				}
 			})
 	  } 
