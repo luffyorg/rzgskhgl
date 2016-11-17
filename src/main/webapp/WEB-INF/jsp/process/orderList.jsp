@@ -55,10 +55,10 @@
 		<!--主体内容部分开始-->
 		<div id="dcMain">
 			<!-- 当前位置 -->
-			<div id="urHere">产品购买</div>
+			<div id="urHere">订单列表</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
-				<h3>产品</h3>
+				<h3>订单</h3>
 				<div class="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
@@ -128,5 +128,13 @@ function updateOrder(id){
 
 </script>
 <jsp:include page="updateOrder.jsp"></jsp:include>
-
+<script type="text/javascript">
+$("#productli").removeClass("cur");
+$("#resli").removeClass("cur");
+$("#roleli").removeClass("cur");
+$("#userli").removeClass("cur");
+$("#indexli").removeClass("cur");
+$("#opli").removeClass("cur");
+$("#datali").removeClass("cur");
+$("#adminli").removeClass("cur");</script>
 </html>

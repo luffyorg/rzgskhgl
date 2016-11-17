@@ -351,4 +351,13 @@ cursor:pointer;
 	</div>
 	<!--end-->
 </body>
+<script type="text/javascript">
+$("#productli").removeClass("cur");
+$("#resli").removeClass("cur");
+$("#roleli").removeClass("cur");
+$("#userli").addClass("cur");
+$("#indexli").removeClass("cur");
+$("#opli").removeClass("cur");
+$("#datali").removeClass("cur");
+$("#adminli").removeClass("cur");</script>
 </html>

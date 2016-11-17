@@ -177,6 +177,7 @@ p.cue {
  color: #999;
  font-size: 12x;
  line-height: 20px;
+ width: 350px;
  -webkit-appearance: none;
 }
 .inpFlie {
@@ -565,7 +566,6 @@ select {
 .mainBox {
  border-left: 1px solid #FFF;
  padding: 30px 22px 50px 22px;
-     background: #eee;
  
 }
 .mainBox h3 {

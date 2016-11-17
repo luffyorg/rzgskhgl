@@ -153,6 +153,7 @@ public class ProcessController {
 
 	@RequestMapping(value = "updateOrder/{id}")
 	public @ResponseBody Order updateOrderStatus(@PathVariable int id) {
+		log.info("更新订单状态");
 		ModelMap mm = new ModelMap();
 		Gson gson = new Gson();
 		Order o = productService.load(Order.class, id);

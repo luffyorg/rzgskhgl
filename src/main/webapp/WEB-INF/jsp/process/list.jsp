@@ -117,6 +117,47 @@
 				</div>
 			</div>
 		</div>
+		
+		<!--弹窗开始 -->
+		<div class="tc">
+			<div class="tc1">
+				购买产品<img src="${basePath}static/images/closed.png" onclick="tcclose()"
+					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+			</div>
+			<table>
+				<tr>
+					<td height="35" align="right">资源名称：</td>
+					<td><input type="text" name="name" id="name" value=""
+						size="80" class="inpMain" /></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">资源地址：</td>
+					<td><input type="text" name="url" id="url" value="" size="80"
+						class="inpMain" /></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">权限字符：</td>
+					<td><input type="text" name="permission" id="permission"
+						value="" size="80" class="inpMain" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input id="saveBtn" class="btn" type="button" value="提交"
+						onclick="saveRes();" /></td>
+				</tr>
+			</table>
+		</div>
+		<!--弹窗结束-->
+		
 	</div>
 </body>
+<script type="text/javascript">
+$("#productli").removeClass("cur");
+$("#resli").removeClass("cur");
+$("#roleli").removeClass("cur");
+$("#userli").removeClass("cur");
+$("#indexli").removeClass("cur");
+$("#opli").removeClass("cur");
+$("#datali").removeClass("cur");
+$("#adminli").removeClass("cur");</script>
 </html>

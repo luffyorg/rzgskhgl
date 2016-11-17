@@ -359,4 +359,13 @@ function update(){
 	});
 }
 </script>
+<script type="text/javascript">
+$("#productli").removeClass("cur");
+$("#resli").removeClass("cur");
+$("#roleli").addClass("cur");
+$("#userli").removeClass("cur");
+$("#indexli").removeClass("cur");
+$("#opli").removeClass("cur");
+$("#datali").removeClass("cur");
+$("#adminli").removeClass("cur");</script>
 </html>

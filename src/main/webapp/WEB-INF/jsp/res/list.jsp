@@ -17,7 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>资源管理</title>
 <meta name="Copyright" content="Douco Design." />
-<script type="text/javascript" src="${basePath }static/js/res.js"></script>
+<script type="text/javascript" src="${basePath }jsp/js/res.js"></script>
 </head>
 <style type="text/css">
 .updateColor{
@@ -225,17 +225,17 @@ cursor:pointer;
 			</div>
 			<table>
 				<tr>
-					<td height="35" align="right">资源名称：</td>
+					<td height="35" width="25%" align="right">资源名称：</td>
 					<td><input type="text" name="name" id="name" value=""
 						size="80" class="inpMain" /></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">资源地址：</td>
+					<td height="35" width="100px" align="right">资源地址：</td>
 					<td><input type="text" name="url" id="url" value="" size="80"
 						class="inpMain" /></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">权限字符：</td>
+					<td height="35" width="100px" align="right">权限字符：</td>
 					<td><input type="text" name="permission" id="permission"
 						value="" size="80" class="inpMain" /></td>
 				</tr>
@@ -255,7 +255,7 @@ cursor:pointer;
 			</div>
 			<table>
 				<tr>
-					<td height="35" align="right">资源标识：</td>
+					<td height="35" width="100px" align="right">资源标识：</td>
 					<td><input type="text" name="upid" id="upid" value=""
 						size="80" class="inpMain" readonly="readonly"/></td>
 				</tr>
@@ -367,5 +367,17 @@ function update(){
 		}
 	});
 }
+</script>
+<script type="text/javascript">
+$(function(){
+	$("#resli").addClass("cur");
+	$("#roleli").removeClass("cur");
+	$("#userli").removeClass("cur");
+	$("#indexli").removeClass("cur");
+	$("#opli").removeClass("cur");
+	$("#datali").removeClass("cur");
+	$("#adminli").removeClass("cur");
+	$("#productli").removeClass("cur");
+})
 </script>
 </html>

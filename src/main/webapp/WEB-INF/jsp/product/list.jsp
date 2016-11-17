@@ -15,6 +15,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
 <script type="text/javascript">
 </script>
 </head>
@@ -129,6 +130,18 @@ cursor:pointer;
 		});
 	};
 	/**弹窗效果结束**/
+</script>
+<script type="text/javascript">
+$(function(){
+	$("#productli").addClass("cur");
+	$("#resli").removeClass("cur");
+	$("#roleli").removeClass("cur");
+	$("#userli").removeClass("cur");
+	$("#indexli").removeClass("cur");
+	$("#opli").removeClass("cur");
+	$("#datali").removeClass("cur");
+	$("#adminli").removeClass("cur");
+})
 </script>
 <body>
 	<!--
