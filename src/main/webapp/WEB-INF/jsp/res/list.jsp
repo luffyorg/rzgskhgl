@@ -32,7 +32,12 @@ cursor:pointer;
 color:#ea8010;
 cursor:pointer;
 }
-
+.cursorpointer{
+cursor:pointer;
+}
+.cursorauto{
+cursor:Default;
+}
 
 /**弹窗样式开始**/
 .tc {
@@ -182,30 +187,30 @@ cursor:pointer;
 
 				</div>
 				 <!-- 分页开始 -->
-				<div style="float:right;margin-top:15px;">
+				<div style="float:right;margin-top:15px;" class="splitPage">
 					<c:if test="${pb.currentPage==1 }">
-						<a href="#">首页</a> 
+						<a  class='cursorauto'>首页</a> 
 					</c:if>
 					<c:if test="${pb.currentPage!=1 }">
-						<a href="${basePath }admin/resource/list?pageSize=10&page=1">首页</a> 
+						<a onclick="nextPage(10,1);" class="cursorpointer">首页</a> 
 					</c:if>
 					<c:if test="${pb.hasPreviousPage==true}">
-						<a href="${basePath }admin/resource/list?pageSize=10&page=${pb.currentPage-1}"> ◄上一页</a>
+						<a onclick="nextPage(10,${pb.currentPage-1});"}" class="cursorpointer"> ◄上一页</a>
 					</c:if>
 					<c:if test="${pb.hasPreviousPage==false}">
-						<a href="#"> ◄上一页</a>
+						<a  class='cursorauto'> ◄上一页</a>
 					</c:if>
 					<c:if test="${pb.hasNextPage==true }">
-						<a href="${basePath }admin/resource/list?pageSize=10&page=${pb.currentPage+1}">下一页► </a> 
+						<a onclick="nextPage(10,${pb.currentPage+1});" class="cursorpointer">下一页► </a> 
 					</c:if>
 					<c:if test="${pb.hasNextPage==false }">
-						<a href="#">下一页► </a> 
+						<a class='cursorauto'>下一页► </a> 
 					</c:if>
 					<c:if test="${pb.totalPage==pb.currentPage }">
-						<a href="#">末页</a> 
+						<a  class='cursorauto'>末页</a> 
 					</c:if>
 					<c:if test="${pb.totalPage!=pb.currentPage }">
-						<a href="${basePath }admin/resource/list?pageSize=10&page=${pb.totalPage}">末页</a> 
+						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a> 
 					</c:if>
 					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
 					<input size=2 id="goInput" value='' />页,
@@ -293,6 +298,53 @@ cursor:pointer;
 	<!--end-->
 </body>
 <script type="text/javascript">
+function nextPage(size,page){
+	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
+		 //组装表格
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		htmlStr += "<tr> <th align='center'>序号</th><th align='center'>资源名称</th><th align='left'>资源地址</th><th align='left'>权限字符串</th><th align='center'>操作</th></tr>";
+	    for(var i = 0; i < data.ress.length; i++){
+	         var res = data.ress[i];
+	         htmlStr += "<tr><td align='center' id='resid'>"+res.id+"</td><td align='center' id='resname'>"+res.name+"</td><td align='center' id='resurl'>"+res.url+"</td><td align='center' id='respermission'>"+res.permission+"</td>";
+	         htmlStr += "<td align='center'><a onclick=updateRes(this,"+res.id+"); class='updateColor'>更新</a> | <a onclick=delRes(this,"+res.id+"); class='deleteColor'>删除</a></td></tr>";
+	    }
+	    //组装分页
+	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
+	    var pb=data.pb;
+	    if(pb.currentPage==1){
+	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
+	    }
+	    else{
+	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
+	    }
+	    if(pb.hasPreviousPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
+	    }
+	    if(pb.hasNextPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
+	    }
+	    if(pb.totalPage==pb.currentPage){
+	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
+	    }else{
+	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
+	    }
+	    
+	    htmlStr += "</table>";
+	    htmlPage += "总"+pb.allRow +"条，第"+pb.currentPage+ "/"+pb.totalPage +"页";
+	    $(".navList").html(htmlStr);
+	    $(".splitPage").html(htmlPage);
+	   
+	}) 
+}
+
+
+
 function gotoPageByInput(totalpage){
 	var page = $("#goInput").val();
 	if(page<1 || page>totalpage){

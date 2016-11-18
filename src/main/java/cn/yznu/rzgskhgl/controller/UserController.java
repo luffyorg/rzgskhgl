@@ -2,7 +2,10 @@ package cn.yznu.rzgskhgl.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.common.PageBean;
@@ -89,12 +93,16 @@ public class UserController {
 		return "redirect:/admin/user/list";
 	}
 	/**
-	 * 禁用 用户
+	 * 更新用户状态 
 	 * @param id
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("updateStatus/{id}")
-	public String updateStatus(@PathVariable int id) {
+	@ResponseBody
+	public Map updateStatus(@PathVariable int id) {
+		log.info("更新用户状态");
+		Map<String,Object> map = new HashMap<String,Object>();
 		User u = userService.load(User.class, id);
 		if (u.getIsEnable() == 0) {
 			u.setIsEnable(1);
@@ -102,7 +110,9 @@ public class UserController {
 			u.setIsEnable(0);
 		}
 		userService.saveOrUpdate(u);
-		return "redirect:/admin/user/list";
+		//map.put("user", userService.load(User.class, id));
+		map.put("isEnable", u.getIsEnable());
+		return map;
 	}
 
 	@RequestMapping(value = "update/{id}", method = RequestMethod.GET)
@@ -161,5 +171,19 @@ public class UserController {
 		mav.setViewName("user/res");
 		return mav;
 	}
-
+	
+	@RequestMapping(value = "checkName" , method=RequestMethod.GET)
+	@ResponseBody
+	public String checkName(HttpServletRequest request){
+		log.info("校验登录名是否重复");
+		String msg = "";
+		String name = request.getParameter("name");
+		
+		User u = userService.findUniqueByProperty(User.class, "name", name);
+		if(u == null){
+			msg = "error";
+		}else
+			msg = "success";
+		return msg;
+	}
 }
