@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,10 +25,11 @@ import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IRoleService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.shiro.ShiroKit;
+import net.sf.json.JSONObject;
 
 @RequestMapping("/admin/user")
 @Controller
-public class UserController {
+public class UserController extends BaseController{
 	Logger log = Logger.getLogger(UserController.class);
 
 	@Autowired
@@ -61,7 +63,7 @@ public class UserController {
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<User> list = roleService.queryForPage("from User ", offset, length); // 该分页的记录
+		List<User> list = userService.queryForPage("from User ", offset, length); // 该分页的记录
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -69,6 +71,7 @@ public class UserController {
 		pb.setAllRow(count);
 		mav.addObject("pb", pb);
 		mav.addObject("users", list);
+		mav.addObject("roles",roleService.listRole());
 		mav.setViewName("user/list");
 		return mav;
 	}
@@ -92,6 +95,51 @@ public class UserController {
 		userService.add(user, rids);
 		return "redirect:/admin/user/list";
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="save" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Map saveUser(@RequestBody JSONObject json){
+		Map<String,String> map = new HashMap<String,String>();
+		String name = json.getString("name");
+		String nickName = json.getString("nickName");
+		String pwd = json.getString("pwd");
+		int tel = json.getInt("tel");
+		String gender = json.getString("gender");
+		String address = json.getString("address");
+		double totalAssets = Double.parseDouble(json.getString("totalAssets"));
+		double totalLiability = json.getDouble("totalLiability");
+		String creditConditions = json.getString("creditConditions");
+		String industry = json.getString("industry");
+		int estate = json.getInt("estate");
+		int movable = json.getInt("movable");
+		int solidSurfacing = json.getInt("solidSurfacing");
+		int company = json.getInt("company");
+		int isEnable = json.getInt("isEnable");
+		String rids2 = json.getString("rids");
+		List<Integer> rids = new ArrayList<Integer>();
+		System.out.println("rids2" + rids2);
+		rids2.split(",");
+		User u = new User();
+		u.setName(name);
+		u.setNickName(nickName);
+		u.setPassword(pwd);
+		u.setTel(tel);
+		u.setGender(gender);
+		u.setAddress(address);
+		u.setTotalAssets(totalAssets);
+		u.setTotalLiability(totalLiability);
+		u.setCreditConditions(creditConditions);
+		u.setIndustry(industry);
+		u.setEstate(estate);
+		u.setCompany(company);
+		u.setMovable(movable);
+		u.setSolidSurfacing(solidSurfacing);
+		u.setIsEnable(isEnable);
+		userService.add(u);
+		map.put("msg", "success");
+		return map;
+	}
 	/**
 	 * 更新用户状态 
 	 * @param id
@@ -109,6 +157,9 @@ public class UserController {
 		} else {
 			u.setIsEnable(0);
 		}
+		u.setUpdateBy(getSessionUser().getId().toString());
+		u.setUpdateDate(new Date());
+		u.setUpdateName(getSessionUser().getName());
 		userService.saveOrUpdate(u);
 		//map.put("user", userService.load(User.class, id));
 		map.put("isEnable", u.getIsEnable());

@@ -208,22 +208,22 @@
 									<td align="center">${i.count + (pb.currentPage-1)*10}</td>
 									<td align="center"><a href="${user.id }" class="list_link">${user.name }</a></td>
 									<td align="center"><a href="${user.id }" class="list_link">${user.nickName }</a></td>
-									<td align="center">${user.tel }</a></td>
-									<td align="center">${user.address }</a></td>
-									<td align="center">${user.gender }</a></td>
-									<td align="center">${user.totalAssets }</a></td>
-									<td align="center">${user.totalLiability }</a></td>
-									<td align="center">${user.creditConditions }</a></td>
-									<td align="center">${user.industry }</a></td>
+									<td align="center">${user.tel }</td>
+									<td align="center">${user.address }</td>
+									<td align="center">${user.gender }</td>
+									<td align="center">${user.totalAssets }</td>
+									<td align="center">${user.totalLiability }</td>
+									<td align="center">${user.creditConditions }</td>
+									<td align="center">${user.industry }</td>
 									<td align="center"><c:if test="${user.estate eq 0 }">无</c:if>
-										<c:if test="${user.estate eq 1 }">有</c:if></a></td>
+										<c:if test="${user.estate eq 1 }">有</c:if></td>
 									<td align="center"><c:if test="${user.movable eq 0 }">无</c:if>
-										<c:if test="${user.movable eq 1 }">有</c:if></a></td>
+										<c:if test="${user.movable eq 1 }">有</c:if></td>
 									<td align="center"><c:if test="${user.company eq 0 }">无</c:if>
-										<c:if test="${user.company eq 1 }">有</c:if></a></td>
+										<c:if test="${user.company eq 1 }">有</c:if></td>
 									<td align="center"><c:if
 											test="${user.solidSurfacing eq 0 }">无</c:if> <c:if
-											test="${user.solidSurfacing eq 1 }">有</c:if></a></td>
+											test="${user.solidSurfacing eq 1 }">有</c:if></td>
 									<td align="center" id="updateStatus${user.id }"><c:if
 											test="${user.isEnable eq 0 }">
 											<span class="stop" id="stop${user.id }">停用 | </span>
@@ -234,7 +234,7 @@
 											<span class="start" id="start${user.id }">启用 | </span>
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="stop${user.id }"> 停用</a>
-										</c:if> &nbsp;</td>
+										</c:if></td>
 									<td align="center"><shiro:hasRole name="ADMIN">
 											<%-- <a href="${basePath }admin/user/update/${user.id }"
 												class="updateColor">更新</a>  --%>
@@ -331,8 +331,8 @@
 				<tr>
 					<td height="35" align="right">动产：</td>
 					<td><select name="addmovable" id="addmovable">
-							<option value="">有</option>
-							<option value="" selected>无</option>
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
 					</select></td>
 				</tr>
 				<tr>
@@ -358,13 +358,12 @@
 				</tr>
 				<tr>
 					<td height="35" align="right">角色：</td>
-					<td><label for="captcha_0"> <input type="radio"
-							name="ADMIN" id="ADMIN" value="ADMIN"> 管理员
-					</label> <label for="captcha_1"> <input type="radio" name="captcha"
-							id="VIP" value="VIP" checked="true"> 会员
-					</label> <label for="captcha_2"> <input type="radio" name="captcha"
-							id="EMP" value="EMP" checked="true"> 员工
-					</label></td>
+					<td><c:forEach var="role" items="${roles }">
+						<label for="captcha_${role.id }"> 
+							<input type="checkbox" name="checkbox" value="${role.id }"> ${role.name }
+						</label>
+						</c:forEach>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
@@ -489,7 +488,68 @@ function updateStatus(id,isEnable){
 }
 
 function addUser(){
-	check();
+	var obj=document.getElementsByName('checkbox'); 
+	var rids=new Array()
+	for(var i=0; i<obj.length; i++){ 
+		if(obj[i].checked) {
+			rids[i]=obj[i].value;
+		}else{
+			
+		}
+	} 
+	var name = $("#addName").val();
+	var nickName = $("#addNickName").val();
+	var pwd = $("#addPassword").val();
+	var pwd2 = $("#addPassword2").val();
+	var tel = $("#addTel").val();
+	var address = $("#addAddress").val();
+	var sex = $("#addSex").val();
+	var totalAssets = $("#addtotalAssets").val();
+	var totalLiability = $("#addtotalLiability").val();
+	var creditConditions = $("#addcreditConditions").val();
+	var industry = $("#addindustry").val();
+	var estate = $("#addestate").val();
+	var movable = $("#addmovable").val();
+	var company = $("#addcompany").val();
+	var solidSurfacing = $("#addsolidSurfacing").val();
+	var isEnable = $("#addisEnable").val();
+	var sendInfo = {
+			"name" : name,
+			"nickName" : nickName,
+			"pwd" : pwd,
+			"tel" :tel,
+			"address" : address,
+			"gender" : sex,
+			"totalAssets" : totalAssets,
+			"totalLiability" :totalLiability,
+			"creditConditions" : creditConditions,
+			"industry" : industry,
+			"estate" : estate,
+			"movable" : movable,
+			"company" : company,
+			"solidSurfacing" : solidSurfacing,
+			"isEnable" : isEnable,
+			"rids" : rids
+		};
+		alert(sendInfo);
+		$.ajax({
+			type : "POST",
+			url : "save2",
+			dataType : "json",
+			contentType : 'application/json',
+			data : JSON.stringify(sendInfo),
+			success : function(data) {
+				if (data.msg == "success") {
+					alert("添加成功");
+					window.location.href = "list";
+				}else {
+					alert("添加失败");
+				}
+			},
+			error : function() {
+				alert("没有返回值");
+			}
+		});
 }
 function check(){
 	var name = $("#addName").val();
@@ -512,7 +572,7 @@ function check(){
 
 function isname(){
 	var name = $("#addName").val();
-	var patrn=/^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){4,19}$/;   
+	var patrn=/^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){3,19}$/;   
 	if (!patrn.exec(name)) 
 		{  	
 			divname.innerHTML='<font class="tips_false">长度是4~20个字符</font>';

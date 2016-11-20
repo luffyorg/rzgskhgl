@@ -38,7 +38,6 @@ cursor:pointer;
 .cursorauto{
 cursor:Default;
 }
-
 /**弹窗样式开始**/
 .tc {
 	width: 600px;
@@ -213,9 +212,9 @@ cursor:Default;
 						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a> 
 					</c:if>
 					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
-					<input size=2 id="goInput" value='' />页,
-					<input type="button"
-						value="搜索" class="goButton" onclick="gotoPageByInput(${pb.totalPage });" />
+					<input  id="goInput" value='' style="border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;" />页,
+					<input type="button" class='cursorpointer'
+						value="搜索" onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
 				</div>
 				<!-- 分页结束 -->
 			</div>
@@ -336,7 +335,9 @@ function nextPage(size,page){
 	    }
 	    
 	    htmlStr += "</table>";
-	    htmlPage += "总"+pb.allRow +"条，第"+pb.currentPage+ "/"+pb.totalPage +"页";
+	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
+			"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
+		"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
 	    $(".navList").html(htmlStr);
 	    $(".splitPage").html(htmlPage);
 	   
@@ -345,33 +346,35 @@ function nextPage(size,page){
 
 
 
-function gotoPageByInput(totalpage){
+function gotoPageByInput(currentPage,totalpage){
 	var page = $("#goInput").val();
 	if(page<1 || page>totalpage){
 		alert("请输入正确页码！");
+	}else if(page==currentPage){
+		
 	}else
-		window.location.href = "${basePath }admin/resource/list?pageSize=10&page="+page+"";
+		nextPage(10,page);
 }
 function delRes(obj,id){
 	 if(confirm('确定要删除这条记录吗?')==true) 
 	  { 
-		 var tr=obj.parentNode.parentNode; 
-			var tbody=tr.parentNode; 
-			var sendInfo = {
-					"id" : id
-				};
-			$.ajax({ 
-				type : "post", 
-				url : "del", 
-				dataType : "json",
-				contentType : 'application/json',
-				data : JSON.stringify(sendInfo),
-				success : function(data) { 
-					if(data.msg="success"){
-						tbody.removeChild(tr); 
-					}
+		var tr=obj.parentNode.parentNode; 
+		var tbody=tr.parentNode; 
+		var sendInfo = {
+				"id" : id
+			};
+		$.ajax({ 
+			type : "post", 
+			url : "del", 
+			dataType : "json",
+			contentType : 'application/json',
+			data : JSON.stringify(sendInfo),
+			success : function(data) { 
+				if(data.msg="success"){
+					tbody.removeChild(tr); 
 				}
-			})
+			}
+		})
 	  } 
 	  return false; 
 }
@@ -389,6 +392,7 @@ function updateRes(obj,id){
 }
 
 function update(){
+	alert();
 	var id = $("#upid").val();
 	var name =  $("#upname").val();
 	var url =	$("#upurl").val();
@@ -423,13 +427,9 @@ function update(){
 <script type="text/javascript">
 $(function(){
 	$("#resli").addClass("cur");
-	$("#roleli").removeClass("cur");
-	$("#userli").removeClass("cur");
 	$("#indexli").removeClass("cur");
-	$("#opli").removeClass("cur");
-	$("#datali").removeClass("cur");
-	$("#adminli").removeClass("cur");
-	$("#productli").removeClass("cur");
 })
+
+
 </script>
 </html>
