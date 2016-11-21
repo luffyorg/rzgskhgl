@@ -207,7 +207,7 @@ cursor:Default;
 										</c:if>
 										<c:if test="${product.isEnable eq 1 }">
 											<%-- <a href="buy/${product.id }" class="setReColor">购买</a> --%>
-											<a onclick="buy(${product.productNo },'${product.name }','${product.productPrice }');" class="cursorpointer">购买 </a> 
+											<a onclick="buy(${product.productNo },'${product.name }','${product.productPrice }');" class="setReColor">购买 </a> 
 										</c:if>
 									</td>
 								</tr>
@@ -354,8 +354,10 @@ function nextPage(size,page){
 	       	  	htmlStr += "<td align='center'><a href='queryBuyUser/"+product.id +"' class='updateColor'>搜索</a>  | ";
 	       		if(product.isEnable==0){
 	         		htmlStr += "<a>购买</a></td></td></tr>";
-	       		}else
-	       			htmlStr += "<a href='buy/"+product.id +"' class='setReColor'>购买</a></td></td></tr>";
+	       		}else{
+	       			htmlStr += "<a onclick=buy("+product.productNo+",'"+product.name+"','"+product.productPrice+"'); class='setReColor'>购买</a></td></td></tr>";
+	       		}
+	       			/* htmlStr += "<a href='buy/"+product.id +"' class='setReColor'>购买</a></td></td></tr>"; */
 	    }
 	    //组装分页
 	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
