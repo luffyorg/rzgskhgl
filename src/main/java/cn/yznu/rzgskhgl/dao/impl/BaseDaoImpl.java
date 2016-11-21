@@ -90,6 +90,7 @@ public class BaseDaoImpl implements IBaseDao {
 		logger.info("getClass");
 		return (T) getSession().get(entityName, id);
 	}
+
 	public <T> T load(Class<T> entityName, Serializable id) {
 		logger.info("getClass");
 		return (T) getSession().load(entityName, id);
@@ -131,6 +132,7 @@ public class BaseDaoImpl implements IBaseDao {
 
 	public <T> void deleteEntityById(Class<T> entityName, Serializable id) {
 		delete(get(entityName, id));
+		logger.info("执行了 deleteEntityById");
 		getSession().flush();
 
 	}
@@ -161,7 +163,7 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	public <T> List<T> findHql(String hql, Object... param) {
-		Query q = getSession().createSQLQuery(hql);
+		Query q = getSession().createQuery(hql);
 
 		if (param != null && param.length > 0) {
 			for (int i = 0; i < param.length; i++) {
@@ -226,54 +228,54 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	@Override
-	public <T> T getSingleBySQL(Class clazz,String sqlString, Object... values) {
-		 Query query = this.getSession().createSQLQuery(sqlString).addEntity(clazz);
-	        if (values != null)
-	        {
-	            for (int i = 0; i < values.length; i++)
-	            {
-	                query.setParameter(i, values[i]);
-	            }
-	        }
-	        return (T) query.uniqueResult();
+	public <T> T getSingleBySQL(Class clazz, String sqlString, Object... values) {
+		Query query = this.getSession().createSQLQuery(sqlString).addEntity(clazz);
+		if (values != null) {
+			for (int i = 0; i < values.length; i++) {
+				query.setParameter(i, values[i]);
+			}
+		}
+		return (T) query.uniqueResult();
 	}
 
 	@Override
 	public <T> List<T> getListByHQL(String hqlString, Object... values) {
-		 Query query = this.getSession().createQuery(hqlString);
-	        if (values != null)
-	        {
-	            for (int i = 0; i < values.length; i++)
-	            {
-	                query.setParameter(i, values[i]);
-	            }
-	        }
-	        return query.list();
-	}
-
-	@Override
-	public <T> List<T> getListBySQL(Class clazz,String sqlString, Object... values) {
-		 Query query = this.getSession().createSQLQuery(sqlString).addEntity(clazz);
-	        if (values != null)
-	        {
-	            for (int i = 0; i < values.length; i++)
-	            {
-	                query.setParameter(i, values[i]);
-	            }
-	        }
-	        return query.list();
-	}
-	@Override
-	public <T> List<T> getListBySQL(String sqlString, Object... values) {
-		Query query = this.getSession().createSQLQuery(sqlString);
-		if (values != null)
-		{
-			for (int i = 0; i < values.length; i++)
-			{
+		Query query = this.getSession().createQuery(hqlString);
+		if (values != null) {
+			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
 			}
 		}
 		return query.list();
+	}
+
+	@Override
+	public <T> List<T> getListBySQL(Class clazz, String sqlString, Object... values) {
+		Query query = this.getSession().createSQLQuery(sqlString).addEntity(clazz);
+		if (values != null) {
+			for (int i = 0; i < values.length; i++) {
+				query.setParameter(i, values[i]);
+			}
+		}
+		return query.list();
+	}
+
+	@Override
+	public <T> List<T> getListBySQL(String sqlString, Object... values) {
+		Query query = this.getSession().createSQLQuery(sqlString);
+		if (values != null) {
+			for (int i = 0; i < values.length; i++) {
+				query.setParameter(i, values[i]);
+			}
+		}
+		return query.list();
+	}
+	@Override
+	public <T> List<T> queryForPage(String hql, int offset, int length) {
+		Query q = this.getSession().createQuery(hql);
+		q.setFirstResult(offset);
+		q.setMaxResults(length);
+		return q.list();
 	}
 
 }

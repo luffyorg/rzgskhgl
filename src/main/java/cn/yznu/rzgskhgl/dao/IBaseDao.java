@@ -183,7 +183,13 @@ public interface IBaseDao {
      */
     public abstract <T> List<T> getListBySQL(Class clazz,String sqlString, Object... values);
     public abstract <T> List<T> getListBySQL(String sqlString, Object... values);
-     
-    
+     /**
+      * 分页查询
+      * @param hql
+      * @param offset 起始页
+      * @param length 一页显示多少
+      * @return
+      */
+    public <T> List<T> queryForPage(String hql, int offset, int length);
 	
 }

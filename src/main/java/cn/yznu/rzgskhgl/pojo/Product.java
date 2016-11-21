@@ -28,7 +28,13 @@ public class Product extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "product_no", columnDefinition = ("varchar(50) default null comment '产品编号'"))
 	private String productNo;
+	
+	/** 产品介绍 */
+	private String description;
 
+	/** 产品价格*/
+	@Column(name="product_price")
+	private	double productPrice;
 	/**
 	 * 总资产
 	 */
@@ -90,6 +96,22 @@ public class Product extends BaseEntity implements Serializable {
 		super();
 		this.name = name;
 		this.productNo = productNo;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public double getProductPrice() {
+		return productPrice;
+	}
+
+	public void setProductPrice(double productPrice) {
+		this.productPrice = productPrice;
 	}
 
 	public double getTotalAssets() {

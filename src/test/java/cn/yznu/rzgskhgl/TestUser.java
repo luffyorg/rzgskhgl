@@ -131,6 +131,12 @@ public class TestUser {
 		userService.save(u4);
 	}
 	
+	@Test
+	public void testUpdate(){
+		User u = userService.load(User.class,1);
+		u.setPassword(ShiroKit.md5("1", u.getName()));
+		userService.saveOrUpdate(u);
+	}
 	
 	@Test
 	public void testGetUser(){

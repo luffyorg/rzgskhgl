@@ -1,25 +1,35 @@
 package cn.yznu.rzgskhgl.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IRoleService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.shiro.ShiroKit;
+import net.sf.json.JSONObject;
 
 @RequestMapping("/admin/user")
 @Controller
-public class UserController {
+public class UserController extends BaseController{
 	Logger log = Logger.getLogger(UserController.class);
 
 	@Autowired
@@ -32,16 +42,41 @@ public class UserController {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("static-access")
 	@RequestMapping(value = "list")
-	public ModelAndView list() {
+	public ModelAndView list(HttpServletRequest request) {
 		log.info("开始执行admin/user/list 方法");
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("users", userService.getAllUsers());
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if(pagesize ==null || pagesize.equals("")){
+			pagesize = "10";
+		}
+		if(page1 ==null || page1.equals("")){
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		int count = userService.getCount(User.class);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		List<User> list = userService.queryForPage("from User ", offset, length); // 该分页的记录
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		mav.addObject("pb", pb);
+		mav.addObject("users", list);
+		mav.addObject("roles",roleService.listRole());
 		mav.setViewName("user/list");
 		return mav;
 	}
-	
-	@RequestMapping(value="add",method=RequestMethod.GET)
+
+	@RequestMapping(value = "add", method = RequestMethod.GET)
 	public ModelAndView add(Model model) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("user", new User());
@@ -49,61 +84,131 @@ public class UserController {
 		mv.setViewName("user/add");
 		return mv;
 	}
-	@RequestMapping(value="add",method=RequestMethod.POST)
-	public String add(User user,HttpServletRequest req,Model model) {
+
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	public String add(User user, HttpServletRequest req, Model model) {
 		String[] trids = req.getParameterValues("rids");
 		List<Integer> rids = new ArrayList<Integer>();
-		for(String rid:trids) {
+		for (String rid : trids) {
 			rids.add(Integer.parseInt(rid));
 		}
 		userService.add(user, rids);
 		return "redirect:/admin/user/list";
 	}
 	
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value="save" ,method=RequestMethod.POST)
+	@ResponseBody
+	public Map saveUser(@RequestBody JSONObject json){
+		Map<String,String> map = new HashMap<String,String>();
+		String name = json.getString("name");
+		String nickName = json.getString("nickName");
+		String pwd = json.getString("pwd");
+		int tel = json.getInt("tel");
+		String gender = json.getString("gender");
+		String address = json.getString("address");
+		double totalAssets = Double.parseDouble(json.getString("totalAssets"));
+		double totalLiability = json.getDouble("totalLiability");
+		String creditConditions = json.getString("creditConditions");
+		String industry = json.getString("industry");
+		int estate = json.getInt("estate");
+		int movable = json.getInt("movable");
+		int solidSurfacing = json.getInt("solidSurfacing");
+		int company = json.getInt("company");
+		int isEnable = json.getInt("isEnable");
+		String rids2 = json.getString("rids");
+		List<Integer> rids = new ArrayList<Integer>();
+		System.out.println("rids2" + rids2);
+		rids2.split(",");
+		User u = new User();
+		u.setName(name);
+		u.setNickName(nickName);
+		u.setPassword(pwd);
+		u.setTel(tel);
+		u.setGender(gender);
+		u.setAddress(address);
+		u.setTotalAssets(totalAssets);
+		u.setTotalLiability(totalLiability);
+		u.setCreditConditions(creditConditions);
+		u.setIndustry(industry);
+		u.setEstate(estate);
+		u.setCompany(company);
+		u.setMovable(movable);
+		u.setSolidSurfacing(solidSurfacing);
+		u.setIsEnable(isEnable);
+		userService.add(u);
+		map.put("msg", "success");
+		return map;
+	}
+	/**
+	 * 更新用户状态 
+	 * @param id
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
 	@RequestMapping("updateStatus/{id}")
-	public String updateStatus(@PathVariable int id) {
-		User u = userService.load(User.class,id);
-		if(u.getIsEnable()==0) {
+	@ResponseBody
+	public Map updateStatus(@PathVariable int id) {
+		log.info("更新用户状态");
+		Map<String,Object> map = new HashMap<String,Object>();
+		User u = userService.load(User.class, id);
+		if (u.getIsEnable() == 0) {
 			u.setIsEnable(1);
 		} else {
 			u.setIsEnable(0);
 		}
+		u.setUpdateBy(getSessionUser().getId().toString());
+		u.setUpdateDate(new Date());
+		u.setUpdateName(getSessionUser().getName());
 		userService.saveOrUpdate(u);
-		return "redirect:/admin/user/list";
+		//map.put("user", userService.load(User.class, id));
+		map.put("isEnable", u.getIsEnable());
+		return map;
 	}
-	
-	@RequestMapping(value="update/{id}",method=RequestMethod.GET)
-	public String update(@PathVariable int id,Model model) {
-		User user = userService.load(User.class,id);
+
+	@RequestMapping(value = "update/{id}", method = RequestMethod.GET)
+	public String update(@PathVariable int id, Model model) {
+		User user = userService.load(User.class, id);
 		model.addAttribute("user", user);
 		model.addAttribute("roles", roleService.listRole());
 		List<Role> hasRoles = userService.listUserRole(id);
 		List<Integer> rids = new ArrayList<Integer>();
-		for(Role r:hasRoles) {
+		for (Role r : hasRoles) {
 			rids.add(r.getId());
 		}
 		model.addAttribute("hasRole", rids);
 		return "user/update";
 	}
-	
-	@RequestMapping(value="update/{id}",method=RequestMethod.POST)
-	public String update(@PathVariable int id,HttpServletRequest req,User user,Model model) {
-		User u = userService.load(User.class,id);
+
+	@RequestMapping(value = "update/{id}", method = RequestMethod.POST)
+	public String update(@PathVariable int id, HttpServletRequest req, User user, Model model) {
+		User u = userService.load(User.class, id);
 		u.setName(user.getName());
 		u.setIsEnable(user.getIsEnable());
+		u.setAddress(user.getAddress());
+		u.setCompany(user.getCompany());
+		u.setEstate(user.getEstate());
+		u.setGender(user.getGender());
+		u.setIndustry(user.getIndustry());
+		u.setMovable(user.getMovable());
+		u.setSolidSurfacing(user.getSolidSurfacing());
+		u.setPassword(ShiroKit.md5(user.getPassword(), user.getName()));
+		u.setTotalLiability(user.getTotalLiability());
+		u.setTotalAssets(user.getTotalAssets());
+		u.setTel(user.getTel());
+		u.setUpdateDate(new Date());
 		String[] trids = req.getParameterValues("rids");
 		List<Integer> rids = new ArrayList<Integer>();
-		for(String rid:trids) {
+		for (String rid : trids) {
 			rids.add(Integer.parseInt(rid));
 		}
 		userService.update(u, rids);
 		return "redirect:/admin/user/list";
 	}
-	
-	
-	
+
 	/**
 	 * 得到全部资源
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -113,9 +218,23 @@ public class UserController {
 		List<Resource> hasRes = userService.listAllResource(id);
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("reses", hasRes);
-		mav.addObject("user", userService.get(User.class,id));
+		mav.addObject("user", userService.get(User.class, id));
 		mav.setViewName("user/res");
 		return mav;
 	}
-
+	
+	@RequestMapping(value = "checkName" , method=RequestMethod.GET)
+	@ResponseBody
+	public String checkName(HttpServletRequest request){
+		log.info("校验登录名是否重复");
+		String msg = "";
+		String name = request.getParameter("name");
+		
+		User u = userService.findUniqueByProperty(User.class, "name", name);
+		if(u == null){
+			msg = "error";
+		}else
+			msg = "success";
+		return msg;
+	}
 }

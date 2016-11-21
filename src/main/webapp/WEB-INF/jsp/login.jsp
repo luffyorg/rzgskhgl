@@ -1,169 +1,95 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport"
-	content="width=device-width,initial-scale=1,maximum-scale=1.0" />
-<title>融资客户管理系统登录界面</title>
-
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
-<script type="text/javascript" src="js/jquery-1.8.0.js"></script>
-
-<style type="text/css">
-html, body {
-	height: 100%;
-}
-
-.box {
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6699FF',
-		endColorstr='#6699FF'); /*  IE */
-	background-image: linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-	background-image: -o-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-	background-image: -moz-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-	background-image: -webkit-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-	background-image: -ms-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-	margin: 0 auto;
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-
-.login-box {
-	width: 100%;
-	max-width: 500px;
-	height: 400px;
-	position: absolute;
-	top: 50%;
-	margin-top: -200px;
-	/*设置负值，为要定位子盒子的一半高度*/
-}
-
-@media screen and (min-width:500px) {
-	.login-box {
-		left: 50%;
-		/*设置负值，为要定位子盒子的一半宽度*/
-		margin-left: -250px;
-	}
-}
-
-.form {
-	width: 100%;
-	max-width: 500px;
-	height: 275px;
-	margin: 25px auto 0px auto;
-	padding-top: 25px;
-}
-
-.login-content {
-	height: 300px;
-	width: 100%;
-	max-width: 500px;
-	background-color: rgba(255, 250, 2550, .6);
-	float: left;
-}
-
-.input-group {
-	margin: 0px 0px 30px 0px !important;
-}
-
-.form-control, .input-group {
-	height: 40px;
-}
-
-.form-group {
-	margin-bottom: 0px !important;
-}
-
-.login-title {
-	padding: 20px 10px;
-	background-color: rgba(0, 0, 0, .6);
-}
-
-.login-title h1 {
-	margin-top: 10px !important;
-}
-
-.login-title small {
-	color: #fff;
-}
-
-.link p {
-	line-height: 20px;
-	margin-top: 30px;
-}
-
-.btn-sm {
-	padding: 8px 24px !important;
-	font-size: 16px !important;
-}
-</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>登录</title>
+<meta name="Copyright" content="Douco Design." />
+<link href="<%=basePath%>static/css/public.css" rel="stylesheet"
+	type="text/css">
+<link href="<%=basePath%>static/css/login.css" rel="stylesheet"
+	type="text/css">
+<script type="text/javascript" src="<%=basePath%>static/js/jquery.min.js"></script>
+<script type="text/javascript" src="<%=basePath%>static/js/global.js"></script>
+<script type="text/javascript" src="<%=basePath%>static/js/jquery.tab.js"></script>
 </head>
-
 <body>
-	<div class="box">
-		<div class="login-box">
-			<div class="login-title text-center">
-				<h1>
-					<small>登录</small>
-				</h1>
-			</div>
-			<div class="login-content ">
-				<div class="form">
-					<form id="myform" name="myform">
-						<div class="form-group">
-							<div class="col-xs-12  ">
-								<div class="input-group">
-									<span class="input-group-addon"><span
-										class="glyphicon glyphicon-user"></span></span> <input type="text"
-										id="name" name="name" class="form-control" placeholder="用户名">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-xs-12  ">
-								<div class="input-group">
-									<span class="input-group-addon"><span
-										class="glyphicon glyphicon-lock"></span></span> <input type="text"
-										id="password" name="password" class="form-control"
-										placeholder="密码">
-								</div>
-							</div>
-						</div>
-						<div class="form-group form-actions">
-							<div class="col-xs-4 col-xs-offset-4 ">
-								<button type="button" class="btn btn-sm btn-info"
-									onclick="login();">
-									<span class="glyphicon glyphicon-off"></span> 登录
-								</button>
-							</div>
-						</div>
-						<!-- <div class="form-group">
-					<div class="col-xs-6 link">
-						<p class="text-center remove-margin"><small>忘记密码？</small> <a href="javascript:void(0)" ><small>找回</small></a>
-						</p>
-					</div>
-					<div class="col-xs-6 link">
-						<p class="text-center remove-margin"><small>还没注册?</small> <a href="javascript:void(0)" ><small>注册</small></a>
-						</p>
-					</div>
-				</div> -->
-					</form>
+	<!--
+      作者：z.y.q.d
+      时间：2016-10-21
+      描述：后台管理
+    -->
+
+	<!--start-->
+	<div id="dcWrap">
+		<!--头部导航开始-->
+		<div id="dcHead">
+			<div id="head">
+				<div class="logo">
+					<a href="index.html">
+						 <%-- <img src="<%=basePath%>images/dclogo.gif" alt="logo"></a>  --%>
+				</div>
+				<div class="nav">
+					<ul>
+						<li><a href="#" target="_blank">帮助</a></li>
+					</ul>
+					<ul class="navRight">
+						<li class="M noLeft"><a href="JavaScript:void(0);">您好，请登录</a>
+						</li>
+						<li class="noRight"><a href="#">离开</a></li>
+					</ul>
 				</div>
 			</div>
 		</div>
-	</div>
+		<!--头部导航结束-->
 
-	<!-- <div style="text-align: center;">
-		<p>
-			来源：<a href="http://www.mycodes.net/" target="_blank">源码之家</a>
-		</p>
-	</div> -->
+		<!--登录框开始-->
+		<div class="loginbox">
+			<div class="box">
+				<div class="rob1" style="margin-bottom: 40px;">后台登录</div>
+				<div class="rob">
+					<div
+						style="width: 319px; height: 36px; background: url('<%=basePath%>static/images/account.png'); margin: 0 auto;">
+						<input type="text" id="name" placeholder="账号" />
+					</div>
+					<!-- <a href="javascript:void(0)" title="提示" class="warning" id="warn">*</a> -->
+				</div>
+				<div class="rob">
+					<span class="inputBox">
+						<div
+							style="width: 319px; height: 36px; background: url('<%=basePath%>static/images/password.png'); margin: 0 auto;">
+							<input type="password" id="password" placeholder="密码" />
+						</div>
+					</span>
+					<!-- <a href="javascript:void(0)" title="提示" class="warning" id="warn2">*</a> -->
+				</div>
+				<div class="rob" style="height: 100px;">
+					<div class="lbtn">
+						<a href="#" id="loginbtn">登录</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--登录框结束-->
 
+		<div class="clear"></div>
+		<!--底部开始-->
+		<div id="dcFooter">
+			<div id="footer">
+				<div class="line"></div>
+				<ul>版权所有 © 2017 毕业设计，并保留所有权利。
+				</ul>
+			</div>
+		</div>
 </body>
 <script type="text/javascript">
-	function login() {
+	$("#loginbtn").click(function() {
 		var loginname = $("#name").val();
 		var pwd = $("#password").val();
 
@@ -179,13 +105,12 @@ html, body {
 			contentType : 'application/json',
 			data : JSON.stringify(sendInfo),
 			success : function(data) {
-				if(data.result == "success"){
+				if (data.result == "success") {
 					//alert("登录成功");
-					window.location.href="admin/user/list";
-				}
-				else if(data.result == "usererror"){
+					window.location.href = "admin/index";
+				} else if (data.result == "usererror") {
 					alert("用户名或密码有误");
-				}else {
+				} else {
 					alert("身份验证失败");
 				}
 			},
@@ -193,6 +118,6 @@ html, body {
 				alert("没有返回值");
 			}
 		});
-	}
+	});
 </script>
 </html>

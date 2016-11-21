@@ -55,6 +55,12 @@ public class UserServiceImpl extends CommonServiceimpl implements IUserService {
 				+ "where u.id=ur.user.id and r.id=ur.role.id and u.id=?";
 		return common.getListByHQL(sql, user.getId());
 	}
+	@Override
+	public String RoleSnByUser(User user) {
+		String sql = "select r.sn from UserRole ur,Role r,User u "
+				+ "where u.id=ur.user.id and r.id=ur.role.id and u.id=?";
+		return common.getSingleByHQL(sql, user.getId());
+	}
 
 	@Override
 	public List<User> getAllUsers() {

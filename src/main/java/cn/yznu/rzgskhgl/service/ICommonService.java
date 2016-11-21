@@ -180,5 +180,13 @@ public interface ICommonService {
      */
     public abstract <T> List<T> getListBySQL(Class clazz,String sqlString, Object... values);
      
+    /**
+     * 分页查询
+     * @param hql
+     * @param offset
+     * @param length
+     * @return
+     */
+    public <T> List<T> queryForPage(String hql, int offset, int length);
     
 }

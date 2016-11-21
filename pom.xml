@@ -90,6 +90,19 @@
 	<description>基于Sping+Hibernate+SpringMVC +jetty7的基本架构</description>
 	<build>
 		<plugins>
+		
+		<!-- tomcat -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<path>/</path>
+					<port>80</port>
+				</configuration>
+			</plugin>
+
+			<!--jetty -->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
@@ -98,10 +111,7 @@
 				<configuration>
 					<webAppConfig>
 						<contextPath>/rzgskhgl</contextPath>
-						<!-- 指定 root context 在这里指定为${project.artifactId} 即 jetty， 那么访问时就用http://localized:8080/jetty 
-							访问， 如果指定梶为test 就用http://localized:8080/test访问，更多信息，请查看jetty 插件官方文档 -->
 					</webAppConfig>
-					<!-- 指定额外需要监控变化的文件或文件夹，主要用于热部署中的识别文件更新 -->
 					<scanTargetPatterns>
 						<scanTargetPattern>
 							<directory>src</directory>
@@ -112,26 +122,10 @@
 						</scanTargetPattern>
 					</scanTargetPatterns>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<!-- 指定监控的扫描时间间隔，0为关闭jetty自身的热部署，主要是为了使用jrebel -->
 					<webAppSourceDirectory>${basedir}/src/main/webapp</webAppSourceDirectory>
-					<!-- 指定web页面的文件夹 -->
 				</configuration>
 			</plugin>
-			<!-- jerebel maven 插件，用于生成jrebel.xml -->
-			<!-- <plugin>
-				<groupId>org.zeroturnaround</groupId>
-				<artifactId>javarebel-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-rebel-xml</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
-			<!-- skip test -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -559,6 +553,24 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.4</version>
 		</dependency>
+		
+		<!-- 打包下载工具类 -->
+		<dependency>
+		    <groupId>org.apache.ant</groupId>
+		    <artifactId>ant</artifactId>
+		    <version>1.8.2</version>
+		</dependency>
+		<!-- google的zxing生成二维码 -->
+		<dependency>  
+    <groupId>com.google.zxing</groupId>  
+	    <artifactId>core</artifactId>  
+	    <version>3.2.0</version>  
+	</dependency>  
+	<dependency>  
+	    <groupId>com.google.zxing</groupId>  
+	    <artifactId>javase</artifactId>  
+	    <version>3.1.0</version>  
+	</dependency>
 	</dependencies>
 
 </project>

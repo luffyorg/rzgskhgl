@@ -3,13 +3,12 @@ package cn.yznu.rzgskhgl.service.impl;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import cn.yznu.rzgskhgl.dao.IBaseDao;
 import cn.yznu.rzgskhgl.service.ICommonService;
+
 @SuppressWarnings("rawtypes")
 @Service("commonService")
 @Transactional
@@ -20,7 +19,7 @@ public class CommonServiceimpl implements ICommonService {
 
 	@Override
 	public <T> Serializable save(T entity) {
-		
+
 		return dao.save(entity);
 	}
 
@@ -46,7 +45,7 @@ public class CommonServiceimpl implements ICommonService {
 	public <T> T get(Class<T> entityName, Serializable id) {
 		return dao.get(entityName, id);
 	}
-	
+
 	@Override
 	public <T> T load(Class<T> entityName, Serializable id) {
 		return dao.load(entityName, id);
@@ -93,7 +92,6 @@ public class CommonServiceimpl implements ICommonService {
 
 	}
 
-	
 	@Override
 	public <T> void updateEntityById(Class entityName, Serializable id) {
 		dao.updateEntityById(entityName, id);
@@ -127,20 +125,20 @@ public class CommonServiceimpl implements ICommonService {
 
 	@Override
 	public void queryHql(String hqlString, Object... values) {
-		
+
 		dao.queryHql(hqlString, values);
-		
+
 	}
 
 	@Override
 	public void querySql(String sqlString, Object... values) {
-		
+
 		dao.querySql(sqlString, values);
 	}
 
 	@Override
 	public <T> T getSingleByHQL(String hqlString, Object... values) {
-		
+
 		return dao.getSingleByHQL(hqlString, values);
 	}
 
@@ -159,4 +157,8 @@ public class CommonServiceimpl implements ICommonService {
 		return dao.getListBySQL(clazz, sqlString, values);
 	}
 
+	@Override
+	public <T> List<T> queryForPage(String hql, int offset, int length) {
+		return dao.queryForPage(hql, offset, length);
+	}
 }

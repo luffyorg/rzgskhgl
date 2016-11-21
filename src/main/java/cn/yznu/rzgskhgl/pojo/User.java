@@ -15,10 +15,15 @@ public class User extends BaseEntity implements Serializable{
 	
 	
 	/**
-	 * 姓名
+	 * 真实姓名
 	 */
-	@Column(name="name",columnDefinition=("varchar(50)  default '' comment '姓名'"))
+	@Column(name="name",columnDefinition=("varchar(50)  default '' comment '真实姓名'"))
 	private String name;
+	/**
+	 * 昵称
+	 */
+	@Column(name="nick_name",columnDefinition=("varchar(50)  default '' comment '昵称'"))
+	private String nickName;
 	/**
 	 * 密码
 	 */
@@ -81,11 +86,20 @@ public class User extends BaseEntity implements Serializable{
 	@Column(name = "solid_surfacing",columnDefinition = ("int(2) default null comment '实体铺面 1:有,0：无'"))
 	private int solidSurfacing;
 	
+
+	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 	public String getPassword() {
 		return password;
@@ -161,11 +175,10 @@ public class User extends BaseEntity implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", password=" + password + ", tel=" + tel + ", address=" + address + ", gender="
-				+ gender + ", totalAssets=" + totalAssets + ", totalLiability=" + totalLiability + ", creditConditions="
-				+ creditConditions + ", industry=" + industry + ", estate=" + estate + ", movable=" + movable
-				+ ", company=" + company + ", solidSurfacing=" + solidSurfacing + "]";
+		return "User [name=" + name + ", nickName=" + nickName + ", password=" + password + ", tel=" + tel
+				+ ", address=" + address + ", gender=" + gender + ", totalAssets=" + totalAssets + ", totalLiability="
+				+ totalLiability + ", creditConditions=" + creditConditions + ", industry=" + industry + ", estate="
+				+ estate + ", movable=" + movable + ", company=" + company + ", solidSurfacing=" + solidSurfacing + "]";
 	}
-	
 	
 }

@@ -9,9 +9,6 @@
 </head>
 <body>
 	<div id="content">
-		<h3 class="admin_link_bar">
-			<jsp:include page="inc.jsp"></jsp:include>
-		</h3>
 		<sf:form method="post" modelAttribute="product" id="addForm">
 			<table width="800" cellspacing="0" cellPadding="0">
 				<thead>
