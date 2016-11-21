@@ -13,22 +13,21 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
-
+import cn.yznu.rzgskhgl.common.MakeOrderNum;
+import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
-import cn.yznu.rzgskhgl.util.Snippet;
+import net.sf.json.JSONObject;
 
 /**
  * 业务流程处理 控制类
@@ -38,7 +37,7 @@ import cn.yznu.rzgskhgl.util.Snippet;
  */
 @Controller
 @RequestMapping("/process")
-public class ProcessController {
+public class ProcessController extends BaseController{
 	Logger log = Logger.getLogger(ProcessController.class);
 
 	@Autowired
@@ -46,11 +45,36 @@ public class ProcessController {
 	@Autowired
 	private IUserService userService;
 
+	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
-	public ModelAndView list() {
+	public ModelAndView list(HttpServletRequest request) {
 		log.info("执行process/list 方法");
 		ModelAndView mv = new ModelAndView();
-		mv.addObject("products", productService.getAllProduct());
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if(pagesize ==null || pagesize.equals("")){
+			pagesize = "10";
+		}
+		if(page1 ==null || page1.equals("")){
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		int count = productService.getCount(Product.class);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
+		
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		mv.addObject("products", list);
+		mv.addObject("pb", pb);
 		mv.setViewName("process/list");
 		return mv;
 	}
@@ -80,11 +104,12 @@ public class ProcessController {
 		return mv;
 	}
 
-	@RequestMapping(value = "queryBuyUser/{id}", method = RequestMethod.GET)
-	public ModelAndView queryBuyUser(@PathVariable int id) {
+	@RequestMapping(value = "queryBuyUser", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject queryBuyUser(HttpServletRequest request) {
 		log.info("查询条件满足的客户");
-		ModelAndView mv = new ModelAndView();
-		Product product = productService.load(Product.class, id);
+		Map<String ,Object> map = new HashMap<String,Object>();
+		Product product = productService.findUniqueByProperty(Product.class, "productNo", request.getParameter("id"));
 		int bmovable = product.getMovable();
 		int bEstate = product.getEstate();
 		int bSolidS = product.getSolidSurfacing();
@@ -94,56 +119,90 @@ public class ProcessController {
 		List<User> users = productService.queryBuyUsers(product);
 		System.out.println(">>>" + users);
 		if (users == null || users.size() == 0) {
-			mv.addObject("msg", "没有符合要求的客户");
+			map.put("msg", "没有符合要求的客户");
 		} else {
-			mv.addObject("msg", "搜索完成");
+			map.put("msg", "success");
 		}
-		mv.addObject("users", users);
-		mv.setViewName("process/userList");
-		return mv;
+		map.put("users", users);
+		JSONObject json = JSONObject.fromObject( map ); 
+		return json;
 	}
 
-	@RequestMapping(value = "buy/add", method = RequestMethod.POST)
-	public String addOrder(Order order) {
-		Subject currentUser = SecurityUtils.getSubject();
-		Session session = currentUser.getSession();
-		User user = (User) session.getAttribute("user");
-		Snippet snippet = new Snippet();
-		String str = snippet.getRandomString();
-		// String hql = "from Order where isEnable = 1 and orderNo = "+str+"";
-		// List<Order> list = productService.findHql(Order.class, hql);
-		order.setOrderNo(str);
-		order.setCreateDate(new Date());
-		order.setSalesMan(user.getName());
-
-		productService.save(order);
-		return "redirect:/process/orderList";
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "buyProduct", method = RequestMethod.POST)
+	@ResponseBody
+	public Map addOrder(@RequestBody JSONObject json) {
+		log.info("购买产品");
+		Map<String ,Object> map = new HashMap<String,Object>();
+		String msg = "";
+		User user = (User) getSessionUser();//获取当前系统的业务员
+		Order order = new Order();
+		String id = json.getString("id");
+		String buyName = json.getString("buyName");
+		int orderStatus = json.getInt("orderStatus");
+		User u = new User();
+		Product product = null;
+		List<User> users = null;
+		if(!buyName.equals("")){
+			u = userService.findUniqueByProperty(User.class, "name", buyName);
+		}
+		
+		if(u == null || u.equals("")){
+			msg = "购买人不存在！";
+		}else{
+			product = productService.findUniqueByProperty(Product.class, "productNo", id);
+			users = productService.queryBuyUsers(product);
+			if(!users.contains(u)){
+				msg = "购买人不符合购买条件！";
+			}else if(u.getTotalAssets() < product.getProductPrice()){
+				msg = "购买人的资产不足以购买止产品！";
+			}else {
+				MakeOrderNum mon = new MakeOrderNum();
+				order.setOrderNo(mon.makeOrderNum());//生成订单号
+				order.setCreateDate(new Date());
+				order.setSalesMan(user.getName());
+				order.setOrderStatus(orderStatus);
+				order.setSalesManId(user.getId());
+				order.setBuyNameId(u.getId());
+				order.setBuyName(u.getName());
+				order.setCreateName(user.getName());
+				order.setCreateBy(user.getId().toString());
+				order.setCreateDate(new Date());
+				order.setIsEnable(1);
+				order.setDescription(product.getDescription());
+				productService.save(order);
+				msg = "success";
+			}
+		}
+		map.put("msg", msg);
+		return map;
 	}
 
+	@SuppressWarnings("unused")
 	@RequestMapping(value = "orderList")
 	public ModelAndView orderList() {
+		log.info("查看订单列表");
 		ModelAndView mv = new ModelAndView();
-		Subject currentUser = SecurityUtils.getSubject();
-		Session session = currentUser.getSession();
-		User user = (User) session.getAttribute("user");
+		User user = getSessionUser();
 		List<Order> orders = null;
 		String msg = "";
-		if (user == null) {
-			mv.addObject("orders", new Order());
-		} else {
-			String sn = userService.RoleSnByUser(user);
-			if (sn.equals("ADMIN")) {
-				msg = "查询成功";
-				String hql = "from Order where isEnable=1 order by  createDate desc";
-				orders = userService.findHql(Order.class, hql);
-			} else if (sn.equals("EMP")) {
-				msg = "查询成功";
-				String hql = "from Order where isEnable=1 and salesMan=? order by  createDate desc";
-				orders = userService.findHql(hql, user.getName());
+		if(user==null){
+			msg = "请登录";
+		}else{
+			List<String> roles = userService.listRoleSnByUser(user);
+			if (user == null) {
+				mv.addObject("orders", new Order());
 			} else {
-				msg = "你没有权限查看";
+				if(roles.contains("ADMIN")){
+					msg = "查询成功";
+					String hql = "from Order where isEnable=1 order by  createDate desc";
+					orders = userService.findHql(Order.class, hql);
+				} else {
+					msg = "查询成功";
+					String hql = "from Order where isEnable=1 and salesMan=? order by  createDate desc";
+					orders = userService.findHql(hql, user.getName());
+				}
 			}
-
 		}
 		mv.addObject("msg", msg);
 		mv.addObject("orders", orders);
@@ -151,14 +210,57 @@ public class ProcessController {
 		return mv;
 	}
 
-	@RequestMapping(value = "updateOrder/{id}")
-	public @ResponseBody Order updateOrderStatus(@PathVariable int id) {
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "updateOrder",method=RequestMethod.POST)
+	public @ResponseBody Map updateOrderStatus(HttpServletRequest request) {
 		log.info("更新订单状态");
-		ModelMap mm = new ModelMap();
-		Gson gson = new Gson();
-		Order o = productService.load(Order.class, id);
-		mm.addAttribute("order", o);
-		return o;
+		Map<String,Object> map = new HashMap<String,Object>();
+		String orderNo = request.getParameter("orderNo");
+		int status = Integer.parseInt(request.getParameter("status"));
+		Order o = productService.findUniqueByProperty(Order.class, "orderNo", orderNo);
+		o.setOrderStatus(status);
+		o.setUpdateBy(getSessionUser().getId().toString());
+		o.setUpdateDate(new Date());
+		o.setUpdateName(getSessionUser().getName());
+		userService.save(o);
+		map.put("msg", "success");
+		map.put("id", o.getId());
+		map.put("status", o.getOrderStatus());
+		return map;
 	}
+	
+	@SuppressWarnings("static-access")
+	@RequestMapping(value="nextPage" ,method=RequestMethod.GET)
+	@ResponseBody
+	public JSONObject nextPage(HttpServletRequest request) {
+		log.info("开始执行admin/process/nextPage 方法");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if(pagesize ==null || pagesize.equals("")){
+			pagesize = "10";
+		}
+		if(page1 ==null || page1.equals("")){
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		int count = productService.getCount(Product.class);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("products", list);
+		map.put("pb", pb);
+		JSONObject json = JSONObject.fromObject( map ); 
+		return json;
 
+	}
 }

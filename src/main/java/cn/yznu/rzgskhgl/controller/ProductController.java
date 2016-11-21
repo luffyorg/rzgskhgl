@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Product;
-import cn.yznu.rzgskhgl.pojo.Resource;
-import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
 import net.sf.json.JSONObject;
 
@@ -58,7 +56,7 @@ public class ProductController extends BaseController{
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<Product> list = productService.queryForPage("from Product", offset, length); // 该分页的记录
+		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
 		
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
@@ -123,12 +121,9 @@ public class ProductController extends BaseController{
 		product.setName(p.getName());
 		product.setProductNo(p.getProductNo());
 		product.setEstate(p.getEstate());
-		product.setIndustry(p.getIndustry());
 		product.setMovable(p.getMovable());
 		product.setCompany(p.getCompany());
 		product.setSolidSurfacing(p.getSolidSurfacing());
-		product.setTotalAssets(p.getTotalAssets());
-		product.setTotalLiability(p.getTotalLiability());
 		product.setIsEnable(p.getIsEnable());
 		productService.saveOrUpdate(product);
 		return "redirect:/admin/product/list";

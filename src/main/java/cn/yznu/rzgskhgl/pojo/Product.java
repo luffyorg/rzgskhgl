@@ -36,26 +36,6 @@ public class Product extends BaseEntity implements Serializable {
 	@Column(name="product_price")
 	private	double productPrice;
 	/**
-	 * 总资产
-	 */
-	@Column(name = "total_asset", columnDefinition = ("double default null comment '总资产'"))
-	private double totalAssets;
-	/**
-	 * 总负债
-	 */
-	@Column(name = "total_liability", columnDefinition = ("double default null comment '总负债'"))
-	private double totalLiability;
-	/**
-	 * 征信情况
-	 */
-	@Column(name = "credit_conditions", columnDefinition = ("varchar(50)  default null comment '征信情况'"))
-	private String creditConditions;
-	/**
-	 * 行业
-	 */
-	@Column(columnDefinition = ("varchar(65) default null comment '行业'"))
-	private String industry;
-	/**
 	 * 房产(1:有,0:无)
 	 */
 	@Column(columnDefinition = ("int(2) default null comment '房产 1:有,0：无'"))
@@ -112,38 +92,6 @@ public class Product extends BaseEntity implements Serializable {
 
 	public void setProductPrice(double productPrice) {
 		this.productPrice = productPrice;
-	}
-
-	public double getTotalAssets() {
-		return totalAssets;
-	}
-
-	public void setTotalAssets(double totalAssets) {
-		this.totalAssets = totalAssets;
-	}
-
-	public double getTotalLiability() {
-		return totalLiability;
-	}
-
-	public void setTotalLiability(double totalLiability) {
-		this.totalLiability = totalLiability;
-	}
-
-	public String getCreditConditions() {
-		return creditConditions;
-	}
-
-	public void setCreditConditions(String creditConditions) {
-		this.creditConditions = creditConditions;
-	}
-
-	public String getIndustry() {
-		return industry;
-	}
-
-	public void setIndustry(String industry) {
-		this.industry = industry;
 	}
 
 	public int getEstate() {

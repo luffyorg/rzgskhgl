@@ -190,10 +190,8 @@ $(function(){
            <th width="80">序号</th>
            <th width="80">产品名称</th>
            <th width="80">产品编号</th>
-           <th width="80">总资产</th>
-           <th width="80">总负债</th>
-           <th width="80">征信情况</th>
-           <th width="80">行业</th>
+           <th width="80">产品价格</th>
+           <th width="80">产品介绍</th>
            <th width="80">房产</th>
            <th width="80">动产</th>
            <th width="80">公司</th>
@@ -202,16 +200,13 @@ $(function(){
            <th width="80">操作</th>
          </tr>
         <!--数据循环开始-->
-         <c:forEach items="${products }" var="product">
+         <c:forEach items="${products }" var="product" varStatus="i">
 					<tr>
-						<td align="center">${product.id }</td>
+						<td align="center">${i.count + (pb.currentPage-1)*10}</td>
 						<td align="center">${product.name }</td>
 						<td align="center">${product.productNo }</td>
-						<td align="center">${product.totalAssets }</td>
-						<td align="center">${product.totalLiability }</td>
-						<td align="center">${product.creditConditions }</td>
-						<td align="center">${product.industry }</td>
-
+						<td align="center">${product.productPrice }</td>
+						<td align="center">${product.description }</td>
 						<td align="center"><c:if test="${product.estate eq 0 }">无</c:if> <c:if
 								test="${product.estate eq 1 }">有</c:if></td>
 						<td align="center"><c:if test="${product.movable eq 0 }">无</c:if> <c:if
@@ -399,9 +394,10 @@ function nextPage(size,page){
         "<th width='80'>实体</th>"+
         "<th width='80'>产品状态</th>"+
         "<th width='80'>操作</th></tr>";
+        var pb=data.pb;
 	    for(var i = 0; i < data.products.length; i++){
 	         var product = data.products[i];
-	         htmlStr += "<tr><td align='center'>"+product.id+" </td>"+
+	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
 				"<td align='center'>"+product.name+" </td>"+
 				"<td align='center'>"+product.productNo+" </td>"+
 				"<td align='center'>"+product.totalAssets+" </td>"+
@@ -442,7 +438,7 @@ function nextPage(size,page){
 	    }
 	    //组装分页
 	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-	    var pb=data.pb;
+	   
 	    if(pb.currentPage==1){
 	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
 	    }

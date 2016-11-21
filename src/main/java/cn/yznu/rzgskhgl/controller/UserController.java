@@ -163,6 +163,7 @@ public class UserController extends BaseController{
 		userService.saveOrUpdate(u);
 		//map.put("user", userService.load(User.class, id));
 		map.put("isEnable", u.getIsEnable());
+		map.put("msg", "更新成功");
 		return map;
 	}
 

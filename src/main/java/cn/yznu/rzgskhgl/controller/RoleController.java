@@ -26,8 +26,6 @@ import com.alibaba.fastjson.JSONObject;
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
-import cn.yznu.rzgskhgl.pojo.RoleResource;
-import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IResourceService;
 import cn.yznu.rzgskhgl.service.IRoleService;
 /**
@@ -234,16 +232,45 @@ public class RoleController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping("updateStatus/{id}")
-	public String updateStatus(@PathVariable int id) {
-		Role r = roleService.load(Role.class, id);
-		if (r.getIsEnable() == 0) {
-			r.setIsEnable(1);
+	@ResponseBody
+	public Map updateStatus(@PathVariable int id) {
+		log.info("更改角色状态");
+		String msg = "";
+		Map<String,Object> map = new HashMap<String,Object>();
+		Role role = roleService.load(Role.class, id);
+		if (role.getIsEnable() == 0) {
+			role.setIsEnable(1);
 		} else {
-			r.setIsEnable(0);
+			role.setIsEnable(0);
 		}
-		roleService.saveOrUpdate(r);
-		return "redirect:/admin/role/list";
-	}
+		role.setUpdateBy(getSessionUser().getId().toString());
+		role.setUpdateDate(new Date());
+		role.setUpdateName(getSessionUser().getName());
+		roleService.saveOrUpdate(role);
+		if(role.getIsEnable()==1){
+			msg = "启用成功";
+		}else{
+			msg = "禁用成功";
+		}
 		
+		map.put("isEnable", role.getIsEnable());
+		
+		map.put("msg", msg);
+		return map;
+	}
+	@RequestMapping(value = "checkName" , method=RequestMethod.GET)
+	@ResponseBody
+	public String checkName(HttpServletRequest request){
+		log.info("校验角色名称是否重复");
+		String msg = "";
+		String name = request.getParameter("name");
+		
+		Role r = roleService.findUniqueByProperty(Role.class, "name", name);
+		if(r == null){
+			msg = "error";
+		}else
+			msg = "success";
+		return msg;
+	}	
 	
 }

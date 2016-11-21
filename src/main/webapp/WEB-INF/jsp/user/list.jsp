@@ -203,7 +203,7 @@
 						</tr>
 						</thead>
 						<tbody>
-							<c:forEach items="${users }" var="user">
+							<c:forEach items="${users }" var="user" varStatus="i">
 								<tr>
 									<td align="center">${i.count + (pb.currentPage-1)*10}</td>
 									<td align="center"><a href="${user.id }" class="list_link">${user.name }</a></td>
@@ -227,7 +227,6 @@
 									<td align="center" id="updateStatus${user.id }"><c:if
 											test="${user.isEnable eq 0 }">
 											<span class="stop" id="stop${user.id }">停用 | </span>
-											<%-- <a href="updateStatus/${user.id }" class="updateColor"> | 启用</a> --%>
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="start${user.id }"> 启用</a>
 										</c:if> <c:if test="${user.isEnable eq 1 }">
@@ -534,7 +533,7 @@ function addUser(){
 		alert(sendInfo);
 		$.ajax({
 			type : "POST",
-			url : "save2",
+			url : "save",
 			dataType : "json",
 			contentType : 'application/json',
 			data : JSON.stringify(sendInfo),
@@ -641,6 +640,5 @@ function checkTotalAssets(){
 </script>
 <script type="text/javascript">
 $("#userli").addClass("cur");
-$("#indexli").removeClass("cur");
 </script>
 </html>

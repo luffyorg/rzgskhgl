@@ -4,7 +4,7 @@
 		<div id="dcLeft">
 			<div id="menu">
 				<ul class="top">
-					<li class="cur" id="indexli"><a href="${basePath}admin/index"><i class="home"></i><em>管理首页</em></a></li>
+					<li  id="indexli"><a href="${basePath}admin/index"><i class="home"></i><em>管理首页</em></a></li>
 				</ul>
 				<shiro:authenticated>
 					<ul>
