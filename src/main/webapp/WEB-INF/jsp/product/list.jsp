@@ -316,7 +316,7 @@ $(function(){
 								</tr>
 								<tr>
 									<td align="right">状态：</td>
-									<td><select name="">
+									<td><select name="" id="isEnable">
 											<option value="1">上架</option>
 											<option value="0" selected>下架</option>
 									</select></td>
@@ -465,11 +465,46 @@ function gotoPageByInput(currentPage,totalpage){
 		nextPage(10,page);
 }
 function addProduct(){
-	
+	var obj=document.getElementsByName('checkbox'); 
+	var condition=new Array()
+	for(var i=0; i<obj.length; i++){ 
+		if(obj[i].checked) {
+			condition[i]=obj[i].value;
+		}else{
+			condition[i]=0;
+		}
+	} 
 	var name = $("#productName").val();
 	var productNo = $("#productNo").val();
 	var productPrice = $("#productPrice").val();
 	var description = $("#description").val();
+	var isEnable = $("#isEnable").val();
+	var sendInfo={
+			"name" : name,
+			"productNo" : productNo,
+			"productPrice" : productPrice,
+			"description" :description,
+			"isEnable" : isEnable,
+			"condition" :condition
+			}
+	$.ajax({
+		type : "POST",
+		url : "addProduct",
+		dataType : "json",
+		contentType : 'application/json',
+		data : JSON.stringify(sendInfo),
+		success : function(data) {
+			if (data.result == "success") {
+				window.location.href = "list";
+			}
+			else {
+				alert("失败");
+			}
+		},
+		error : function() {
+			alert("网络异常，请稍后再试！");
+		}
+	});
 }
 </script>
 </html>
