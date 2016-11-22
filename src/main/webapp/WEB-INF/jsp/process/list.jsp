@@ -271,9 +271,9 @@ cursor:Default;
 						</tr>
 						<tr>
 							<td height="35" width="100px" align="right">购买人账户：</td>
-							<td><input type="text" id="productBuyBy" list="user_list" name="link" style="border:1px solid #d8d8d8;
-									width:98px;height:17px;line-height:17px;text-align:center;"/>
-								<datalist id="user_list" > 
+							<td><input id="productBuyBy" list="users" name="link" style="border:1px solid #d8d8d8;
+									width:98px;height:20px;line-height:17px;"/>
+								<datalist id="users" > 
 										<option value="没有可购买人"></option>
 								</datalist></td>
 						</tr>
@@ -413,8 +413,8 @@ function buy(id,name,price){
 				 var user = data.users[i];
 				 options += "<option value='"+user.name+"'></option>";
 			 }
-			 $("#user_list").empty();
-			 $("#user_list").append(options);
+			 $("#users").empty();
+			 $("#users").append(options);
 		 }
 	 });
 	 $("#productId").val(id);

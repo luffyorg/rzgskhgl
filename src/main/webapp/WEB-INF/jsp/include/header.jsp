@@ -24,7 +24,8 @@
 				<li><a href="${basePath }process/orderList" >订单</a></li>
 			</ul>
 			<ul class="navRight">
-				<li class="M noLeft"><a href="JavaScript:void(0);">您好， <shiro:principal /></a>
+				<li class="M noLeft"><a href="JavaScript:void(0);">您好， 
+				<shiro:principal /></a>
 					<div class="drop mUser">
 						<a href="#">编辑我的个人资料</a> <a href="#">设置账户</a>
 					</div></li>

@@ -20,24 +20,27 @@
 </script>
 </head>
 <style type="text/css">
-.updateColor{
-	color:#05cc88;
-	cursor:pointer;
-}
-.deleteColor{
-color:#ee6450;
-cursor:pointer;
-}
-.setReColor{
-color:#ea8010;
-cursor:pointer;
+.updateColor {
+	color: #05cc88;
+	cursor: pointer;
 }
 
-.cursorpointer{
-cursor:pointer;
+.deleteColor {
+	color: #ee6450;
+	cursor: pointer;
 }
-.cursorauto{
-cursor:Default;
+
+.setReColor {
+	color: #ea8010;
+	cursor: pointer;
+}
+
+.cursorpointer {
+	cursor: pointer;
+}
+
+.cursorauto {
+	cursor: Default;
 }
 /**弹窗样式开始**/
 .tc {
@@ -60,6 +63,7 @@ cursor:Default;
 .tc table tr {
 	margin-top: 20px;
 }
+
 .tcUpdate {
 	width: 600px;
 	height: 300px;
@@ -139,13 +143,6 @@ cursor:Default;
 <script type="text/javascript">
 $(function(){
 	$("#productli").addClass("cur");
-	$("#resli").removeClass("cur");
-	$("#roleli").removeClass("cur");
-	$("#userli").removeClass("cur");
-	$("#indexli").removeClass("cur");
-	$("#opli").removeClass("cur");
-	$("#datali").removeClass("cur");
-	$("#adminli").removeClass("cur");
 })
 </script>
 <body>
@@ -164,199 +161,182 @@ $(function(){
 		<%@ include file="../include/leftMenu.jsp"%>
 		<!--左侧边栏导航结束-->
 
-		
-<!--主体内容部分开始-->
- <div id="dcMain">
-   <!-- 当前位置 -->
-   <div id="urHere">管理中心<b>></b><strong>产品管理</strong> </div>   
-   <div class="mainBox" style="height:auto!important;height:550px;min-height:550px;">
-    <h3>产品管理</h3>
-    <script type="text/javascript">
+
+		<!--主体内容部分开始-->
+		<div id="dcMain">
+			<!-- 当前位置 -->
+			<div id="urHere">
+				管理中心<b>></b><strong>产品管理</strong>
+			</div>
+			<div class="mainBox"
+				style="height: auto !important; height: 550px; min-height: 550px;">
+				<h3>产品管理</h3>
+				<script type="text/javascript">
      
      $(function(){ $(".idTabs").idTabs(); });
      
     </script>
-    <div class="idTabs">
-      <ul class="tab">
-        <li><a href="#main">产品列表</a></li>
-        <li><a href="#display">添加产品</a></li>
-      </ul>
-      <div class="items">
-       <form action="" method="post" enctype="multipart/form-data">
-       <!--产品列表开始-->
-        <div id="main">
-        <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
-         <tr>
-           <th width="80">序号</th>
-           <th width="80">产品名称</th>
-           <th width="80">产品编号</th>
-           <th width="80">产品价格</th>
-           <th width="80">产品介绍</th>
-           <th width="80">房产</th>
-           <th width="80">动产</th>
-           <th width="80">公司</th>
-           <th width="80">实体</th>
-           <th width="80">产品状态</th>
-           <th width="80">操作</th>
-         </tr>
-        <!--数据循环开始-->
-         <c:forEach items="${products }" var="product" varStatus="i">
-					<tr>
-						<td align="center">${i.count + (pb.currentPage-1)*10}</td>
-						<td align="center">${product.name }</td>
-						<td align="center">${product.productNo }</td>
-						<td align="center">${product.productPrice }</td>
-						<td align="center">${product.description }</td>
-						<td align="center"><c:if test="${product.estate eq 0 }">无</c:if> <c:if
-								test="${product.estate eq 1 }">有</c:if></td>
-						<td align="center"><c:if test="${product.movable eq 0 }">无</c:if> <c:if
-								test="${product.movable eq 1 }">有</c:if></td>
-						<td align="center"><c:if test="${product.company eq 0 }">无</c:if> <c:if
-								test="${product.company eq 1 }">有</c:if></td>
-						<td align="center"><c:if test="${product.solidSurfacing eq 0 }">无</c:if> <c:if
-								test="${product.solidSurfacing eq 1 }">有</c:if></td>
-						<td align="center" id="updateStatus${product.id }"><c:if
-							test="${product.isEnable eq 0 }">
-							<span class="stop" id="stop${product.id }">下架 | </span>
-							<a onclick="updateStatus(${product.id },${product.isEnable});"
-								class="updateColor" id="start${product.id }"> 上架</a>
-						</c:if> <c:if test="${product.isEnable eq 1 }">
-							<span class="start" id="start${product.id }">上架 | </span>
-							<a onclick="updateStatus(${product.id },${product.isEnable});"
-								class="updateColor" id="stop${product.id }"> 下架</a>
-						</c:if></td>
-						<td align="center"><shiro:hasRole name="ADMIN">
-								<a href="update/${product.id }" class="updateColor">更新</a>
-							</shiro:hasRole></td>
-					</tr>
-				</c:forEach>
-         <!--数据循环结束-->
-         </table>
-        </div>
-        <!--产品列表结束-->
-		<!-- 分页开始 -->
-		<div style="float:right;margin-top:15px;" class="splitPage" id="splitPage">
-			<c:if test="${pb.currentPage==1 }">
-				<a  class='cursorauto'>首页</a> 
-			</c:if>
-			<c:if test="${pb.currentPage!=1 }">
-				<a onclick="nextPage(10,1);" class="cursorpointer">首页</a> 
-			</c:if>
-			<c:if test="${pb.hasPreviousPage==true}">
-				<a onclick="nextPage(10,${pb.currentPage-1});" class="cursorpointer"> ◄上一页</a>
-			</c:if>
-			<c:if test="${pb.hasPreviousPage==false}">
-				<a  class='cursorauto'> ◄上一页</a>
-			</c:if>
-			<c:if test="${pb.hasNextPage==true }">
-				<a onclick="nextPage(10,${pb.currentPage+1});" class="cursorpointer">下一页► </a> 
-			</c:if>
-			<c:if test="${pb.hasNextPage==false }">
-				<a class='cursorauto'>下一页► </a> 
-			</c:if>
-			<c:if test="${pb.totalPage==pb.currentPage }">
-				<a  class='cursorauto'>末页</a> 
-			</c:if>
-			<c:if test="${pb.totalPage!=pb.currentPage }">
-				<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a> 
-			</c:if>
-			总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
-			<input  id="goInput" value='' style="border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;" />页,
-			<input type="button" class='cursorpointer'
-				value="搜索" onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
+				<div class="idTabs">
+					<ul class="tab">
+						<li><a href="#productList">产品列表</a></li>
+						<li><a href="#addProduct">添加产品</a></li>
+					</ul>
+					<div class="items">
+						<!--产品列表开始-->
+						<div id="productList">
+							<table width="100%" border="0" cellpadding="8" cellspacing="0"
+								class="tableBasic">
+								<tr>
+									<th width="80">序号</th>
+									<th width="80">产品名称</th>
+									<th width="80">产品编号</th>
+									<th width="80">产品价格</th>
+									<th width="80">产品介绍</th>
+									<th width="80">房产</th>
+									<th width="80">动产</th>
+									<th width="80">公司</th>
+									<th width="80">实体</th>
+									<th width="80">产品状态</th>
+									<th width="80">操作</th>
+								</tr>
+								<!--数据循环开始-->
+								<c:forEach items="${products }" var="product" varStatus="i">
+									<tr>
+										<td align="center">${i.count + (pb.currentPage-1)*10}</td>
+										<td align="center">${product.name }</td>
+										<td align="center">${product.productNo }</td>
+										<td align="center">${product.productPrice }</td>
+										<td align="center">${product.description }</td>
+										<td align="center"><c:if test="${product.estate eq 0 }">无</c:if>
+											<c:if test="${product.estate eq 1 }">有</c:if></td>
+										<td align="center"><c:if test="${product.movable eq 0 }">无</c:if>
+											<c:if test="${product.movable eq 1 }">有</c:if></td>
+										<td align="center"><c:if test="${product.company eq 0 }">无</c:if>
+											<c:if test="${product.company eq 1 }">有</c:if></td>
+										<td align="center"><c:if
+												test="${product.solidSurfacing eq 0 }">无</c:if> <c:if
+												test="${product.solidSurfacing eq 1 }">有</c:if></td>
+										<td align="center" id="updateStatus${product.id }"><c:if
+												test="${product.isEnable eq 0 }">
+												<span class="stop" id="stop${product.id }">下架 | </span>
+												<a
+													onclick="updateStatus(${product.id },${product.isEnable});"
+													class="updateColor" id="start${product.id }"> 上架</a>
+											</c:if> <c:if test="${product.isEnable eq 1 }">
+												<span class="start" id="start${product.id }">上架 | </span>
+												<a
+													onclick="updateStatus(${product.id },${product.isEnable});"
+													class="updateColor" id="stop${product.id }"> 下架</a>
+											</c:if></td>
+										<td align="center"><a href="update/${product.id }"
+											class="updateColor">更新</a></td>
+									</tr>
+								</c:forEach>
+								<!--数据循环结束-->
+							</table>
+							<!-- 分页开始 -->
+						<div style="float: right; margin-top: 15px;" class="splitPage"
+							id="splitPage">
+							<c:if test="${pb.currentPage==1 }">
+								<a class='cursorauto'>首页</a>
+							</c:if>
+							<c:if test="${pb.currentPage!=1 }">
+								<a onclick="nextPage(10,1);" class="cursorpointer">首页</a>
+							</c:if>
+							<c:if test="${pb.hasPreviousPage==true}">
+								<a onclick="nextPage(10,${pb.currentPage-1});"
+									class="cursorpointer"> ◄上一页</a>
+							</c:if>
+							<c:if test="${pb.hasPreviousPage==false}">
+								<a class='cursorauto'> ◄上一页</a>
+							</c:if>
+							<c:if test="${pb.hasNextPage==true }">
+								<a onclick="nextPage(10,${pb.currentPage+1});"
+									class="cursorpointer">下一页► </a>
+							</c:if>
+							<c:if test="${pb.hasNextPage==false }">
+								<a class='cursorauto'>下一页► </a>
+							</c:if>
+							<c:if test="${pb.totalPage==pb.currentPage }">
+								<a class='cursorauto'>末页</a>
+							</c:if>
+							<c:if test="${pb.totalPage!=pb.currentPage }">
+								<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a>
+							</c:if>
+							总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第 <input
+								id="goInput" value=''
+								style="border: 1px solid #d8d8d8; width: 40px; height: 17px; line-height: 17px; text-align: center;" />页,
+							<input type="button" class='cursorpointer' value="搜索"
+								onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
+						</div>
+						<!-- 分页结束 -->
+						</div>
+						<!--产品列表结束-->
+						
+						<!--添加产品开始-->
+						<div id="addProduct">
+							<table width="100%" border="0" cellpadding="8" cellspacing="0"
+								class="tableBasic">
+								<tr>
+									<td align="right" width="5">产品名称：</td>
+									<td width="180"><input type="text" name="productName" id="productName"
+										value="" size="80" class="inpMain" /></td>
+								</tr>
+								<tr>
+									<td align="right">产品编号：</td>
+									<td><input type="text" name="productNo" id="productNo" value=""
+										size="80" class="inpMain" /></td>
+								</tr>
+								<tr>
+									<td align="right">产品价格：</td>
+									<td><input type="text" name="productPrice" id="productPrice" value=""
+										size="80" class="inpMain" /></td>
+								</tr>
+								<tr>
+									<td align="right">产品介绍：</td>
+									<td><input type="text" name="description" id="description" value=""
+										size="80" class="inpMain" /></td>
+								</tr>
+								<tr>
+									<td align="right">购买条件：</td>
+									<td>
+										<label for="captcha_1"> 
+											<input type="checkbox" name="checkbox" id="checkbox1" value="1">房产
+										</label>
+										<label for="captcha_2"> 
+											<input type="checkbox" name="checkbox" id="checkbox2" value="1">动产
+										</label>
+										<label for="captcha_3"> 
+											<input type="checkbox" name="checkbox" id="checkbox3" value="1">公司
+										</label>
+										<label for="captcha_4"> 
+											<input type="checkbox" name="checkbox" id="checkbox4" value="1">实体
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td align="right">状态：</td>
+									<td><select name="">
+											<option value="1">上架</option>
+											<option value="0" selected>下架</option>
+									</select></td>
+								</tr>
+								<tr>
+									<td ></td>
+									<td>
+										<input name="button" class="btn" type="button" value="提交"  onclick="addProduct()"/>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<!--添加产品结束-->
+					</div>
+				</div>
+			</div>
 		</div>
-		<!-- 分页结束 -->
-        <!--添加产品开始-->
-        <div id="display">
-        <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
-          <tr>
-            <td align="right" width="5">产品名称：</td>
-            <td width="180">
-              <input type="text" name="thumb_width" value="135" size="80" class="inpMain" />
-            </td>
-         </tr>
-         <tr>
-          <td align="right">产品编号：</td>
-          <td>
-           <input type="text" name="thumb_height" value="135" size="80" class="inpMain" />
-          </td>
-         </tr>
-         <tr>
-          <td align="right">总资产：</td>
-          <td>
-           <input type="text" name="price_decimal" value="2" size="80" class="inpMain" />
-          </td>
-         </tr>
-         <tr>
-           <td align="right">总负债：</td>
-           <td>
-            <input type="text" name="display[article]" value="10" size="80" class="inpMain" />
-           </td>
-         </tr>
-         <tr>
-           <td align="right">行业：</td>
-           <td>
-            <input type="text" name="display[home_article]" value="5" size="80" class="inpMain" />
-           </td>
-         </tr>
-         <tr>
-           <td align="right">房产：</td>
-           <td>
-            <input type="text" name="display[product]" value="10" size="80" class="inpMain" />
-           </td>
-         </tr>
-         <tr>
-           <td align="right">动产：</td>
-           <td>
-            <input type="text" name="" value="4" size="80" class="inpMain" />
-           </td>
-         </tr>
-         <tr>
-           <td align="right">实体铺面：</td>
-           <td>
-            <input type="text" name="" value="4" size="80" class="inpMain" />
-           </td>
-         </tr>
-         <tr>
-           <td align="right">状态：</td>
-           <td>
-            <select name="">
-              <option value="">启用</option>
-              <option value="" selected>停用</option>
-            </select>
-           </td>
-         </tr>
-         </table>
-         <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
-                        <tr>
-                         <td width="194"></td>
-                         <td>
-                          <input type="hidden" name="token" value="24760807" />
-                          <input name="submit" class="btn" type="submit" value="提交" />
-                         </td>
-                        </tr>
-                       </table>
-        </div>
-        <!--添加产品结束-->
+		<!--主体内容部分结束-->
 
-        
-               <!--  <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
-                        <tr>
-                         <td width="131"></td>
-                         <td>
-                          <input type="hidden" name="token" value="24760807" />
-                          <input name="submit" class="btn" type="submit" value="提交" />
-                         </td>
-                        </tr>
-                       </table> -->
-        </form>
-      </div>
-    </div>
-   </div>
- </div>
-<!--主体内容部分结束-->
 
-		
 		<!--底部开始-->
 		<%@ include file="../include/footer.jsp"%>
 		<!--底部结束-->
@@ -484,72 +464,12 @@ function gotoPageByInput(currentPage,totalpage){
 	}else
 		nextPage(10,page);
 }
-function delRes(obj,id){
-	 if(confirm('确定要删除这条记录吗?')==true) 
-	  { 
-		 var tr=obj.parentNode.parentNode; 
-			var tbody=tr.parentNode; 
-			var sendInfo = {
-					"id" : id
-				};
-			$.ajax({ 
-				type : "post", 
-				url : "del", 
-				dataType : "json",
-				contentType : 'application/json',
-				data : JSON.stringify(sendInfo),
-				success : function(data) { 
-					if(data.msg="success"){
-						tbody.removeChild(tr); 
-					}
-				}
-			})
-	  } 
-	  return false; 
-}
-function updateRes(obj,id){
-	 var name=$(obj).parents("tr").find("#resname").text()
-	 var url=$(obj).parents("tr").find("#resurl").text()
-	 var permission=$(obj).parents("tr").find("#respermission").text()
-	 $("#upid").val(id);
-	 $("#upname").val(name);
-	 $("#upurl").val(url);
-	 $("#uppermission").val(permission);
-	 $("body").append("<div id='mask'></div>");
-	 $("#mask").addClass("mask").fadeIn("slow");
-	 $(".tcUpdate").fadeIn("slow");
-}
-
-function update(){
-	var id = $("#upid").val();
-	var name =  $("#upname").val();
-	var url =	$("#upurl").val();
-	var permission = $("#uppermission").val();
-	var sendInfo = {
-		"id" : id,
-		"name" : name,
-		"url" : url,
-		"permission" : permission
-	};
+function addProduct(){
 	
-	$.ajax({
-		type : "POST",
-		url : "update",
-		dataType : "json",
-		contentType : 'application/json',
-		data : JSON.stringify(sendInfo),
-		success : function(data) {
-			if (data.success == "success") {
-				alert("更新成功！")
-				window.location.href = "list";
-			}  else {
-				alert("更新失败！");
-			}
-		},
-		error : function() {
-			alert("网络异常，请稍后再试！");
-		}
-	});
+	var name = $("#productName").val();
+	var productNo = $("#productNo").val();
+	var productPrice = $("#productPrice").val();
+	var description = $("#description").val();
 }
 </script>
 </html>
