@@ -230,7 +230,7 @@ $(function(){
 											</c:if></td>
 										<td align="center"><a href="update/${product.id }"
 											class="updateColor">更新</a></td>
-									</tr>
+									</tr> 
 								</c:forEach>
 								<!--数据循环结束-->
 							</table>
