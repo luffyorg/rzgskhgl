@@ -161,6 +161,11 @@ public class BaseDaoImpl implements IBaseDao {
 				.intResult(getSession().createQuery("select count(*) from " + clazz.getName()).list());
 		return count;
 	}
+	public <T> int getCountByCondition(Class<T> clazz) {
+		int count = DataAccessUtils
+				.intResult(getSession().createQuery("select count(*) from " + clazz.getName()).list());
+		return count;
+	}
 
 	public <T> List<T> findHql(String hql, Object... param) {
 		Query q = getSession().createQuery(hql);

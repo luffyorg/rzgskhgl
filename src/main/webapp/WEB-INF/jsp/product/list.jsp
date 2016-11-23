@@ -170,11 +170,34 @@ $(function(){
 			</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
-				<h3>产品管理</h3>
+				<h3>
+					产品管理
+					<form name="upform" action="upload" method="POST"
+						onsubmit="return yz();" enctype="multipart/form-data">
+						<div>
+							<input type="file" id="up" value="导入Excel" name="myfile" id="myfile">
+							<input type="hidden" name="ftype" value="sheet1">
+						</div>
+						<div >
+							<div >
+								<input class="btn default green-stripe" type="submit" value="导入" />
+								<input class="btn default dark-stripe" type="button"
+									onclick="window.location.href='${basePath}/template/cbxfxsszs.xlsx'"
+									value="模板" />
+							</div>
+						</div>
+					</form>
+				</h3>
 				<script type="text/javascript">
      
      $(function(){ $(".idTabs").idTabs(); });
-     
+     function yz(){
+   	  var up=$("#up").val();
+   	  if(up==""||up==null){
+   		  alert("请选择你要导入的文件！");
+   		  return false;
+   	  }
+     }
     </script>
 				<div class="idTabs">
 					<ul class="tab">
@@ -230,11 +253,11 @@ $(function(){
 											</c:if></td>
 										<td align="center"><a href="update/${product.id }"
 											class="updateColor">更新</a></td>
-									</tr> 
+									</tr>
 								</c:forEach>
 								<!--数据循环结束-->
 							</table>
-							
+
 						</div>
 						<!--产品列表结束-->
 						<!-- 分页开始 -->
@@ -279,40 +302,35 @@ $(function(){
 								class="tableBasic">
 								<tr>
 									<td align="right" width="5">产品名称：</td>
-									<td width="180"><input type="text" name="productName" id="productName"
-										value="" size="80" class="inpMain" /></td>
+									<td width="180"><input type="text" name="productName"
+										id="productName" value="" size="80" class="inpMain" /></td>
 								</tr>
 								<tr>
 									<td align="right">产品编号：</td>
-									<td><input type="text" name="productNo" id="productNo" value=""
-										size="80" class="inpMain" /></td>
+									<td><input type="text" name="productNo" id="productNo"
+										value="" size="80" class="inpMain" /></td>
 								</tr>
 								<tr>
 									<td align="right">产品价格：</td>
-									<td><input type="text" name="productPrice" id="productPrice" value=""
-										size="80" class="inpMain" /></td>
+									<td><input type="text" name="productPrice"
+										id="productPrice" value="" size="80" class="inpMain" /></td>
 								</tr>
 								<tr>
 									<td align="right">产品介绍：</td>
-									<td><input type="text" name="description" id="description" value=""
-										size="80" class="inpMain" /></td>
+									<td><input type="text" name="description" id="description"
+										value="" size="80" class="inpMain" /></td>
 								</tr>
 								<tr>
 									<td align="right">购买条件：</td>
-									<td>
-										<label for="captcha_1"> 
-											<input type="checkbox" name="checkbox" id="checkbox1" value="1">房产
-										</label>
-										<label for="captcha_2"> 
-											<input type="checkbox" name="checkbox" id="checkbox2" value="1">动产
-										</label>
-										<label for="captcha_3"> 
-											<input type="checkbox" name="checkbox" id="checkbox3" value="1">公司
-										</label>
-										<label for="captcha_4"> 
-											<input type="checkbox" name="checkbox" id="checkbox4" value="1">实体
-										</label>
-									</td>
+									<td><label for="captcha_1"> <input type="checkbox"
+											name="checkbox" id="checkbox1" value="1">房产
+									</label> <label for="captcha_2"> <input type="checkbox"
+											name="checkbox" id="checkbox2" value="1">动产
+									</label> <label for="captcha_3"> <input type="checkbox"
+											name="checkbox" id="checkbox3" value="1">公司
+									</label> <label for="captcha_4"> <input type="checkbox"
+											name="checkbox" id="checkbox4" value="1">实体
+									</label></td>
 								</tr>
 								<tr>
 									<td align="right">状态：</td>
@@ -322,10 +340,9 @@ $(function(){
 									</select></td>
 								</tr>
 								<tr>
-									<td ></td>
-									<td>
-										<input name="button" class="btn" type="button" value="提交"  onclick="addProduct()"/>
-									</td>
+									<td></td>
+									<td><input name="button" class="btn" type="button"
+										value="提交" onclick="addProduct()" /></td>
 								</tr>
 							</table>
 						</div>

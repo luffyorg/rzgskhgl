@@ -1,5 +1,6 @@
 package cn.yznu.rzgskhgl.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.service.IProductService;
+import cn.yznu.rzgskhgl.util.ExcelManage;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -86,10 +92,10 @@ public class ProductController extends BaseController {
 		System.out.println("condition" + conditions);
 		List<Integer> condition = new ArrayList<Integer>();
 		List<String> conditionss = JSONArray.toList(conditions);
-		int estate=0;
-		int movable=0;
-		int company=0;
-		int solidSurfacing=0;
+		int estate = 0;
+		int movable = 0;
+		int company = 0;
+		int solidSurfacing = 0;
 		for (String rid : conditionss) {
 			condition.add(Integer.parseInt(rid));
 		}
@@ -198,5 +204,47 @@ public class ProductController extends BaseController {
 		JSONObject json = JSONObject.fromObject(map);
 		return json;
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "upload", method = RequestMethod.POST)
+	@ResponseBody
+	public String upload(@RequestParam("myfile") MultipartFile file, HttpServletRequest request,
+			HttpServletResponse response) {
+		log.info("上传excel 产品数据");
+		// 判断文件是否为空
+		if (file == null)
+			return null;
+		// 获取文件名
+		String name = file.getOriginalFilename();
+		// 进一步判断文件是否为空（即判断其大小是否为0或其名称是否为null）
+		long size = file.getSize();
+		if (name == null || ("").equals(name) && size == 0)
+			return null;
+		String msg = "";
+		File targetFile = new File("d:\\temp", name);
+		if (!targetFile.exists()) {
+			targetFile.mkdirs();
+		}
+
+		// 保存
+		try {
+			file.transferTo(targetFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			ExcelManage excelManage = new ExcelManage("d:\\temp\\"+name+"");
+			String[] names = new String[] { "name", "productNo", "productPrice", "description", "estate", "movable",
+					"company", "solidSurfacing"};
+			Product product = new Product();
+			List<Product> list = excelManage.readFromExcel(product, names, 1);
+			System.out.println(list.size() + ">>>>>>>>>>>>>>>size");
+			productService.batchSave(list);
+		} catch (Exception e) {
+			msg = "出错，未能全部导入!";
+			return "error";
+		}
+		return "list";
 	}
 }

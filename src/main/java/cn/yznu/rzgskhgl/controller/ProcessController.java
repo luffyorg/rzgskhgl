@@ -27,6 +27,7 @@ import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
 import net.sf.json.JSONObject;
 
 /**
@@ -226,6 +227,13 @@ public class ProcessController extends BaseController{
 		map.put("msg", "success");
 		map.put("id", o.getId());
 		map.put("status", o.getOrderStatus());
+		/*SendMsg_webchinese sendMsg = new SendMsg_webchinese();
+		try {
+			String result = sendMsg.SendMsgForUser("15826215565", o.getOrderStatus());
+			log.info("发送短信返回结果：" + result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 		return map;
 	}
 	
@@ -262,5 +270,18 @@ public class ProcessController extends BaseController{
 		JSONObject json = JSONObject.fromObject( map ); 
 		return json;
 
+	}
+	@RequestMapping(value="searchProduct" ,method=RequestMethod.GET)
+	@ResponseBody
+	public JSONObject searchProduct(HttpServletRequest request) {
+		log.info("开始执行admin/process/searchProduct 方法");
+		Map<String,Object> map = new HashMap<String,Object>();
+		String productName=request.getParameter("productName");
+		List<Product> lists = productService.findHql(Product.class,
+				"from Product p where p.name='"+productName+"' OR p.productNo='"+productName+"'");
+		map.put("products", lists);
+		JSONObject json = JSONObject.fromObject( map ); 
+		return json;
+		
 	}
 }

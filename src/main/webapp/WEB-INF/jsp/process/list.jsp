@@ -42,7 +42,7 @@ cursor:Default;
 	height: 300px;
 	display: none;
 	position: absolute;
-	margin: -400px auto;
+	margin: -200px auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -110,6 +110,28 @@ cursor:Default;
 	display: block;
 }
 /**弹窗样式结束**/
+
+.actionBtn1 {
+    float: right;
+    display: inline-block;
+    background-color: #0072C6;
+    padding: 0px 15px;
+    height: 27px;
+    line-height: 27px;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: bold;
+}
+.inpMain1 {
+        border: 1px solid #DBDBDB;
+    background-color: #FFF;
+    padding: 0px 5px;
+    color: #999;
+    font-size: 12x;
+    line-height: 20px;
+    width: 180px;
+    -webkit-appearance: none;
+}
 </style>
 
 <script type="text/javascript">
@@ -155,7 +177,10 @@ cursor:Default;
 			<div id="urHere">产品购买</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
-				<h3>产品</h3>
+				<h3 id="h3">
+					<input type="text" id="productName" class="inpMain1" placeholder="产品名称或者产品编号"/>
+					<input type="button" value="查找" onclick="search()">
+				</h3> 
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
@@ -165,19 +190,19 @@ cursor:Default;
 							<td>产品编号</td>
 							<td>产品价格</td>
 							<td colspan="4">
-								<table>
-									<tr align="center">购买条件</tr>
+								<table >
+									<tr>购买条件</tr>
 									<tr>
-										<td>房产</td>
-										<td>动产</td>
-										<td>公司</td>
-										<td>实体</td>
+										<td align="center">房产</td>
+										<td align="center">动产</td>
+										<td align="center">公司</td>
+										<td align="center">实体</td>
 									</tr>
 								</table>
 
 							</td>
 
-							<td>产品状态</td>
+							<td align="center">产品状态</td>
 							<td>操作</td>
 						</tr>
 						<tbody>
@@ -187,21 +212,21 @@ cursor:Default;
 									<td>${product.name }</td>
 									<td>${product.productNo }</td>
 									<td>${product.productPrice }</td>
-									<td><c:if test="${product.estate eq 0 }">无</c:if> <c:if
+									<td align="center"><c:if test="${product.estate eq 0 }">无</c:if> <c:if
 											test="${product.estate eq 1 }">有</c:if></td>
-									<td><c:if test="${product.movable eq 0 }">无</c:if> <c:if
+									<td align="center"><c:if test="${product.movable eq 0 }">无</c:if> <c:if
 											test="${product.movable eq 1 }">有</c:if></td>
-									<td><c:if test="${product.company eq 0 }">无</c:if> <c:if
+									<td align="center"><c:if test="${product.company eq 0 }">无</c:if> <c:if
 											test="${product.company eq 1 }">有</c:if></td>
-									<td><c:if test="${product.solidSurfacing eq 0 }">无</c:if>
+									<td align="center"><c:if test="${product.solidSurfacing eq 0 }">无</c:if>
 										<c:if test="${product.solidSurfacing eq 1 }">有</c:if></td>
-									<td><c:if test="${product.isEnable eq 0 }">
+									<td align="center"><c:if test="${product.isEnable eq 0 }">
 										下架
 										</c:if> <c:if test="${product.isEnable eq 1 }">
 											上架
 										</c:if></td>
 									<td>
-										<a href="queryBuyUser/${product.id }" class="updateColor">搜索</a>  | 
+										<a onclick="queryBuyUser(${product.productNo});" class="updateColor">搜索客户</a>  | 
 										<c:if test="${product.isEnable eq 0 }">
 											<a>购买</a>
 										</c:if>
@@ -298,6 +323,7 @@ cursor:Default;
 					</table>
 				</div>
 				<!--弹窗结束-->
+				<div id="user"></div>
 			</div>
 		</div>
 		
@@ -351,7 +377,7 @@ function nextPage(size,page){
 				}else{
 					htmlStr += "<td align='center'>上架</td>";
 				}
-	       	  	htmlStr += "<td align='center'><a href='queryBuyUser/"+product.id +"' class='updateColor'>搜索</a>  | ";
+	       	  	htmlStr += "<td align='center'><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索</a>  | ";
 	       		if(product.isEnable==0){
 	         		htmlStr += "<a>购买</a></td></td></tr>";
 	       		}else{
@@ -459,8 +485,108 @@ function buyProduct(){
 				}
 			});
 	 }
-	 
-	 
+}
+
+function queryBuyUser(id){
+	$.get("queryBuyUser?id="+id+"", function(data){
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		htmlStr += "<tr> <th width='80'>序号</th>"+
+			      "<th width='80'>登录名称</th>"+
+			      "<th width='80'>真实姓名</th>"+
+			      "<th width='80'>电话</th>"+
+			      "<th width='80'>地址</th>"+
+			      "<th width='80'>性别</th>"+
+			      "<th width='80'>总资产</th>"+
+			      "<th width='80'>总负债</th>"+
+			      "<th width='80'>征信情况</th>"+
+			      "<th width='80'>行业</th>"
+      var pb=data.pb;
+	    for(var i = 0; i < data.users.length; i++){
+	         var user = data.users[i];
+	         htmlStr += "<tr><td align='center'>"+(i+1)+" </td>"+
+				"<td align='center'>"+user.name+" </td>"+
+				"<td align='center'>"+user.nickName+" </td>"+
+				"<td align='center'>"+user.tel+" </td>"+
+				"<td align='center'>"+user.address+" </td>"+
+				"<td align='center'>"+user.gender+" </td>"+
+				"<td align='center'>"+user.totalAssets+" </td>"+
+				"<td align='center'>"+user.totalLiability+" </td>"+
+				"<td align='center'>"+user.creditConditions+" </td>"+
+				"<td align='center'>"+user.industry+" </td>";
+	    }
+	    htmlStr += "</table>";
+	    $("#main").hide();
+	    $(".splitPage").hide();
+	    
+	    $("#user").html(htmlStr);
+	    $("#h3").html("<input type='text' id='userName'class='inpMain1' placeholder='登录名称'/>"+
+	    		"<input type='button' value='查找' class=''>");
+	    
+	})
+}
+
+function search(){
+	var productName=$("#productName").val();
+	if(productName=="" || productName==null){
+		alert("请输入查询条件");
+	}else{
+		$.get("searchProduct?productName="+productName+"", function(data){
+			 var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+			 		htmlStr += "<tr> <th width='80'>序号</th>"+
+			        "<th width='80'>产品名称</th>"+
+			        "<th width='80'>产品编号</th>"+
+			        "<th width='80'>产品价格</th>"+
+			        "<th width='80'>产品简介</th>"+
+			        "<th width='80'>房产</th>"+
+			        "<th width='80'>动产</th>"+
+			        "<th width='80'>公司</th>"+
+			        "<th width='80'>实体</th>"+
+			        "<th width='80'>产品状态</th>"+
+			        "<th width='80'>操作</th></tr>";
+			 	    for(var i = 0; i < data.products.length; i++){
+			 	         var product = data.products[i];
+			 	         htmlStr += "<tr><td align='center'>"+(1+i)+" </td>"+
+			 				"<td align='center'>"+product.name+" </td>"+
+			 				"<td align='center'>"+product.productNo+" </td>"+
+			 				"<td align='center'>"+product.productPrice+" </td>"+
+			 				"<td align='center'>"+product.description+" </td>"
+			 				if(product.estate==0){
+			 					htmlStr += "<td align='center'>无";
+			 				}else
+			 					htmlStr += "<td align='center'>有";
+			 				
+			 				if(product.movable==0){
+			 					htmlStr += "<td align='center'>无";
+			 				}else
+			 					htmlStr += "<td align='center'>有";
+			 				
+			 				if(product.company==0){
+			 					htmlStr += "<td align='center'>无";
+			 				}else
+			 					htmlStr += "<td align='center'>有";
+			 				
+			 				if(product.solidSurfacing==0){
+			 					htmlStr += "<td align='center'>无";
+			 				}else
+			 					htmlStr += "<td align='center'>有";
+			 				if(product.isEnable==0){
+			 					htmlStr += "<td align='center'>下架";
+			 				}else{
+			 					htmlStr += "<td align='center'>上架</td>";
+			 				}
+			 	       	  	htmlStr += "<td align='center'><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索客户</a>  | ";
+			 	       		if(product.isEnable==0){
+			 	         		htmlStr += "<a>购买</a></td></td></tr>";
+			 	       		}else{
+			 	       			htmlStr += "<a onclick=buy("+product.productNo+",'"+product.name+"','"+product.productPrice+"'); class='setReColor'>购买</a></td></td></tr>";
+			 	       		}
+			 	    }
+			 	   $("#main").html(htmlStr);
+			 	   $(".splitPage").hide();
+		})
+		 
+	}
+	
 }
 </script>
 </html>
