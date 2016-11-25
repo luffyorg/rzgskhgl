@@ -34,21 +34,13 @@
 	color: #ea8010;
 	cursor: pointer;
 }
-
-.cursorpointer {
-	cursor: pointer;
-}
-
-.cursorauto {
-	cursor: Default;
-}
 /**弹窗样式开始**/
 .tc {
 	width: 600px;
-	height: 300px;
+	/* height: 700px; */
 	display: none;
 	position: absolute;
-	margin: -600px auto;
+	margin: -660px auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -66,10 +58,10 @@
 
 .tcUpdate {
 	width: 600px;
-	height: 300px;
+	/* height: 700px; */
 	display: none;
 	position: absolute;
-	margin: -600px auto;
+	margin: -660px auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -117,28 +109,96 @@
 	display: block;
 }
 /**弹窗样式结束**/
+.tips {
+	color: rgba(0, 0, 0, 0.5);
+	padding-left: 10px;
+}
+
+.tips_true, .tips_false {
+	padding-left: 10px;
+}
+
+.tips_true {
+	color: green;
+}
+
+.tips_false {
+	color: red;
+}
 </style>
 
 <script type="text/javascript">
-	/**弹窗效果开始**/
-	function tc() {
-		$("body").append("<div id='mask'></div>");
-		$("#mask").addClass("mask").fadeIn("slow");
-		$(".tc").fadeIn("slow");
-	};
-	function tcclose() {
-		$(".tc").fadeOut("fast");
-		$("#mask").css({
-			display : 'none'
-		});
-	};
-	function tcupclose() {
+/**弹窗效果开始**/
+function tc(){
+  $("body").append("<div id='mask'></div>");
+  $("#mask").addClass("mask").fadeIn("slow");
+  $(".tc").fadeIn("slow");
+}; 
+function tcUpdate(id,name,productNo,productPrice,description,estate,movable,company,solidSurfacing){
+	  $("#upId").val(id);
+	  $("#upName").val(name);
+	  $("#upProductNo").val(productNo);
+	  $("#upDescription").val(description);
+	  $("#upProductPrice").val(productPrice);
+	  
+	  var selectTag = document.getElementById("upestate");
+	  var options = selectTag.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==estate){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag1 = document.getElementById("upmovable");
+	  var options = selectTag1.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==movable){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag2 = document.getElementById("upcompany");
+	  var options = selectTag2.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==company){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag3 = document.getElementById("upsolidSurfacing");
+	  var options = selectTag3.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==solidSurfacing){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+  $("body").append("<div id='mask'></div>");
+  $("#mask").addClass("mask").fadeIn("slow");
+  $(".tcUpdate").fadeIn("slow");
+}; 
+
+function tcclose(){
+  $(".tc").fadeOut("fast");
+  $("#mask").css({ display: 'none' });
+};
+function tcupclose() {
+	  $("#upId").val("");
+	  $("#upName").val("");
+	  $("#upProductNo").val("");
+	  $("#upDescription").val("");
+	  $("#upProductPrice").val("");
+	  $("#upestate").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upmovable").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upcompany").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upsolidSurfacing").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upcreditConditions").html("<option value='合格' selected>合格</option><option value='不合格' >不合格</option>");
 		$(".tcUpdate").fadeOut("fast");
 		$("#mask").css({
 			display : 'none'
 		});
 	};
-	/**弹窗效果结束**/
+/**弹窗效果结束**/
 </script>
 <script type="text/javascript">
 $(function(){
@@ -182,11 +242,14 @@ $(function(){
 							<div >
 								<input class="btn default green-stripe" type="submit" value="导入" />
 								<input class="btn default dark-stripe" type="button"
-									onclick="window.location.href='${basePath}/template/cbxfxsszs.xlsx'"
+									onclick=""
 									value="模板" />
+								<input class="btn default dark-stripe" type="button"
+									onclick="exporBtn()"
+									value="导出产品" />
 							</div>
 						</div>
-					</form>
+					</form>${msg }
 				</h3>
 				<script type="text/javascript">
      
@@ -251,7 +314,9 @@ $(function(){
 													onclick="updateStatus(${product.id },${product.isEnable});"
 													class="updateColor" id="stop${product.id }"> 下架</a>
 											</c:if></td>
-										<td align="center"><a href="update/${product.id }"
+										<td align="center"><a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
+										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
+										'${product.solidSurfacing }')"
 											class="updateColor">更新</a></td>
 									</tr>
 								</c:forEach>
@@ -353,7 +418,81 @@ $(function(){
 		</div>
 		<!--主体内容部分结束-->
 
-
+		<!--弹窗开始 更新 -->
+		<div class="tcUpdate">
+			<div class="tc1">
+				产品更新<img src="${basePath}static/images/closed.png"
+					onclick="tcupclose()"
+					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+			</div>
+			<table>
+				<tr style="display:none">
+					<td height="35" align="right">产品标识：</td>
+					<td><input type="text" name="upId" id="upId" value=""
+						size="80" class="inpMain" /></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">产品名称：</td>
+					<td><input type="text" name="upName" id="upName" value=""
+						size="80" class="inpMain" readonly/></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">产品编号：</td>
+					<td><input type="text" name="upProductNo" id="upProductNo"
+						value="" size="80" class="inpMain" readonly/></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">产品价格：</td>
+					<td><input type="text" name="upProductPrice" id="upProductPrice" value=""
+						size="80" class="inpMain" /></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">产品说明：</td>
+					<td><input type="text" name="upDescription" id="upDescription"
+						value="" size="80" class="inpMain" /></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">资 产：</td>
+					<td><input type="text" name="upTotalAssets" id="upTotalAssets"
+						value="" size="80" class="inpMain" /></td>
+				</tr>
+				
+				<tr>
+					<td height="35" align="right">房产：</td>
+					<td><select name="upestate" id="upestate">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">动产：</td>
+					<td><select name="upmovable" id="upmovable">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">公司：</td>
+					<td><select name="upcompany" id="upcompany">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">实体铺面：</td>
+					<td><select name="upsolidSurfacing" id="upsolidSurfacing">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input id="updateBtn" class="btn" type="button" value="提交"
+						onclick="updateUser();" /></td>
+				</tr>
+			</table>
+		</div>
+		<!--弹窗结束-->
 		<!--底部开始-->
 		<%@ include file="../include/footer.jsp"%>
 		<!--底部结束-->
@@ -518,6 +657,68 @@ function addProduct(){
 			alert("网络异常，请稍后再试！");
 		}
 	});
+}
+
+function exporBtn(){  
+    $.ajax({  
+        type:"POST",  
+        url:"exportProduct",  
+        success:function(data){  
+            window.open('exportProduct');  
+        }  
+          
+    });  
+}  
+function updateUser(){
+	var obj=document.getElementsByName('upcheckbox'); 
+	var rids=new Array()
+	var j=0;
+	for(var i=0; i<obj.length; i++){ 
+		if(obj[i].checked) {
+			rids[j]=obj[i].value;
+			j++;
+		}else{
+			
+		}
+	} 
+	var id = $("#upId").val();
+	var name = $("#upName").val();
+	var productPrice = $("#upProductPrice").val();
+	var productNo = $("#upProductNo").val();
+	var description = $("#upDescription").val();
+	var estate = $("#upestate").val();
+	var movable = $("#upmovable").val();
+	var company = $("#upcompany").val();
+	var solidSurfacing = $("#upsolidSurfacing").val();
+	var sendInfo = {
+			"id" : id,
+			"name" : name,
+			"productNo" : productNo,
+			"productPrice" :productPrice,
+			"description" : description,
+			"estate" : estate,
+			"movable" : movable,
+			"company" : company,
+			"solidSurfacing" : solidSurfacing
+		};
+		$.ajax({
+			type : "POST",
+			url : "updateUser",
+			dataType : "json",
+			contentType : 'application/json',
+			data : JSON.stringify(sendInfo),
+			success : function(data) {
+				if (data.msg == "success") {
+					alert("修改成功");
+					window.location.href = "list";
+				}else {
+					alert("修改失败");
+				}
+			},
+			error : function() {
+				alert("网络异常，请稍后再试！");
+			}
+		});
 }
 </script>
 </html>

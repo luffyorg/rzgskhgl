@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IRoleService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.shiro.ShiroKit;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -305,4 +307,20 @@ public class UserController extends BaseController{
 		map.put("msg", "success");
 		return map;
 	}
+	@RequestMapping("updateUserPwd")
+	@ResponseBody
+	public String updateUserPwd(HttpServletRequest request){
+		log.info("修改密码");
+		String loginName = request.getParameter("loginName"); 	
+		String password = request.getParameter("password");
+		User user = userService.getUserByName(loginName);
+		user.setPassword(password);
+		if (ShiroKit.isEmpty(user.getName()) || ShiroKit.isEmpty(user.getPassword())) {
+			throw new RuntimeException("用户名或者密码不能为空！");
+		}
+		user.setPassword(ShiroKit.md5(user.getPassword(), user.getName()));
+		userService.saveOrUpdate(user);
+		return "success";
+	}
+	
 }

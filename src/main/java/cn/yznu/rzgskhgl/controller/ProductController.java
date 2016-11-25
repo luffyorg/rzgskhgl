@@ -1,6 +1,8 @@
 package cn.yznu.rzgskhgl.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.util.ExcelManage;
 import net.sf.json.JSONArray;
@@ -234,17 +238,76 @@ public class ProductController extends BaseController {
 			e.printStackTrace();
 		}
 		try {
-			ExcelManage excelManage = new ExcelManage("d:\\temp\\"+name+"");
+			ExcelManage excelManage = new ExcelManage("d:\\temp\\" + name + "");
 			String[] names = new String[] { "name", "productNo", "productPrice", "description", "estate", "movable",
-					"company", "solidSurfacing"};
+					"company", "solidSurfacing" };
 			Product product = new Product();
 			List<Product> list = excelManage.readFromExcel(product, names, 1);
 			System.out.println(list.size() + ">>>>>>>>>>>>>>>size");
 			productService.batchSave(list);
 		} catch (Exception e) {
 			msg = "出错，未能全部导入!";
-			return "error";
+			return msg;
 		}
-		return "list";
+
+		return "导入成功";
+	}
+
+	@RequestMapping("exportProduct")
+	public void exportProduct(HttpServletRequest request,HttpServletResponse response) {
+		log.info("导出数据");
+		// 获取需要导出的数据List
+		List<Product> products = productService.getAllProduct();
+		// 使用方法生成excle模板样式
+		HSSFWorkbook workbook = productService.createExcel(products, request);
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss"); // 定义文件名格式
+
+		try {
+			// 定义excle名称 ISO-8859-1防止名称乱码
+			String msg = new String(("产品信息_" + format.format(new Date()) + ".xls").getBytes(), "ISO-8859-1");
+			// 以导出时间作为文件名
+			response.setContentType("application/vnd.ms-excel");
+			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
+			workbook.write(response.getOutputStream());
+		} catch (IOException e) {
+			log.error(e);
+		}
+	}
+	
+	/**
+	 * 修改产品
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value="updateUser",method=RequestMethod.POST)
+	@ResponseBody
+	public Object updateUser(@RequestBody JSONObject json){
+		log.info("修改产品");
+		Map<String,String> map = new HashMap<String,String>();
+		int id = json.getInt("id");
+		Product product = productService.load(Product.class, id);
+		String name = json.getString("name");
+		String productNo = json.getString("productNo");
+		double productPrice = json.getDouble("productPrice");
+		String description = json.getString("description");
+		int estate = json.getInt("estate");
+		int movable = json.getInt("movable");
+		int solidSurfacing = json.getInt("solidSurfacing");
+		int company = json.getInt("company");
+		
+		product.setName(name);
+		product.setProductNo(productNo);
+		product.setProductPrice(productPrice);
+		product.setDescription(description);
+		product.setEstate(estate);
+		product.setCompany(company);
+		product.setMovable(movable);
+		product.setSolidSurfacing(solidSurfacing);
+		product.setUpdateBy(getSessionUser().getId().toString());
+		product.setUpdateDate(new Date());
+		product.setUpdateName(getSessionUser().getName());
+		productService.saveOrUpdate(product);
+		map.put("msg", "success");
+		return map;
 	}
 }

@@ -232,9 +232,16 @@ cursor:Default;
 					</table>
 				</div>
 				<!--弹窗结束-->
+				
 			</div>
+			
 		</div>
+		
 	</div>
+	<!--底部开始-->
+		<%@ include file="../include/footer.jsp"%>
+		<!--底部结束-->
+		<div class="clear"></div>
 </body>
 <script type="text/javascript">
 

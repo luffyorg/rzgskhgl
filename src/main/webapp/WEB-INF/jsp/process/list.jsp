@@ -324,9 +324,13 @@ cursor:Default;
 				</div>
 				<!--弹窗结束-->
 				<div id="user"></div>
+				<!--底部开始-->
+
 			</div>
 		</div>
-		
+					<%@ include file="../include/footer.jsp"%>
+			<!--底部结束-->
+			<div class="clear"></div>
 	</div>
 </body>
 <script type="text/javascript">

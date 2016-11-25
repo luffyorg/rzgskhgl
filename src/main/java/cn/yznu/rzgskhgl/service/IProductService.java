@@ -2,6 +2,10 @@ package cn.yznu.rzgskhgl.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.User;
 
@@ -26,6 +30,12 @@ public interface IProductService extends ICommonService{
 	 */
 	public List<User> queryBuyUsers(Product product);
 	
-	
-	
+	/**
+	 * excel导入数据的时候 批了更新数据和保存数据
+	 * @param products
+	 * @return
+	 */
+	public String batchSaveOrUpdate(List<Product> products);
+	public HSSFWorkbook createExcel(List<Product> products,  
+	        HttpServletRequest request);
 }

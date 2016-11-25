@@ -37,7 +37,7 @@ import net.sf.json.JSONObject;
  * 
  */
 @Controller
-@RequestMapping("/process")
+@RequestMapping("/admin/process")
 public class ProcessController extends BaseController{
 	Logger log = Logger.getLogger(ProcessController.class);
 
