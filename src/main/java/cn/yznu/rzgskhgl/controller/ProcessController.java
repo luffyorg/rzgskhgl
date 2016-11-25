@@ -1,13 +1,17 @@
 package cn.yznu.rzgskhgl.controller;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -25,6 +29,8 @@ import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.User;
+import cn.yznu.rzgskhgl.service.ICommonService;
+import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
@@ -45,6 +51,9 @@ public class ProcessController extends BaseController{
 	private IProductService productService;
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IProcessService processService;
 
 	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
@@ -284,4 +293,29 @@ public class ProcessController extends BaseController{
 		return json;
 		
 	}
+	
+	@RequestMapping("exportOrder")
+	public void exportOrder(HttpServletRequest request,HttpServletResponse response) {
+		log.info("导出订单");
+		// 获取需要导出的数据List
+		String hql = "from Order where isEnable=1 order by  createDate desc";
+		List<Order> orders = processService.findHql(Order.class, hql);
+		// 使用方法生成excle模板样式
+		HSSFWorkbook workbook = processService.createExcel(orders, request);
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss"); // 定义文件名格式
+
+		try {
+			// 定义excle名称 ISO-8859-1防止名称乱码
+			String msg = new String(("订单信息_" + format.format(new Date()) + ".xls").getBytes(), "ISO-8859-1");
+			// 以导出时间作为文件名
+			response.setContentType("application/vnd.ms-excel");
+			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
+			workbook.write(response.getOutputStream());
+		} catch (IOException e) {
+			log.error(e);
+		}
+	}
+	
+	
+	
 }

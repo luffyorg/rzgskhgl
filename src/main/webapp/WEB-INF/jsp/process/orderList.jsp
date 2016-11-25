@@ -143,7 +143,7 @@ cursor:Default;
 			<div id="urHere">订单列表</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
-				<h3>订单</h3>
+				<h3><a onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单</h3>
 				<div id="msg"></div>
 				<div class="navList" id="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
@@ -279,7 +279,16 @@ function updateOrder(){
 		}
 	});
 }
-
+function excelOrder(){  
+    $.ajax({  
+        type:"POST",  
+        url:"exportOrder",  
+        success:function(data){  
+            window.open('exportOrder');  
+        }  
+          
+    });  
+}  
 </script>
 <script type="text/javascript">
 </script>
