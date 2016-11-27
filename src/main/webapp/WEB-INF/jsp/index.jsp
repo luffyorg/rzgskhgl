@@ -202,4 +202,7 @@
 	<!--end-->
 
 </body>
+<script type="text/javascript">
+$("#indexli").addClass("cur");
+</script>
 </html>

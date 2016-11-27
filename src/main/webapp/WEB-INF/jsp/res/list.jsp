@@ -427,9 +427,6 @@ function update(){
 <script type="text/javascript">
 $(function(){
 	$("#resli").addClass("cur");
-	$("#indexli").removeClass("cur");
 })
-
-
 </script>
 </html>

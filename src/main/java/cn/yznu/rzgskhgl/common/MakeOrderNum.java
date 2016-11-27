@@ -24,10 +24,11 @@ public class MakeOrderNum {
 	 * 生成非重复订单号，理论上限1毫秒1000个，可扩展
 	 * @param tname 测试用
 	 */
-	public void makeOrderNum(String tname) {
+	public String makeOrderNum() {
+		String finOrderNum = "";
 		try {
 			// 最终生成的订单号
-			String finOrderNum = "";
+			
 			synchronized (lockObj) {
 				// 取系统当前时间作为订单号变量前半部分，精确到毫秒
 				long nowLong = Long.parseLong(new SimpleDateFormat("yyMMddHHmmssSSS").format(new Date()));
@@ -42,41 +43,14 @@ public class MakeOrderNum {
 				if (orderNumCount > 9) {
 					finOrderNum = nowLong + "" + orderNumCount;
 				}
-				
 				orderNumCount++;
-				System.out.println(finOrderNum + "--" + Thread.currentThread().getName() + "::" + tname );
-				// Thread.sleep(1000);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return finOrderNum;
 	}
 
-	public static void main(String[] args) {
-		// 测试多线程调用订单号生成工具
-		try {
-			for (int i = 0; i < 200; i++) {
-				Thread t1 = new Thread(new Runnable() {
-					public void run() {
-						MakeOrderNum makeOrder = new MakeOrderNum();
-						makeOrder.makeOrderNum("a");
-					}
-				}, "at" + i);
-				t1.start();
-
-				Thread t2 = new Thread(new Runnable() {
-					public void run() {
-						MakeOrderNum makeOrder = new MakeOrderNum();
-						makeOrder.makeOrderNum("b");
-					}
-				}, "bt" + i);
-				t2.start();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-
-	}
+	
 
 }

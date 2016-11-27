@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Resource;
@@ -25,7 +25,14 @@ import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IRoleService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.shiro.ShiroKit;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+/**
+ * 
+ * @author zhangwei
+ *
+ */
 
 @RequestMapping("/admin/user")
 @Controller
@@ -63,7 +70,7 @@ public class UserController extends BaseController{
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<User> list = userService.queryForPage("from User ", offset, length); // 该分页的记录
+		List<User> list = userService.queryForPage("from User order by isEnable desc ,createDate desc", offset, length); // 该分页的记录
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -76,27 +83,7 @@ public class UserController extends BaseController{
 		return mav;
 	}
 
-	@RequestMapping(value = "add", method = RequestMethod.GET)
-	public ModelAndView add(Model model) {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("user", new User());
-		mv.addObject("roles", roleService.listRole());
-		mv.setViewName("user/add");
-		return mv;
-	}
-
-	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public String add(User user, HttpServletRequest req, Model model) {
-		String[] trids = req.getParameterValues("rids");
-		List<Integer> rids = new ArrayList<Integer>();
-		for (String rid : trids) {
-			rids.add(Integer.parseInt(rid));
-		}
-		userService.add(user, rids);
-		return "redirect:/admin/user/list";
-	}
-	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value="save" ,method=RequestMethod.POST)
 	@ResponseBody
 	public Map saveUser(@RequestBody JSONObject json){
@@ -104,10 +91,10 @@ public class UserController extends BaseController{
 		String name = json.getString("name");
 		String nickName = json.getString("nickName");
 		String pwd = json.getString("pwd");
-		int tel = json.getInt("tel");
+		Long tel = json.getLong("tel");
 		String gender = json.getString("gender");
 		String address = json.getString("address");
-		double totalAssets = Double.parseDouble(json.getString("totalAssets"));
+		double totalAssets = json.getDouble("totalAssets");
 		double totalLiability = json.getDouble("totalLiability");
 		String creditConditions = json.getString("creditConditions");
 		String industry = json.getString("industry");
@@ -116,10 +103,18 @@ public class UserController extends BaseController{
 		int solidSurfacing = json.getInt("solidSurfacing");
 		int company = json.getInt("company");
 		int isEnable = json.getInt("isEnable");
-		String rids2 = json.getString("rids");
-		List<Integer> rids = new ArrayList<Integer>();
-		System.out.println("rids2" + rids2);
-		rids2.split(",");
+		JSONArray trids = json.getJSONArray("rids");
+		System.out.println("trids" + trids);
+		List<Integer> ridss = new ArrayList<Integer>();
+		List<String> rids = JSONArray.toList(trids);
+		for (String rid : rids) {
+			if(rid.equals("") || rid==null){
+				
+			}else
+				ridss.add(Integer.parseInt(rid));
+		}
+		System.out.println("ridss" + ridss);
+		System.out.println("rids" + rids);
 		User u = new User();
 		u.setName(name);
 		u.setNickName(nickName);
@@ -136,7 +131,10 @@ public class UserController extends BaseController{
 		u.setMovable(movable);
 		u.setSolidSurfacing(solidSurfacing);
 		u.setIsEnable(isEnable);
-		userService.add(u);
+		u.setCreateBy(getSessionUser().toString());
+		u.setCreateDate(new Date());
+		u.setCreateName(getSessionUser().getName());
+		userService.add(u, ridss);
 		map.put("msg", "success");
 		return map;
 	}
@@ -163,47 +161,8 @@ public class UserController extends BaseController{
 		userService.saveOrUpdate(u);
 		//map.put("user", userService.load(User.class, id));
 		map.put("isEnable", u.getIsEnable());
+		map.put("msg", "更新成功");
 		return map;
-	}
-
-	@RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-	public String update(@PathVariable int id, Model model) {
-		User user = userService.load(User.class, id);
-		model.addAttribute("user", user);
-		model.addAttribute("roles", roleService.listRole());
-		List<Role> hasRoles = userService.listUserRole(id);
-		List<Integer> rids = new ArrayList<Integer>();
-		for (Role r : hasRoles) {
-			rids.add(r.getId());
-		}
-		model.addAttribute("hasRole", rids);
-		return "user/update";
-	}
-
-	@RequestMapping(value = "update/{id}", method = RequestMethod.POST)
-	public String update(@PathVariable int id, HttpServletRequest req, User user, Model model) {
-		User u = userService.load(User.class, id);
-		u.setName(user.getName());
-		u.setIsEnable(user.getIsEnable());
-		u.setAddress(user.getAddress());
-		u.setCompany(user.getCompany());
-		u.setEstate(user.getEstate());
-		u.setGender(user.getGender());
-		u.setIndustry(user.getIndustry());
-		u.setMovable(user.getMovable());
-		u.setSolidSurfacing(user.getSolidSurfacing());
-		u.setPassword(ShiroKit.md5(user.getPassword(), user.getName()));
-		u.setTotalLiability(user.getTotalLiability());
-		u.setTotalAssets(user.getTotalAssets());
-		u.setTel(user.getTel());
-		u.setUpdateDate(new Date());
-		String[] trids = req.getParameterValues("rids");
-		List<Integer> rids = new ArrayList<Integer>();
-		for (String rid : trids) {
-			rids.add(Integer.parseInt(rid));
-		}
-		userService.update(u, rids);
-		return "redirect:/admin/user/list";
 	}
 
 	/**
@@ -237,4 +196,131 @@ public class UserController extends BaseController{
 			msg = "success";
 		return msg;
 	}
+	
+	@SuppressWarnings("static-access")
+	@RequestMapping(value="nextPage" ,method=RequestMethod.GET)
+	@ResponseBody
+	public JSONObject nextPage(HttpServletRequest request) {
+		log.info("开始执行admin/user/nextPage 方法");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if(pagesize ==null || pagesize.equals("")){
+			pagesize = "10";
+		}
+		if(page1 ==null || page1.equals("")){
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		int count = userService.getCount(User.class);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		List<User> list = userService.queryForPage("from User ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("users", list);
+		map.put("pb", pb);
+		JSONObject json = JSONObject.fromObject( map ); 
+		return json;
+	}
+	/**
+	 * 根据用户id获取用户的所以角色id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="getUserRole" ,method=RequestMethod.GET)
+	@ResponseBody
+	public JSONObject getUserRole(HttpServletRequest request){
+		log.info("获取改用户的所有角色id");
+		Map<String,Object> map = new HashMap<String,Object>();
+		int id = Integer.parseInt(request.getParameter("id"));
+		List<Role> hasRoles = userService.listUserRole(id);
+		List<Integer> rids = new ArrayList<Integer>();
+		for (Role r : hasRoles) {
+			rids.add(r.getId());
+		}
+		map.put("roles", rids);
+		JSONObject json = JSONObject.fromObject(map);
+		return json;
+	}
+	/**
+	 * 修改用户
+	 * @param json
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="updateUser",method=RequestMethod.POST)
+	@ResponseBody
+	public Object updateUser(@RequestBody JSONObject json){
+		Map<String,String> map = new HashMap<String,String>();
+		int id = json.getInt("id");
+		User u = userService.load(User.class, id);
+		String name = json.getString("name");
+		String nickName = json.getString("nickName");
+		Long tel = json.getLong("tel");
+		String gender = json.getString("gender");
+		String address = json.getString("address");
+		double totalAssets = json.getDouble("totalAssets");
+		double totalLiability = json.getDouble("totalLiability");
+		String creditConditions = json.getString("creditConditions");
+		String industry = json.getString("industry");
+		int estate = json.getInt("estate");
+		int movable = json.getInt("movable");
+		int solidSurfacing = json.getInt("solidSurfacing");
+		int company = json.getInt("company");
+		JSONArray trids = json.getJSONArray("rids");
+		System.out.println("trids" + trids);
+		List<Integer> ridss = new ArrayList<Integer>();
+		List<String> rids = JSONArray.toList(trids);
+		for (String rid : rids) {
+			if(rid.equals("") || rid==null){
+				
+			}else
+				ridss.add(Integer.parseInt(rid));
+		}
+		System.out.println("ridss" + ridss);
+		System.out.println("rids" + rids);
+		u.setName(name);
+		u.setNickName(nickName);
+		u.setTel(tel);
+		u.setGender(gender);
+		u.setAddress(address);
+		u.setTotalAssets(totalAssets);
+		u.setTotalLiability(totalLiability);
+		u.setCreditConditions(creditConditions);
+		u.setIndustry(industry);
+		u.setEstate(estate);
+		u.setCompany(company);
+		u.setMovable(movable);
+		u.setSolidSurfacing(solidSurfacing);
+		u.setUpdateBy(getSessionUser().getId().toString());
+		u.setUpdateDate(new Date());
+		u.setUpdateName(getSessionUser().getName());
+		userService.add(u, ridss);
+		map.put("msg", "success");
+		return map;
+	}
+	@RequestMapping("updateUserPwd")
+	@ResponseBody
+	public String updateUserPwd(HttpServletRequest request){
+		log.info("修改密码");
+		String loginName = request.getParameter("loginName"); 	
+		String password = request.getParameter("password");
+		User user = userService.getUserByName(loginName);
+		user.setPassword(password);
+		if (ShiroKit.isEmpty(user.getName()) || ShiroKit.isEmpty(user.getPassword())) {
+			throw new RuntimeException("用户名或者密码不能为空！");
+		}
+		user.setPassword(ShiroKit.md5(user.getPassword(), user.getName()));
+		userService.saveOrUpdate(user);
+		return "success";
+	}
+	
 }

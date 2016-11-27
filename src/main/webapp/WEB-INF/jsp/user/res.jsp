@@ -76,4 +76,9 @@
 			<div class="clear"></div>
 		</div>
 </body>
+<script type="text/javascript">
+$(function(){
+	$("#userli").addClass("cur");
+})
+</script>
 </html>

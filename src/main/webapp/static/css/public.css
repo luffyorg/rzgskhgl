@@ -1356,3 +1356,21 @@ select {
 	text-align:20px;
 	border:none;
 }
+.updateColor{
+	color:#05cc88;
+	cursor:pointer;
+}
+.deleteColor{
+color:#ee6450;
+cursor:pointer;
+}
+.setReColor{
+color:#ea8010;
+cursor:pointer;
+}
+.cursorpointer{
+cursor:pointer;
+}
+.cursorauto{
+cursor:Default;
+}

@@ -17,25 +17,110 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script type="text/javascript"
-	src="<%=request.getContextPath()%>/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
 </head>
 <style type="text/css">
-.updateColor {
-	color: #05cc88;
-	cursor: pointer;
+.updateColor{
+	color:#05cc88;
+	cursor:pointer;
+}
+.deleteColor{
+color:#ee6450;
+cursor:pointer;
+}
+.setReColor{
+color:#ea8010;
+cursor:pointer;
+}
+.cursorpointer{
+cursor:pointer;
+}
+.cursorauto{
+cursor:Default;
+}
+/**弹窗样式开始**/
+.tc {
+	width: 600px;
+	height: 300px;
+	display: none;
+	position: absolute;
+	margin: -300px auto;
+	z-index: 999;
+	background: #fff;
+	left: 35%;
+	border-radius: 5px;
 }
 
-.deleteColor {
-	color: #ee6450;
-	cursor: pointer;
+.tc table {
+	margin-top: 20px;
+	margin-left: 20px;
 }
 
-.setReColor {
-	color: #ea8010;
-	cursor: pointer;
+.tc table tr {
+	margin-top: 20px;
 }
+
+.tc1 {
+	width: 100%;
+	height: 50px;
+	background: #60BBFF;
+	border-radius: 5px;
+	font-size: 20px;
+	color: #fff;
+	text-align: center;
+	line-height: 50px;
+}
+
+.tc1 img {
+	width: 25px;
+	height: 25px;
+}
+
+.mask {
+	margin: 0;
+	padding: 0;
+	border: none;
+	width: 100%;
+	height: 100%;
+	background: #333;
+	opacity: 0.6;
+	filter: alpha(opacity = 60);
+	z-index: 99;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: block;
+}
+/**弹窗样式结束**/
 </style>
+
+<script type="text/javascript">
+	/**弹窗效果开始**/
+	function tc(orderNo,buyName,productName,status) {
+		$("#orderNo").val(orderNo);
+		$("#productName").val(productName);
+		$("#buyName").val(buyName);
+		var selectTag = document.getElementById("orderStatus");
+		var options = selectTag.getElementsByTagName("option");
+		for(var i=0;i<options.length;i++){
+		  var value = options[i].value;
+		  if(value==status){
+		    options[i].setAttribute("selected","true");
+		  }
+		}
+
+		$("body").append("<div id='mask'></div>");
+		$("#mask").addClass("mask").fadeIn("slow");
+		$(".tc").fadeIn("slow");
+	};
+	function tcclose() {
+		$(".tc").fadeOut("fast");
+		$("#mask").css({
+			display : 'none'
+		});
+	};
+	/**弹窗效果结束**/
+</script>
 <body>
 	<!--
       作者：z.y.q.d
@@ -58,8 +143,9 @@
 			<div id="urHere">订单列表</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
-				<h3>订单</h3>
-				<div class="navList">
+				<h3><a onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单</h3>
+				<div id="msg"></div>
+				<div class="navList" id="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
 						<thead>
@@ -88,7 +174,7 @@
 									<td>${order.description }</td>
 									<td>${order.productPrice }</td>
 
-									<td><c:if test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
+									<td id="status${order.id }"><c:if test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
 											test="${order.orderStatus  eq 1 }">与客户签订合同</c:if> <c:if
 											test="${order.orderStatus  eq 2 }">收齐资料</c:if> <c:if
 											test="${order.orderStatus  eq 3 }">递交渠道处</c:if> <c:if
@@ -98,43 +184,112 @@
 											test="${order.orderStatus  eq 7 }">完成服务</c:if></td>
 											<td>${order.createDate }</td>
 											<td>${order.updateDate }</td>
-									<td><a  class="updateColor"
-										onclick="updateOrder(${order.id });">更新状态</a></td>
+									<td><a  class="updateColor" onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a></td>
 								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
 				</div>
+				<!--弹窗开始 -->
+				<div class="tc">
+					<div class="tc1">
+						更新状态<img src="${basePath}static/images/closed.png" onclick="tcclose()"
+							style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+					</div>
+					<table>
+						<tr>
+							<td height="35" width="25%" align="right">订单号：</td>
+							<td><input type="text" name="orderNo" id="orderNo" value=""
+								size="80" class="inpMain" readonly="readonly"/></td>
+						</tr>
+						<tr>
+							<td height="35" width="25%" align="right">产品名称：</td>
+							<td><input type="text" name="productName" id="productName" value=""
+								size="80" class="inpMain"  readonly="readonly"/></td>
+						</tr>
+						<tr>
+							<td height="35" width="100px" align="right">购买人：</td>
+							<td><input type="text" name="buyName" id="buyName" value="" size="80"
+								class="inpMain" readonly="readonly"/></td>
+						</tr>
+						<tr>
+							<td height="35" width="100px" align="right">订单状态：</td>
+							<td><select id="orderStatus">
+								<option value="1">与客户签订合同</option>
+								<option value="2">收齐资料</option>
+								<option value="3">递交渠道处</option>
+								<option value="4">审核阶段</option>
+								<option value="5">下款</option>
+								<option value="6">收费</option>
+								<option value="7">完成服务</option>
+							</select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input id="saveBtn" class="btn" type="button" value="提交"
+								onclick="updateOrder();" /></td>
+						</tr>
+					</table>
+				</div>
+				<!--弹窗结束-->
+				
 			</div>
+			
 		</div>
+		
 	</div>
+	<!--底部开始-->
+		<%@ include file="../include/footer.jsp"%>
+		<!--底部结束-->
+		<div class="clear"></div>
 </body>
 <script type="text/javascript">
-$(function() {
-	  $("#updateOrder").hide();
-});
 
 </script>
 <script type="text/javascript">
-function updateOrder(id){
-	alert(id);
-	 $("#content").hide();
-	$.post("updateOrder/"+id+"", function(data) {
-		alert("===" + data);
-		 $("#updateOrder").show();
-		 $("#updateOrder").html(data);
-		});
+function updateOrder(){
+	var orderNo = $("#orderNo").val();
+	var status = $("#orderStatus").val();
+	$.post("updateOrder?orderNo="+orderNo+"&status="+status+"", function(data) {
+		if(data.msg=="success"){
+			if(data.status==1){
+				$("#status"+data.id+"").html("签订合同");
+			}
+			else if(data.status==2){
+				$("#status"+data.id+"").html("收齐资料");
+			}
+			else if(data.status==3){
+				$("#status"+data.id+"").html("递交渠道处");
+			}
+			else if(data.status==4){
+				$("#status"+data.id+"").html("审核阶段");
+			}
+			else if(data.status==5){
+				$("#status"+data.id+"").html("下款");
+			}
+			else if(data.status==6){
+				$("#status"+data.id+"").html("收费");
+			}
+			else{
+				$("#status"+data.id+"").html("完成服务");
+			}
+			
+			
+			tcclose();
+		}
+	});
 }
-
+function excelOrder(){  
+    $.ajax({  
+        type:"POST",  
+        url:"exportOrder",  
+        success:function(data){  
+            window.open('exportOrder');  
+        }  
+          
+    });  
+}  
 </script>
-<jsp:include page="updateOrder.jsp"></jsp:include>
 <script type="text/javascript">
-$("#productli").removeClass("cur");
-$("#resli").removeClass("cur");
-$("#roleli").removeClass("cur");
-$("#userli").removeClass("cur");
-$("#indexli").removeClass("cur");
-$("#opli").removeClass("cur");
-$("#datali").removeClass("cur");
-$("#adminli").removeClass("cur");</script>
+</script>
 </html>

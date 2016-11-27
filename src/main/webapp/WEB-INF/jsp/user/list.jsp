@@ -124,6 +124,43 @@
 .tips_false {
 	color: red;
 }
+.inp_name{
+	width:120px;
+	height:30px;
+	line-height:30px;
+	border:1px solid #d8d8d8;
+	border-radius:4px;
+	font-size:16px;
+	color:#333;
+	font-family:'微软雅黑';
+	margin-left:10px;
+	padding:0 14px;
+	margin-top:8px;
+}
+.label_select{
+	font-size:16px;
+	color:#333;
+	font-family:"微软雅黑";
+	margin-top:-5px;
+}
+.inp_btn{
+	font-size:16px;
+	color:#fff;
+	font-family:"微软雅黑";
+	height:30px;
+	width:60px;
+	line-height:30px;
+	text-align:center;
+	border:none;
+	border-radius:4px;
+	background-color:#5096fa;
+	margin-top:8px;
+	margin-left:15px;
+	cursor:pointer;
+		}
+	.inp_btn:hover{
+	background-color:#3c87f0;
+	}	
 </style>
 
 <script type="text/javascript">
@@ -133,7 +170,70 @@
     $("#mask").addClass("mask").fadeIn("slow");
     $(".tc").fadeIn("slow");
   }; 
-  function tcUpdate(){
+  function tcUpdate(id,name,nickName,tel,address,gender,totalAssets,totalLiability,creditConditdions,industry,estate,movable,company,solidSurfacing){
+	  $("#upId").val(id);
+	  $("#upName").val(name);
+	  $("#upNickName").val(nickName);
+	  $("#upTel").val(tel);
+	  $("#upAddress").val(address);
+	  $("#upTotalAssets").val(totalAssets);
+	  $("#upTotalLiability").val(totalLiability);
+	  $("#upindustry").val(industry);
+	  
+	  var selectTag = document.getElementById("upestate");
+	  var options = selectTag.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==estate){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag1 = document.getElementById("upmovable");
+	  var options = selectTag1.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==movable){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag2 = document.getElementById("upcompany");
+	  var options = selectTag2.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==company){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag3 = document.getElementById("upsolidSurfacing");
+	  var options = selectTag3.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==solidSurfacing){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag4 = document.getElementById("upcreditConditions");
+	  var options = selectTag4.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==creditConditdions){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  var selectTag5 = document.getElementById("upSex");
+	  var options = selectTag5.getElementsByTagName("option");
+	  for(var i=0;i<options.length;i++){
+	    var value = options[i].value;
+	    if(value==gender){
+	      options[i].setAttribute("selected","true");
+	    }
+	  }
+	  $.get("getUserRole?id="+id+"", function(data){
+			for(var j=0; j<data.roles.length;j++){
+				$("#upcheckbox"+data.roles[j]+"").prop('checked',true);
+			}
+	  })
+	    
     $("body").append("<div id='mask'></div>");
     $("#mask").addClass("mask").fadeIn("slow");
     $(".tcUpdate").fadeIn("slow");
@@ -144,6 +244,21 @@
     $("#mask").css({ display: 'none' });
   };
   function tcupclose() {
+	  $("#upId").val("");
+	  $("#upName").val("");
+	  $("#upNickName").val("");
+	  $("#upTel").val("");
+	  $("#upAddress").val("");
+	  $("#upSex").html("<option value='男'>男</option><option value='女' selected>女</option>");
+	  $("#upTotalAssets").val("");
+	  $("#upTotalLiability").val("");
+	  $("#upindustry").val("");
+	  $("#upestate").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upmovable").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upcompany").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upsolidSurfacing").html("<option value='1'>有</option><option value='0' selected>无</option>");
+	  $("#upcreditConditions").html("<option value='合格' selected>合格</option><option value='不合格' >不合格</option>");
+	  $("input[name='upcheckbox']").prop('checked',false);
 		$(".tcUpdate").fadeOut("fast");
 		$("#mask").css({
 			display : 'none'
@@ -178,9 +293,40 @@
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="tc();" class="actionBtn">添加用户</a>自定义用户
+					<a onclick="tc();" class="actionBtn">添加用户</a>
+					自定义用户
+					<input type="text" class="inp_name" placeholder="登录名或手机号"/>
+						<label class="label_select">房产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">动产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">公司
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">实体铺面
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<input type="button" value="搜索" class="inp_btn"/>
 				</h3>
-				<div class="navList">
+				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
 						<tr>
@@ -190,8 +336,8 @@
 							<th>电话</th>
 							<th>地址</th>
 							<th>性别</th>
-							<th>总资产</th>
-							<th>总负债</th>
+							<th>总资产(万元)</th>
+							<th>总负债(万元)</th>
 							<th>征信情况</th>
 							<th>行业</th>
 							<th>房产</th>
@@ -201,13 +347,12 @@
 							<th>用户状态</th>
 							<th>用户操作</th>
 						</tr>
-						</thead>
 						<tbody>
-							<c:forEach items="${users }" var="user">
+							<c:forEach items="${users }" var="user" varStatus="i">
 								<tr>
 									<td align="center">${i.count + (pb.currentPage-1)*10}</td>
-									<td align="center"><a href="${user.id }" class="list_link">${user.name }</a></td>
-									<td align="center"><a href="${user.id }" class="list_link">${user.nickName }</a></td>
+									<td align="center">${user.name }</td>
+									<td align="center">${user.nickName }</td>
 									<td align="center">${user.tel }</td>
 									<td align="center">${user.address }</td>
 									<td align="center">${user.gender }</td>
@@ -227,7 +372,6 @@
 									<td align="center" id="updateStatus${user.id }"><c:if
 											test="${user.isEnable eq 0 }">
 											<span class="stop" id="stop${user.id }">停用 | </span>
-											<%-- <a href="updateStatus/${user.id }" class="updateColor"> | 启用</a> --%>
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="start${user.id }"> 启用</a>
 										</c:if> <c:if test="${user.isEnable eq 1 }">
@@ -235,19 +379,49 @@
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="stop${user.id }"> 停用</a>
 										</c:if></td>
-									<td align="center"><shiro:hasRole name="ADMIN">
-											<%-- <a href="${basePath }admin/user/update/${user.id }"
-												class="updateColor">更新</a>  --%>
-											<a onclick="tcUpdate();" class="updateColor">更新</a> | <a
+									<td align="center"><shiro:hasAnyRoles name="ADMIN,EMP">
+											<a onclick="tcUpdate('${user.id }','${user.name }','${user.nickName }','${user.tel }','${user.address }',
+											'${user.gender }','${user.totalAssets }','${user.totalLiability }','${user.creditConditions }','${user.industry }',
+											'${user.estate }','${user.movable }','${user.company }','${user.solidSurfacing }');" class="updateColor">更新</a> | <a
 												href="${basePath }admin/user/listRes/${user.id }"
 												class="setReColor">查看资源</a>
-										</shiro:hasRole></td>
+										</shiro:hasAnyRoles></td>
 								</tr>
 							</c:forEach>
 					</table>
 				</div>
-				<%@ include file="../include/pageSplit.jsp"%>
-			</div>
+				<!-- 分页开始 -->
+				<div style="float:right;margin-top:15px;" class="splitPage" id="splitPage">
+					<c:if test="${pb.currentPage==1 }">
+						<a  class='cursorauto'>首页</a> 
+					</c:if>
+					<c:if test="${pb.currentPage!=1 }">
+						<a onclick="nextPage(10,1);" class="cursorpointer">首页</a> 
+					</c:if>
+					<c:if test="${pb.hasPreviousPage==true}">
+						<a onclick="nextPage(10,${pb.currentPage-1});" class="cursorpointer"> ◄上一页</a>
+					</c:if>
+					<c:if test="${pb.hasPreviousPage==false}">
+						<a  class='cursorauto'> ◄上一页</a>
+					</c:if>
+					<c:if test="${pb.hasNextPage==true }">
+						<a onclick="nextPage(10,${pb.currentPage+1});" class="cursorpointer">下一页► </a> 
+					</c:if>
+					<c:if test="${pb.hasNextPage==false }">
+						<a class='cursorauto'>下一页► </a> 
+					</c:if>
+					<c:if test="${pb.totalPage==pb.currentPage }">
+						<a  class='cursorauto'>末页</a> 
+					</c:if>
+					<c:if test="${pb.totalPage!=pb.currentPage }">
+						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a> 
+					</c:if>
+					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
+					<input  id="goInput" value='' style="border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;" />页,
+					<input type="button" class='cursorpointer'
+						value="搜索" onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
+				</div>
+				<!-- 分页结束 -->
 		</div>
 		<!--主体内容部分结束-->
 
@@ -303,7 +477,7 @@
 				<tr>
 					<td height="35" align="right">总资产：</td>
 					<td><input type="text" name="addtotalAssets"
-						id="addtotalAssets" value="" size="80" class="inpMain" onblur="checkTotalAssets()"/>
+						id="addtotalAssets" value="" size="80" class="inpMain" onkeyup="checkTotalAssets()" onkeydown="onlyNum2();"/>
 						<span class="tips" id="divtotalAssets"></span></td>
 				</tr>
 				<tr>
@@ -313,8 +487,12 @@
 				</tr>
 				<tr>
 					<td height="35" align="right">征信情况：</td>
-					<td><input type="text" name="addcreditConditions"
-						id="addcreditConditions" value="" size="80" class="inpMain" /></td>
+					<td>
+						<select id="addcreditConditions">
+							<option value="合格" selected="selected">合格</option>
+							<option value="不合格">不合格</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<td height="35" align="right">行业：</td>
@@ -360,7 +538,7 @@
 					<td height="35" align="right">角色：</td>
 					<td><c:forEach var="role" items="${roles }">
 						<label for="captcha_${role.id }"> 
-							<input type="checkbox" name="checkbox" value="${role.id }"> ${role.name }
+							<input type="checkbox" name="checkbox" id="checkbox" value="${role.id }"> ${role.name }
 						</label>
 						</c:forEach>
 					</td>
@@ -382,13 +560,13 @@
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>
-				<tr>
+				<tr style="display:none">
 					<td height="35" align="right">用户标识：</td>
 					<td><input type="text" name="upId" id="upId" value=""
-						size="80" class="inpMain" readonly="readonly" /></td>
+						size="80" class="inpMain" /></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">用户名称：</td>
+					<td height="35" align="right">登录账户：</td>
 					<td><input type="text" name="upName" id="upName" value=""
 						size="80" class="inpMain" /></td>
 				</tr>
@@ -398,13 +576,8 @@
 						value="" size="80" class="inpMain" /></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">密 码：</td>
-					<td><input type="text" name="upPassword" id="upPassword"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
 					<td height="35" align="right">电 话：</td>
-					<td><input type="text" name="upTel" id="upurl" value=""
+					<td><input type="text" name="upTel" id="upTel" value=""
 						size="80" class="inpMain" /></td>
 				</tr>
 				<tr>
@@ -414,8 +587,10 @@
 				</tr>
 				<tr>
 					<td height="35" align="right">性 别：</td>
-					<td><input type="text" name="upGender" id="upGender" value=""
-						size="80" class="inpMain" /></td>
+					<td><select name="upSex" id="upSex">
+							<option value="男">男</option>
+							<option value="女" selected>女</option>
+					</select></td>
 				</tr>
 				<tr>
 					<td height="35" align="right">资 产：</td>
@@ -429,38 +604,59 @@
 				</tr>
 				<tr>
 					<td height="35" align="right">征信情况：</td>
-					<td><input type="text" name="upCreditConditions"
-						id="upCreditConditions" value="" size="80" class="inpMain" /></td>
+					<td>
+						<select id="upcreditConditions">
+							<option value="合格" selected="selected">合格</option>
+							<option value="不合格">不合格</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
-					<td height="35" align="right">行 业：</td>
-					<td><input type="text" name="upDustry" id="upDustry" value=""
-						size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">房 产：</td>
-					<td><input type="text" name="uppermission" id="uppermission"
+					<td height="35" align="right">行业：</td>
+					<td><input type="text" name="upindustry" id="upindustry"
 						value="" size="80" class="inpMain" /></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">动 产：</td>
-					<td><input type="text" name="uppermission" id="uppermission"
-						value="" size="80" class="inpMain" /></td>
+					<td height="35" align="right">房产：</td>
+					<td><select name="upestate" id="upestate">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">公 司：</td>
-					<td><input type="text" name="uppermission" id="uppermission"
-						value="" size="80" class="inpMain" /></td>
+					<td height="35" align="right">动产：</td>
+					<td><select name="upmovable" id="upmovable">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">公司：</td>
+					<td><select name="upcompany" id="upcompany">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
 				</tr>
 				<tr>
 					<td height="35" align="right">实体铺面：</td>
-					<td><input type="text" name="uppermission" id="uppermission"
-						value="" size="80" class="inpMain" /></td>
+					<td><select name="upsolidSurfacing" id="upsolidSurfacing">
+							<option value="1">有</option>
+							<option value="0" selected>无</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td height="35" align="right">角色：</td>
+					<td><c:forEach var="role" items="${roles }">
+						<label for="captcha_${role.id }"> 
+							<input type="checkbox" name="upcheckbox" id="upcheckbox${role.id }" value="${role.id }"> ${role.name }
+						</label>
+						</c:forEach>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
 					<td><input id="updateBtn" class="btn" type="button" value="提交"
-						onclick="update();" /></td>
+						onclick="updateUser();" /></td>
 				</tr>
 			</table>
 		</div>
@@ -471,11 +667,126 @@
 		<%@ include file="../include/footer.jsp"%>
 		<!--底部结束-->
 		<div class="clear"></div>
-
+		</div>
 	</div>
 	<!--end-->
 </body>
 <script type="text/javascript">
+function nextPage(size,page){
+	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
+		 //组装表格
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		htmlStr += "<tr> <th width='80'>序号</th>"+
+			      "<th width='80'>登录名称</th>"+
+			      "<th width='80'>真实姓名</th>"+
+			      "<th width='80'>电话</th>"+
+			      "<th width='80'>地址</th>"+
+			      "<th width='80'>性别</th>"+
+			      "<th width='80'>总资产</th>"+
+			      "<th width='80'>总负债</th>"+
+			      "<th width='80'>征信情况</th>"+
+			      "<th width='80'>行业</th>"+
+			      "<th width='80'>房产</th>"+
+			      "<th width='80'>动产</th>"+
+			      "<th width='80'>公司</th>"+
+			      "<th width='80'>实体</th>"+
+			      "<th width='80'>产品状态</th>"+
+			      "<th width='80'>操作</th></tr>";
+      var pb=data.pb;
+	    for(var i = 0; i < data.users.length; i++){
+	         var user = data.users[i];
+	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td align='center'>"+user.name+" </td>"+
+				"<td align='center'>"+user.nickName+" </td>"+
+				"<td align='center'>"+user.tel+" </td>"+
+				"<td align='center'>"+user.address+" </td>"+
+				"<td align='center'>"+user.gender+" </td>"+
+				"<td align='center'>"+user.totalAssets+" </td>"+
+				"<td align='center'>"+user.totalLiability+" </td>"+
+				"<td align='center'>"+user.creditConditions+" </td>"+
+				"<td align='center'>"+user.industry+" </td>"
+				if(user.estate==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(user.movable==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(user.company==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(user.solidSurfacing==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				if(user.isEnable==0){
+					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
+								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
+								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
+				}else{
+					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
+							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
+							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
+				}
+	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
+							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"','"+user.nickName+"','"+user.tel+"','"+user.address+"',"+
+											"'"+user.gender+"','"+user.totalAssets+"','"+user.totalLiability+"','"+user.creditConditions+"','"+user.industry+"',"+
+											"'"+user.estate+"','"+user.movable+"','"+user.company+"','"+user.solidSurfacing+"'); class='updateColor'>更新</a> | "+
+							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
+	    }
+	    //组装分页
+	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
+	   
+	    if(pb.currentPage==1){
+	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
+	    }
+	    else{
+	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
+	    }
+	    if(pb.hasPreviousPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
+	    }
+	    if(pb.hasNextPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
+	    }
+	    if(pb.totalPage==pb.currentPage){
+	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
+	    }else{
+	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
+	    }
+	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
+	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
+					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
+	    htmlStr += "</table>";
+	   
+	    $("#main").html(htmlStr);
+	    $(".splitPage").html(htmlPage);
+	   
+	}) 
+}
+
+function gotoPageByInput(currentPage,totalpage){
+	var page = $("#goInput").val();
+	if(page<1 || page>totalpage){
+		alert("请输入正确页码！");
+	}else if(page==currentPage){
+		
+	}else
+		nextPage(10,page);
+}
 function updateStatus(id,isEnable){
 	$.get("updateStatus/"+id+"", function(result){
 		if(result.isEnable==1){
@@ -490,9 +801,11 @@ function updateStatus(id,isEnable){
 function addUser(){
 	var obj=document.getElementsByName('checkbox'); 
 	var rids=new Array()
+	var j=0;
 	for(var i=0; i<obj.length; i++){ 
 		if(obj[i].checked) {
-			rids[i]=obj[i].value;
+			rids[j]=obj[i].value;
+			j++;
 		}else{
 			
 		}
@@ -531,10 +844,9 @@ function addUser(){
 			"isEnable" : isEnable,
 			"rids" : rids
 		};
-		alert(sendInfo);
 		$.ajax({
 			type : "POST",
-			url : "save2",
+			url : "save",
 			dataType : "json",
 			contentType : 'application/json',
 			data : JSON.stringify(sendInfo),
@@ -547,7 +859,7 @@ function addUser(){
 				}
 			},
 			error : function() {
-				alert("没有返回值");
+				alert("网络异常，请稍后再试！");
 			}
 		});
 }
@@ -628,9 +940,14 @@ function onlyNum(){
     if(!((event.keyCode>=48&&event.keyCode<=57)||(event.keyCode>=96&&event.keyCode<=105)))
     event.returnValue=false;  //执行至该语句时，阻止输入；可类比阻止冒泡原理或者禁止右键功能；
 }
+function onlyNum2(){
+    if(!(event.keyCode==46)&&!(event.keyCode==8)&&!(event.keyCode==37)&&!(event.keyCode==39))
+    if(!((event.keyCode>=48&&event.keyCode<=57)||(event.keyCode>=96&&event.keyCode<=105)))
+    event.returnValue=false;  //执行至该语句时，阻止输入；可类比阻止冒泡原理或者禁止右键功能；
+}
 function checkTotalAssets(){
 	var totalAssets = $("#addtotalAssets").val();
-	var patrn = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
+	var patrn = /^[0-9]+$|^[0-9]+\.[0-9]{1,2}$/;
 	if(!patrn.exec(totalAssets)){
 		divtotalAssets.innerHTML='<font class="tips_false">输入类型错误</font>';
 	}
@@ -638,9 +955,72 @@ function checkTotalAssets(){
 		divtotalAssets.innerHTML='<font class="tips_true">输入正确</font>';
 }
 
+function updateUser(){
+	var obj=document.getElementsByName('upcheckbox'); 
+	var rids=new Array()
+	var j=0;
+	for(var i=0; i<obj.length; i++){ 
+		if(obj[i].checked) {
+			rids[j]=obj[i].value;
+			j++;
+		}else{
+			
+		}
+	} 
+	var id = $("#upId").val();
+	var name = $("#upName").val();
+	var nickName = $("#upNickName").val();
+	var tel = $("#upTel").val();
+	var address = $("#upAddress").val();
+	var sex = $("#upSex").val();
+	var totalAssets = $("#upTotalAssets").val();
+	var totalLiability = $("#upTotalLiability").val();
+	var creditConditions = $("#upcreditConditions").val();
+	var industry = $("#upindustry").val();
+	var estate = $("#upestate").val();
+	var movable = $("#upmovable").val();
+	var company = $("#upcompany").val();
+	var solidSurfacing = $("#upsolidSurfacing").val();
+	var sendInfo = {
+			"id" : id,
+			"name" : name,
+			"nickName" : nickName,
+			"tel" :tel,
+			"address" : address,
+			"gender" : sex,
+			"totalAssets" : totalAssets,
+			"totalLiability" :totalLiability,
+			"creditConditions" : creditConditions,
+			"industry" : industry,
+			"estate" : estate,
+			"movable" : movable,
+			"company" : company,
+			"solidSurfacing" : solidSurfacing,
+			"rids" : rids
+		};
+		$.ajax({
+			type : "POST",
+			url : "updateUser",
+			dataType : "json",
+			contentType : 'application/json',
+			data : JSON.stringify(sendInfo),
+			success : function(data) {
+				if (data.msg == "success") {
+					alert("修改成功");
+					window.location.href = "list";
+				}else {
+					alert("修改失败");
+				}
+			},
+			error : function() {
+				alert("网络异常，请稍后再试！");
+			}
+		});
+}
+
+
 </script>
 <script type="text/javascript">
 $("#userli").addClass("cur");
-$("#indexli").removeClass("cur");
 </script>
 </html>

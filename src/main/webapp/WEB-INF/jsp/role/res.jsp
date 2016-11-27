@@ -123,4 +123,7 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+$("#roleli").addClass("cur");
+</script>
 </html>
