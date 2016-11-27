@@ -124,6 +124,43 @@
 .tips_false {
 	color: red;
 }
+.inp_name{
+	width:120px;
+	height:30px;
+	line-height:30px;
+	border:1px solid #d8d8d8;
+	border-radius:4px;
+	font-size:16px;
+	color:#333;
+	font-family:'微软雅黑';
+	margin-left:10px;
+	padding:0 14px;
+	margin-top:8px;
+}
+.label_select{
+	font-size:16px;
+	color:#333;
+	font-family:"微软雅黑";
+	margin-top:-5px;
+}
+.inp_btn{
+	font-size:16px;
+	color:#fff;
+	font-family:"微软雅黑";
+	height:30px;
+	width:60px;
+	line-height:30px;
+	text-align:center;
+	border:none;
+	border-radius:4px;
+	background-color:#5096fa;
+	margin-top:8px;
+	margin-left:15px;
+	cursor:pointer;
+		}
+	.inp_btn:hover{
+	background-color:#3c87f0;
+	}	
 </style>
 
 <script type="text/javascript">
@@ -256,7 +293,38 @@
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="tc();" class="actionBtn">添加用户</a>自定义用户
+					<a onclick="tc();" class="actionBtn">添加用户</a>
+					自定义用户
+					<input type="text" class="inp_name" placeholder="登录名或手机号"/>
+						<label class="label_select">房产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">动产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">公司
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">实体铺面
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<input type="button" value="搜索" class="inp_btn"/>
 				</h3>
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"

@@ -25,7 +25,9 @@
 			</ul>
 			<ul class="navRight">
 				<li class="M noLeft"><a href="JavaScript:void(0);">您好， 
-				<shiro:principal /></a>
+				<shiro:principal /><img src="${basePath }static/images/icon_select.png" style="position:absolute;
+				top:13px;right: -4%;"></a>
+				
 					<div class="drop mUser">
 						<a onclick="updatePwd();" class="updateColor">修改密码</a> 
 					</div></li>

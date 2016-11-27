@@ -42,7 +42,7 @@ cursor:Default;
 	height: 300px;
 	display: none;
 	position: absolute;
-	margin: -200px auto;
+	margin: -400px auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -132,6 +132,50 @@ cursor:Default;
     width: 180px;
     -webkit-appearance: none;
 }
+.inp_name,.inp_customer{
+	width:120px;
+	height:30px;
+	line-height:30px;
+	border:1px solid #d8d8d8;
+	border-radius:4px;
+	font-size:16px;
+	color:#333;
+	font-family:'微软雅黑';
+	margin-left:10px;
+	padding:0 14px;
+	margin-top:8px;
+}
+.inp_customer{
+	margin-left:10%;
+	width:150px;
+}
+.label_select{
+	font-size:16px;
+	color:#333;
+	font-family:"微软雅黑";
+	margin-top:-5px;
+}
+.inp_btn,.inp_btn2{
+	font-size:16px;
+	color:#fff;
+	font-family:"微软雅黑";
+	height:30px;
+	width:60px;
+	line-height:30px;
+	text-align:center;
+	border:none;
+	border-radius:4px;
+	background-color:#5096fa;
+	margin-top:8px;
+	margin-left:15px;
+	cursor:pointer;
+		}
+		.inp_btn2{
+		width:80px;
+		}
+	.inp_btn:hover{
+	background-color:#3c87f0;
+	}	
 </style>
 
 <script type="text/javascript">
@@ -178,8 +222,53 @@ cursor:Default;
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3 id="h3">
-					<input type="text" id="productName" class="inpMain1" placeholder="产品名称或者产品编号"/>
-					<input type="button" value="查找" onclick="search()">
+					<!-- <input type="text" id="productName" class="inpMain1" placeholder="产品名称或者产品编号"/>
+					<input type="button" value="查找" onclick="search()"> -->
+					<input type="text" class="inp_name" placeholder="登录名或手机号"/>
+						<label class="label_select">房产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">动产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">公司
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">实体铺面
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<input type="button" value="搜索" class="inp_btn"/>
+						<input class="inp_customer" type="text" list="customer" placeholder="产品名称或产品编号">
+						<datalist id="customer" > 
+										<option value="1"></option>
+										<option value="2"></option>
+										<option value="3"></option>
+										<option value="4"></option>
+										<option value="33"></option>
+										<option value="42"></option>
+										<option value="34"></option>
+										<option value="41"></option>
+										<option value="31"></option>
+										<option value="14"></option>
+										
+								</datalist>
+						<input type="button" class="inp_btn2" value="搜索客户"/>
 				</h3> 
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"

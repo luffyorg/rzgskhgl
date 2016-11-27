@@ -125,6 +125,43 @@
 .tips_false {
 	color: red;
 }
+.inp_name{
+	width:120px;
+	height:30px;
+	line-height:30px;
+	border:1px solid #d8d8d8;
+	border-radius:4px;
+	font-size:16px;
+	color:#333;
+	font-family:'微软雅黑';
+	margin-left:10px;
+	padding:0 14px;
+	margin-top:8px;
+}
+.label_select{
+	font-size:16px;
+	color:#333;
+	font-family:"微软雅黑";
+	margin-top:-5px;
+}
+.inp_btn{
+	font-size:16px;
+	color:#fff;
+	font-family:"微软雅黑";
+	height:30px;
+	width:60px;
+	line-height:30px;
+	text-align:center;
+	border:none;
+	border-radius:4px;
+	background-color:#5096fa;
+	margin-top:8px;
+	margin-left:15px;
+	cursor:pointer;
+		}
+	.inp_btn:hover{
+	background-color:#3c87f0;
+	}	
 </style>
 
 <script type="text/javascript">
@@ -232,14 +269,42 @@ $(function(){
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
 					产品管理
+					<input type="text" class="inp_name" placeholder="登录名或手机号"/>
+						<label class="label_select">房产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">动产
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">公司
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<label class="label_select">实体铺面
+						<select style="width:60px;height:30px;">
+							<option value="1">有</option>
+							<option value="0">无</option>
+							<option value="2" selected>--</option>
+						</select>
+						</label>
+						<input type="button" value="搜索" class="inp_btn"/>
 					<form name="upform" action="upload" method="POST"
 						onsubmit="return yz();" enctype="multipart/form-data">
-						<div>
+						<div class="R_right" style="float:right;margin-top:-40px;">
 							<input type="file" id="up" value="导入Excel" name="myfile" id="myfile">
 							<input type="hidden" name="ftype" value="sheet1">
-						</div>
-						<div >
-							<div >
+							<div>
 								<input class="btn default green-stripe" type="submit" value="导入" />
 								<input class="btn default dark-stripe" type="button"
 									onclick=""
