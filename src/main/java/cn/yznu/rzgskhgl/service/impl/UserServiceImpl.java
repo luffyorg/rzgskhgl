@@ -1,6 +1,5 @@
 package cn.yznu.rzgskhgl.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
