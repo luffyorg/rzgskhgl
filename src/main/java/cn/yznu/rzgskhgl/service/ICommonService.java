@@ -109,6 +109,12 @@ public interface ICommonService {
 	 * @return
 	 */
 	public <T> int getCount(Class<T> clazz);
+	/**
+	 * 查询总记录数
+	 * @param clazz
+	 * @return
+	 */
+	public <T> int getCountByParam(String hql);
 
 	public <T> List<T> findHql(String hql, Object... param);
 	/**

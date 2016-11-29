@@ -21,12 +21,21 @@
 					</div></li> -->
 				<li><a href="${basePath }admin/product/list" >查看产品</a></li>
 				<li><a href="${basePath }admin/process/list">产品购买</a></li>
-				<li><a href="${basePath }admin/process/orderList" >订单</a></li>
+<%-- 				<li><a href="${basePath }admin/process/orderList" >订单</a></li>
+ --%>				<li class="M noLeft"> <a href="JavaScript:void(0);">订单</a>
+ 						<div class="drop mUser">
+							<a href="${basePath }admin/process/orderList" class="updateColor">我的订单</a> 
+							<shiro:hasRole name="ADMIN">
+								<a href="${basePath }admin/process/allOrderList" class="updateColor">全部订单</a> 
+							</shiro:hasRole>
+						</div>
+ 
+ 					</li>
 			</ul>
 			<ul class="navRight">
 				<li class="M noLeft"><a href="JavaScript:void(0);">您好， 
-				<shiro:principal /><img src="${basePath }static/images/icon_select.png" style="position:absolute;
-				top:13px;right: -4%;"></a>
+				<shiro:principal /><%-- <img src="${basePath }static/images/icon_select.png" style="position:absolute;
+				top:13px;right: -4%;"> --%></a>
 				
 					<div class="drop mUser">
 						<a onclick="updatePwd();" class="updateColor">修改密码</a> 

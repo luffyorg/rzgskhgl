@@ -38,4 +38,13 @@ public interface IProductService extends ICommonService{
 	public String batchSaveOrUpdate(List<Product> products);
 	public HSSFWorkbook createExcel(List<Product> products,  
 	        HttpServletRequest request);
+	
+	/**
+	 * 搜索产品
+	 * @param product
+	 * @return
+	 */
+	public List<Product> searchProduct(Product product);
+	
+	
 }

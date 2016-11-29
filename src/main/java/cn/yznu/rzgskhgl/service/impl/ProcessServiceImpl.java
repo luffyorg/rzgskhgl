@@ -1,7 +1,6 @@
 package cn.yznu.rzgskhgl.service.impl;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import cn.yznu.rzgskhgl.pojo.Order;
-import cn.yznu.rzgskhgl.pojo.Product;
-import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.ICommonService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 
@@ -27,12 +24,13 @@ import cn.yznu.rzgskhgl.service.IProcessService;
  * @author zhangwei
  *
  */
+@SuppressWarnings("deprecation")
 @Service("processService")
 public class ProcessServiceImpl extends CommonServiceimpl implements IProcessService {
 
 	@Autowired
 	@Qualifier("commonService")
-	private ICommonService common;
+	private ICommonService commonService;
 
 	@Override
 	public HSSFWorkbook createExcel(List<Order> orders, HttpServletRequest request) {
@@ -190,6 +188,13 @@ public class ProcessServiceImpl extends CommonServiceimpl implements IProcessSer
 		}
 
 		return workbook;
+	}
+
+	@Override
+	public Order queryOrderbByOrderNo(String orderNo) {
+		String hql = "from Order where orderNo='"+orderNo+"' and isEnable=1";
+		Order order = commonService.getSingleByHQL(hql);
+		return order;
 	}
 
 }

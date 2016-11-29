@@ -28,8 +28,8 @@ import cn.yznu.rzgskhgl.common.MakeOrderNum;
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.SendSms;
 import cn.yznu.rzgskhgl.pojo.User;
-import cn.yznu.rzgskhgl.service.ICommonService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
@@ -42,6 +42,7 @@ import net.sf.json.JSONObject;
  * @author 张伟
  * 
  */
+@SuppressWarnings("deprecation")
 @Controller
 @RequestMapping("/admin/process")
 public class ProcessController extends BaseController{
@@ -137,6 +138,39 @@ public class ProcessController extends BaseController{
 		JSONObject json = JSONObject.fromObject( map ); 
 		return json;
 	}
+	@RequestMapping(value = "queryUserByNameOrCode", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject queryUserByNameOrCode(HttpServletRequest request) {
+		log.info("查询条件满足的客户");
+		Map<String ,Object> map = new HashMap<String,Object>();
+		Product product = productService.findUniqueByProperty(Product.class, "productNo", request.getParameter("customer"));
+		if(product==null){
+			product = productService.findUniqueByProperty(Product.class, "name", request.getParameter("customer"));
+		}
+		if(product==null){
+			map.put("msg", "error");
+			JSONObject json = JSONObject.fromObject( map ); 
+			return json;
+		}
+			
+		int bmovable = product.getMovable();
+		int bEstate = product.getEstate();
+		int bSolidS = product.getSolidSurfacing();
+		int bCompany = product.getCompany();
+		log.info("产品的购买条件：bmovable=" + bmovable + ",bEstate=" + bEstate + ",bSolidS=" + bSolidS + ",bCompany="
+				+ bCompany);
+		List<User> users = productService.queryBuyUsers(product);
+		System.out.println(">>>" + users);
+		if (users == null || users.size() == 0) {
+			map.put("msg", "没有符合要求的客户");
+		} else {
+			map.put("msg", "success");
+		}
+		map.put("msg", "success");
+		map.put("users", users);
+		JSONObject json = JSONObject.fromObject( map ); 
+		return json;
+	}
 
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "buyProduct", method = RequestMethod.POST)
@@ -180,7 +214,27 @@ public class ProcessController extends BaseController{
 				order.setCreateDate(new Date());
 				order.setIsEnable(1);
 				order.setDescription(product.getDescription());
+				order.setProductName(product.getName());
 				productService.save(order);
+				
+				SendMsg_webchinese sendMsg = new SendMsg_webchinese();
+				String orderStatus2 = sendMsg.orderStatus(orderStatus);
+				SendSms sms = new SendSms();
+				sms.setCreateBy(getSessionUser().getId().toString());
+				sms.setCreateDate(new Date());
+				sms.setCreateName(getSessionUser().getName());
+				sms.setStatus(0);
+				sms.setSmsText("亲，你已成功在XX融资公司购买产品【"+order.getProductName()+"】，订单号：【"+order.getOrderNo()+"】，"
+						+ "订单状态为：【"+orderStatus2+"】。如有问题，请联系tel：1330000000");
+				sms.setSmsMob(user.getTel());
+				processService.saveOrUpdate(sms);
+				/*try {
+					String result = sendMsg.SendMsgForUser(sms);
+					log.info("发送短信返回结果：" + result);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}*/
+				
 				msg = "success";
 			}
 		}
@@ -203,14 +257,38 @@ public class ProcessController extends BaseController{
 			if (user == null) {
 				mv.addObject("orders", new Order());
 			} else {
+					msg = "查询成功";
+					String hql = "from Order where salesMan=? order by  createDate desc";
+					orders = userService.findHql(hql, user.getName());
+			}
+		}
+		mv.addObject("msg", msg);
+		mv.addObject("orders", orders);
+		mv.setViewName("process/orderList");
+		return mv;
+	}
+	@SuppressWarnings("unused")
+	@RequestMapping(value = "allOrderList")
+	public ModelAndView allOrderList() {
+		log.info("查看全部订单列表");
+		ModelAndView mv = new ModelAndView();
+		User user = getSessionUser();
+		List<Order> orders = null;
+		String msg = "";
+		if(user==null){
+			msg = "请登录";
+		}else{
+			List<String> roles = userService.listRoleSnByUser(user);
+			if (user == null) {
+				mv.addObject("orders", new Order());
+			} else {
 				if(roles.contains("ADMIN")){
 					msg = "查询成功";
-					String hql = "from Order where isEnable=1 order by  createDate desc";
+					String hql = "from Order  order by  createDate desc";
 					orders = userService.findHql(Order.class, hql);
 				} else {
-					msg = "查询成功";
-					String hql = "from Order where isEnable=1 and salesMan=? order by  createDate desc";
-					orders = userService.findHql(hql, user.getName());
+					msg = "你没有权限，请联系管理员！";
+					orders = null;
 				}
 			}
 		}
@@ -227,18 +305,44 @@ public class ProcessController extends BaseController{
 		Map<String,Object> map = new HashMap<String,Object>();
 		String orderNo = request.getParameter("orderNo");
 		int status = Integer.parseInt(request.getParameter("status"));
-		Order o = productService.findUniqueByProperty(Order.class, "orderNo", orderNo);
-		o.setOrderStatus(status);
+		Order o = processService.queryOrderbByOrderNo( orderNo);
 		o.setUpdateBy(getSessionUser().getId().toString());
 		o.setUpdateDate(new Date());
 		o.setUpdateName(getSessionUser().getName());
-		userService.save(o);
+		o.setIsEnable(0);
+		userService.saveOrUpdate(o);
+		Order order = new Order();
+		order.setOrderNo(orderNo);
+		order.setOrderStatus(status);
+		order.setBuyName(o.getBuyName());
+		order.setBuyNameId(o.getBuyNameId());
+		order.setProductName(o.getProductName());
+		order.setProductNum(o.getProductNum());
+		order.setProductPrice(o.getProductPrice());
+		order.setDescription(o.getDescription());
+		order.setSalesMan(o.getSalesMan());
+		order.setSalesManId(o.getSalesManId());
+		order.setIsEnable(1);
+		order.setCreateBy(getSessionUser().getId().toString());
+		order.setCreateDate(new Date());
+		order.setCreateName(getSessionUser().getName());
+		productService.save(order);
 		map.put("msg", "success");
 		map.put("id", o.getId());
-		map.put("status", o.getOrderStatus());
-		/*SendMsg_webchinese sendMsg = new SendMsg_webchinese();
-		try {
-			String result = sendMsg.SendMsgForUser("15826215565", o.getOrderStatus());
+		map.put("status", status);
+		User user = userService.getUserByName(o.getBuyName());
+		SendMsg_webchinese sendMsg = new SendMsg_webchinese();
+		String orderStatus = sendMsg.orderStatus(status);
+		SendSms sms = new SendSms();
+		sms.setCreateBy(getSessionUser().getId().toString());
+		sms.setCreateDate(new Date());
+		sms.setCreateName(getSessionUser().getName());
+		sms.setStatus(0);
+		sms.setSmsText("亲，你在XX融资公司购买的产品，订单号：【"+order.getOrderNo()+"】订单状态已更新为：【"+orderStatus+"】。如有问题，请联系tel：1330000000");
+		sms.setSmsMob(user.getTel());
+		processService.saveOrUpdate(sms);
+		/*try {
+			String result = sendMsg.SendMsgForUser(sms);
 			log.info("发送短信返回结果：" + result);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -315,7 +419,76 @@ public class ProcessController extends BaseController{
 			log.error(e);
 		}
 	}
-	
+	@SuppressWarnings("static-access")
+	@RequestMapping("/search")
+	@ResponseBody
+	public JSONObject search(HttpServletRequest request) {
+		log.info("产品购买---搜索产品");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		String estate1 = request.getParameter("estate");
+		String movable1 = request.getParameter("movable");
+		String solidSurfacing1 = request.getParameter("solidSurfacing");
+		String company1 = request.getParameter("company");
+		String productNo = request.getParameter("productNo");
+		
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		
+		
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		String hql = "from Product p where 1=1 ";
+		String hqlCount="select count(*) from Product p where 1=1 ";
+		if(productNo != null && !productNo.equals("")){
+			hql += "and CONCAT(p.name,p.productNo) LIKE '%"+productNo+"%'";
+			hqlCount += "and CONCAT(p.name,p.productNo) LIKE '%"+productNo+"%'";
+		}
+		if(estate1 != null && !estate1.equals("") && !estate1.equals("2")){
+			int estate = Integer.parseInt(estate1);
+			hql += "and p.estate = "+estate+" ";
+			hqlCount += "and p.estate = "+estate+" ";
+		}
+		if(movable1 != null && !movable1.equals("")&&  !movable1.equals("2")){
+			int movable = Integer.parseInt(movable1);
+			hql += "and p.movable = "+movable+" ";
+			hqlCount += "and p.movable = "+movable+" ";
+		}
+		if(solidSurfacing1 != null &&  !solidSurfacing1.equals("")&& !solidSurfacing1.equals("2")){
+			int solidSurfacing = Integer.parseInt(solidSurfacing1);
+			hql += "and p.movable = "+solidSurfacing+" ";
+			hqlCount += "and p.movable = "+solidSurfacing+" ";
+		}
+		if(company1 != null && !company1.equals("")&& company1 != null && !company1.equals("2")){
+			int company = Integer.parseInt(company1);
+			hql += "and p.company = "+company+" ";
+			hqlCount += "and p.company = "+company+" ";
+		}
+		hql += "ORDER BY p.isEnable DESC,p.createDate DESC";
+		List<Product> list = productService.queryForPage(hql, offset,
+				length); // 该分页的记录
+		int count = productService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("products", list);
+		map.put("pb", pb);
+		JSONObject jsonObject = JSONObject.fromObject(map);
+		return jsonObject;
+
+	}
 	
 	
 }

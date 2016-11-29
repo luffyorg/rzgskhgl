@@ -21,5 +21,9 @@ public interface IProcessService extends ICommonService {
 	 * @return
 	 */
 	public HSSFWorkbook createExcel(List<Order> orders, HttpServletRequest request);
-
+	
+	/**
+	 * 根据订单号 和查询订单订单状态为1
+	 */
+	public Order queryOrderbByOrderNo(String orderNo);
 }

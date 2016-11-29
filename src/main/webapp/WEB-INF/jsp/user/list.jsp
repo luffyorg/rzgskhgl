@@ -295,36 +295,36 @@
 				<h3>
 					<a onclick="tc();" class="actionBtn">添加用户</a>
 					自定义用户
-					<input type="text" class="inp_name" placeholder="登录名或手机号"/>
+					<input type="text" class="inp_name" placeholder="登录名或手机号" id="searchName"/>
 						<label class="label_select">房产
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchEstate">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
 						<label class="label_select">动产
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchMovable">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
 						<label class="label_select">公司
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchCompany">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
 						<label class="label_select">实体铺面
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchSolidSurfacing">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
-						<input type="button" value="搜索" class="inp_btn"/>
+						<input type="button" value="搜索" class="inp_btn" onclick="search()"/>
 				</h3>
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
@@ -672,8 +672,14 @@
 	<!--end-->
 </body>
 <script type="text/javascript">
+//页面跳转
 function nextPage(size,page){
-	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
+	var estate = $("#searchEstate").val();
+	var movable = $("#searchMovable").val();
+	var company = $("#searchCompany").val();
+	var solidSurfacing = $("#searchSolidSurfacing").val();
+	var name = $("#searchName").val();
+	 $.get("nextPage?pageSize="+size+"&page="+page+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&name="+name+"", function(data){
 		 //组装表格
 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
@@ -1017,7 +1023,117 @@ function updateUser(){
 			}
 		});
 }
+function search() {
+	var estate = $("#searchEstate").val();
+	var movable = $("#searchMovable").val();
+	var company = $("#searchCompany").val();
+	var solidSurfacing = $("#searchSolidSurfacing").val();
+	var name = $("#searchName").val();
+		$.get("search?pageSize="+10+"&page="+1+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&name="+name+"", function(data){
+		 //组装表格
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		htmlStr += "<tr> <th width='80'>序号</th>"+
+			      "<th width='80'>登录名称</th>"+
+			      "<th width='80'>真实姓名</th>"+
+			      "<th width='80'>电话</th>"+
+			      "<th width='80'>地址</th>"+
+			      "<th width='80'>性别</th>"+
+			      "<th width='80'>总资产</th>"+
+			      "<th width='80'>总负债</th>"+
+			      "<th width='80'>征信情况</th>"+
+			      "<th width='80'>行业</th>"+
+			      "<th width='80'>房产</th>"+
+			      "<th width='80'>动产</th>"+
+			      "<th width='80'>公司</th>"+
+			      "<th width='80'>实体</th>"+
+			      "<th width='80'>产品状态</th>"+
+			      "<th width='80'>操作</th></tr>";
+      var pb=data.pb;
+	    for(var i = 0; i < data.users.length; i++){
+	         var user = data.users[i];
+	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td align='center'>"+user.name+" </td>"+
+				"<td align='center'>"+user.nickName+" </td>"+
+				"<td align='center'>"+user.tel+" </td>"+
+				"<td align='center'>"+user.address+" </td>"+
+				"<td align='center'>"+user.gender+" </td>"+
+				"<td align='center'>"+user.totalAssets+" </td>"+
+				"<td align='center'>"+user.totalLiability+" </td>"+
+				"<td align='center'>"+user.creditConditions+" </td>"+
+				"<td align='center'>"+user.industry+" </td>"
+				if(user.estate==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(user.movable==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(user.company==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(user.solidSurfacing==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				if(user.isEnable==0){
+					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
+								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
+								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
+				}else{
+					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
+							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
+							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
+				}
+	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
+							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"','"+user.nickName+"','"+user.tel+"','"+user.address+"',"+
+											"'"+user.gender+"','"+user.totalAssets+"','"+user.totalLiability+"','"+user.creditConditions+"','"+user.industry+"',"+
+											"'"+user.estate+"','"+user.movable+"','"+user.company+"','"+user.solidSurfacing+"'); class='updateColor'>更新</a> | "+
+							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
+	    }
+	    //组装分页
+	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
+	   
+	    if(pb.currentPage==1){
+	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
+	    }
+	    else{
+	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
+	    }
+	    if(pb.hasPreviousPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
+	    }
+	    if(pb.hasNextPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
+	    }
+	    if(pb.totalPage==pb.currentPage){
+	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
+	    }else{
+	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
+	    }
+	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
+	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
+					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
+	    htmlStr += "</table>";
+	   
+	    $("#main").html(htmlStr);
+	    $(".splitPage").html(htmlPage);
+	   
+	}) 
 
+}
 
 </script>
 <script type="text/javascript">
