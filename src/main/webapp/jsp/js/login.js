@@ -1,4 +1,4 @@
-$("#loginbtn").click(function(){
+	$("#loginbtn").click(function() {
 		var loginname = $("#name").val();
 		var pwd = $("#password").val();
 
@@ -14,13 +14,12 @@ $("#loginbtn").click(function(){
 			contentType : 'application/json',
 			data : JSON.stringify(sendInfo),
 			success : function(data) {
-				if(data.result == "success"){
+				if (data.result == "success") {
 					//alert("登录成功");
-					window.location.href="admin/product/list";
-				}
-				else if(data.result == "usererror"){
+					window.location.href = "admin/index";
+				} else if (data.result == "usererror") {
 					alert("用户名或密码有误");
-				}else {
+				} else {
 					alert("身份验证失败");
 				}
 			},

@@ -26,10 +26,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.common.MakeOrderNum;
 import cn.yznu.rzgskhgl.common.PageBean;
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.SendSms;
 import cn.yznu.rzgskhgl.pojo.User;
+import cn.yznu.rzgskhgl.service.ICustomerService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
@@ -55,6 +57,9 @@ public class ProcessController extends BaseController{
 	
 	@Autowired
 	private IProcessService processService;
+	
+	@Autowired
+	private ICustomerService customerService;
 
 	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
@@ -108,7 +113,7 @@ public class ProcessController extends BaseController{
 			order.setProductPrice(product.getProductPrice());
 			order.setOrderStatus(0);
 			order.setDescription(product.getDescription());
-			mv.addObject("users", productService.queryBuyUsers(product));
+			mv.addObject("users", productService.queryBuyCustomers(product));
 			mv.addObject("order", order);
 		}
 		mv.setViewName("process/order");
@@ -127,14 +132,14 @@ public class ProcessController extends BaseController{
 		int bCompany = product.getCompany();
 		log.info("产品的购买条件：bmovable=" + bmovable + ",bEstate=" + bEstate + ",bSolidS=" + bSolidS + ",bCompany="
 				+ bCompany);
-		List<User> users = productService.queryBuyUsers(product);
-		System.out.println(">>>" + users);
-		if (users == null || users.size() == 0) {
+		List<Customer> customers = productService.queryBuyCustomers(product);
+		System.out.println(">>>" + customers);
+		if (customers == null || customers.size() == 0) {
 			map.put("msg", "没有符合要求的客户");
 		} else {
 			map.put("msg", "success");
 		}
-		map.put("users", users);
+		map.put("customers", customers);
 		JSONObject json = JSONObject.fromObject( map ); 
 		return json;
 	}
@@ -159,15 +164,15 @@ public class ProcessController extends BaseController{
 		int bCompany = product.getCompany();
 		log.info("产品的购买条件：bmovable=" + bmovable + ",bEstate=" + bEstate + ",bSolidS=" + bSolidS + ",bCompany="
 				+ bCompany);
-		List<User> users = productService.queryBuyUsers(product);
-		System.out.println(">>>" + users);
-		if (users == null || users.size() == 0) {
+		List<Customer> customers = productService.queryBuyCustomers(product);
+		System.out.println(">>>" + customers);
+		if (customers == null || customers.size() == 0) {
 			map.put("msg", "没有符合要求的客户");
 		} else {
 			map.put("msg", "success");
 		}
 		map.put("msg", "success");
-		map.put("users", users);
+		map.put("customers", customers);
 		JSONObject json = JSONObject.fromObject( map ); 
 		return json;
 	}
@@ -184,37 +189,41 @@ public class ProcessController extends BaseController{
 		String id = json.getString("id");
 		String buyName = json.getString("buyName");
 		int orderStatus = json.getInt("orderStatus");
-		User u = new User();
+		Customer customer = new Customer();
 		Product product = null;
-		List<User> users = null;
+		List<Customer> customers = null;
 		if(!buyName.equals("")){
-			u = userService.findUniqueByProperty(User.class, "name", buyName);
+			customer = userService.findUniqueByProperty(Customer.class, "name", buyName);
 		}
 		
-		if(u == null || u.equals("")){
+		if(customer == null || customer.equals("")){
 			msg = "购买人不存在！";
 		}else{
 			product = productService.findUniqueByProperty(Product.class, "productNo", id);
-			users = productService.queryBuyUsers(product);
-			if(!users.contains(u)){
+			customers = productService.queryBuyCustomers(product);
+			if(!customers.contains(customer)){
 				msg = "购买人不符合购买条件！";
-			}else if(u.getTotalAssets() < product.getProductPrice()){
+			}/*else if(customer.getTotalAssets() < product.getProductPrice()){
 				msg = "购买人的资产不足以购买止产品！";
-			}else {
+			}else if(!customer.getCreditConditions().equals("合格")){
+				msg = "购买人的征信情况不合格！";
+			}*/
+			else {
 				MakeOrderNum mon = new MakeOrderNum();
 				order.setOrderNo(mon.makeOrderNum());//生成订单号
 				order.setCreateDate(new Date());
 				order.setSalesMan(user.getName());
 				order.setOrderStatus(orderStatus);
 				order.setSalesManId(user.getId());
-				order.setBuyNameId(u.getId());
-				order.setBuyName(u.getName());
+				order.setBuyNameId(customer.getId());
+				order.setBuyName(customer.getName());
 				order.setCreateName(user.getName());
 				order.setCreateBy(user.getId().toString());
 				order.setCreateDate(new Date());
 				order.setIsEnable(1);
 				order.setDescription(product.getDescription());
 				order.setProductName(product.getName());
+				order.setProductPrice(product.getProductPrice());
 				productService.save(order);
 				
 				SendMsg_webchinese sendMsg = new SendMsg_webchinese();
@@ -330,7 +339,7 @@ public class ProcessController extends BaseController{
 		map.put("msg", "success");
 		map.put("id", o.getId());
 		map.put("status", status);
-		User user = userService.getUserByName(o.getBuyName());
+		Customer customer = customerService.load(Customer.class, o.getBuyNameId());
 		SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 		String orderStatus = sendMsg.orderStatus(status);
 		SendSms sms = new SendSms();
@@ -338,8 +347,8 @@ public class ProcessController extends BaseController{
 		sms.setCreateDate(new Date());
 		sms.setCreateName(getSessionUser().getName());
 		sms.setStatus(0);
-		sms.setSmsText("亲，你在XX融资公司购买的产品，订单号：【"+order.getOrderNo()+"】订单状态已更新为：【"+orderStatus+"】。如有问题，请联系tel：1330000000");
-		sms.setSmsMob(user.getTel());
+		sms.setSmsText("亲，你在XX融资公司购买的产品，订单号：【"+order.getOrderNo()+"】订单状态已更新为：【"+orderStatus+"】。如有问题，请联系：1330000000");
+		sms.setSmsMob(customer.getTel());
 		processService.saveOrUpdate(sms);
 		/*try {
 			String result = sendMsg.SendMsgForUser(sms);

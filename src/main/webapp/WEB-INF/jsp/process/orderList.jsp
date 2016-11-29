@@ -163,8 +163,6 @@
 								<td>购买人</td>
 								<td>业务员</td>
 								<td>产品名称</td>
-								<td>产品描述</td>
-								<td>产品价格</td>
 								<td>订单状态</td>
 								<td>创建时间</td>
 								<td>更新时间</td>
@@ -179,9 +177,6 @@
 									<td>${order.buyName }</td>
 									<td>${order.salesMan }</td>
 									<td>${order.productName }</td>
-									<td>${order.description }</td>
-									<td>${order.productPrice }</td>
-
 									<td id="status${order.id }"><c:if
 											test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
 											test="${order.orderStatus  eq 1 }">签订合同</c:if> <c:if
@@ -198,7 +193,7 @@
 												onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a>
 										</c:if>
 										<c:if test="${order.isEnable  eq 0 }">
-											<a>更新状态</a>
+											<a>已失效</a>
 										</c:if></td>
 								</tr>
 							</c:forEach>
@@ -231,7 +226,7 @@
 						<tr>
 							<td height="35" width="100px" align="right">订单状态：</td>
 							<td><select id="orderStatus">
-									<option value="1">与客户签订合同</option>
+									<option value="1">签订合同</option>
 									<option value="2">收齐资料</option>
 									<option value="3">递交渠道处</option>
 									<option value="4">审核阶段</option>
@@ -289,6 +284,7 @@
 						}
 
 						tcclose();
+						window.location.href = "orderList";
 					}
 				});
 	}

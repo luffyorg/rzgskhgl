@@ -28,13 +28,18 @@ public class Product extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "product_no", columnDefinition = ("varchar(50) default null comment '产品编号'"))
 	private String productNo;
+	/**
+	 * 适用对象
+	 */
+	private String suitable;
+	
 	
 	/** 产品介绍 */
 	private String description;
 
-	/** 产品价格*/
+	/** 产品定价*/
 	@Column(name="product_price")
-	private	double productPrice;
+	private	String productPrice;
 	/**
 	 * 房产(1:有,0:无)
 	 */
@@ -86,11 +91,11 @@ public class Product extends BaseEntity implements Serializable {
 		this.description = description;
 	}
 
-	public double getProductPrice() {
+	public String getProductPrice() {
 		return productPrice;
 	}
 
-	public void setProductPrice(double productPrice) {
+	public void setProductPrice(String productPrice) {
 		this.productPrice = productPrice;
 	}
 
@@ -128,6 +133,14 @@ public class Product extends BaseEntity implements Serializable {
 
 	public Product() {
 		super();
+	}
+
+	public String getSuitable() {
+		return suitable;
+	}
+
+	public void setSuitable(String suitable) {
+		this.suitable = suitable;
 	}
 
 }

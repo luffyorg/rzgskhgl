@@ -47,38 +47,14 @@ public class ProductController extends BaseController {
 	@Autowired
 	private IProductService productService;
 
-	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
 	public ModelAndView list(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-		PageBean pb = new PageBean();
-		String pagesize = request.getParameter("pageSize");
-		String page1 = request.getParameter("page");
-		if (pagesize == null || pagesize.equals("")) {
-			pagesize = "10";
-		}
-		if (page1 == null || page1.equals("")) {
-			page1 = "1";
-		}
-		int pageSize = Integer.parseInt(pagesize);
-		int page = Integer.parseInt(page1);
-		int count = productService.getCount(Product.class);
-		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
-		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
-		int length = pageSize; // 每页记录数
-		int currentPage = pb.countCurrentPage(page);
 		String hql = "from Product p where 1=1 ";
 		hql += "ORDER BY p.isEnable DESC,p.createDate DESC";
-		List<Product> list = productService.queryForPage(hql, offset,
-				length); // 该分页的记录
+		List<Product> list = productService.findHql(Product.class, hql); // 该分页的记录
 
-		pb.setList(list);
-		pb.setCurrentPage(currentPage);
-		pb.setPageSize(pageSize);
-		pb.setTotalPage(totalPage);
-		pb.setAllRow(count);
 		mv.addObject("products", list);
-		mv.addObject("pb", pb);
 		mv.setViewName("product/list");
 		return mv;
 	}
@@ -91,7 +67,8 @@ public class ProductController extends BaseController {
 		Map<String, String> map = new HashMap<String, String>();
 		String productName = json.getString("productName");
 		String productNo = json.getString("productNo");
-		double productPrice = json.getDouble("productPrice");
+		String suitable = json.getString("suitable");
+		String productPrice = json.getString("productPrice");
 		String description = json.getString("description");
 		JSONArray conditions = json.getJSONArray("condition");
 		int isEnable = json.getInt("isEnable");
@@ -116,6 +93,7 @@ public class ProductController extends BaseController {
 		p.setName(productName);
 		p.setProductNo(productNo);
 		p.setProductPrice(productPrice);
+		p.setSuitable(suitable);
 		p.setDescription(description);
 		p.setCompany(company);
 		p.setEstate(estate);
@@ -328,7 +306,7 @@ public class ProductController extends BaseController {
 		Product product = productService.load(Product.class, id);
 		String name = json.getString("name");
 		String productNo = json.getString("productNo");
-		double productPrice = json.getDouble("productPrice");
+		String productPrice = json.getString("productPrice");
 		String description = json.getString("description");
 		int estate = json.getInt("estate");
 		int movable = json.getInt("movable");

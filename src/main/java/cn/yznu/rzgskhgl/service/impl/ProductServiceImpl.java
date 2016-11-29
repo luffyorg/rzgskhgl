@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Product;
-import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.ICommonService;
 import cn.yznu.rzgskhgl.service.IProductService;
 
@@ -35,9 +35,9 @@ public class ProductServiceImpl extends CommonServiceimpl implements IProductSer
 	}
 
 	@Override
-	public List<User> queryBuyUsers(Product product) {
+	public List<Customer> queryBuyCustomers(Product product) {
 
-		String hql = "from User where isEnable=1 and estate>=? and movable>=? and  company>=? and solidSurfacing>=?";
+		String hql = "from Customer where isEnable=1 and estate>=? and movable>=? and  company>=? and solidSurfacing>=?";
 		Object[] param = { product.getEstate(), product.getMovable(), product.getCompany(),
 				product.getSolidSurfacing() };
 		return common.findHql(hql, param);

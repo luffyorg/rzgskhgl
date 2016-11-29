@@ -8,9 +8,6 @@
 
 </head>
 <body>
-	<h3 class="admin_link_bar">
-		<jsp:include page="/jsp/common.jsp"></jsp:include>
-	</h3>
-	<h3>你没有权限访问该页面</h3>
+	<h3>你没有权限访问该页面,请联系管理员。</h3>
 </body>
 </html>

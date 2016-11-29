@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IProductService;
@@ -67,11 +68,11 @@ public class BackupController extends BaseController{
 		}
 	}
 	
-	@RequestMapping("user")
+	/*@RequestMapping("user")
 	public void backupUser(HttpServletRequest request,HttpServletResponse response) {
 		log.info("备份用户数据");
 		// 获取需要导出的数据List
-		List<User> users = userService.getAllUsers();
+		List<Customer> users = customerService.getAllCustomers();
 		// 使用方法生成excle模板样式
 		HSSFWorkbook workbook = userService.createExcel(users, request);
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss"); // 定义文件名格式
@@ -86,7 +87,7 @@ public class BackupController extends BaseController{
 		} catch (IOException e) {
 			log.error(e);
 		}
-	}
+	}*/
 	
 
 }

@@ -17,8 +17,11 @@
 					</ul>
 				
 				<ul>
+						<li id="customerli"><a href="${basePath}admin/customer/list"><i
+											class="page"></i><em>客户管理</em></a></li>
 						<li id="productli"><a href="${basePath}admin/product/list"><i
 								class="productCat"></i><em>产品管理</em></a></li>
+								
 				</ul>
 				<ul class="bot">
 					<li id="datali"><a href="${basePath}admin/backup/index"><i class="backup"></i><em>数据备份</em></a></li>

@@ -43,9 +43,9 @@ public class Order extends BaseEntity implements Serializable {
 	/** 产品描述*/
 	private String description;
 	
-	/** 产品价格*/
-	@Column(name = "product_price",columnDefinition =( "double default null comment '产品价格'"))
-	private double productPrice;
+	/** 产品定价*/
+	@Column(name = "product_price")
+	private String productPrice;
 	
 	/** 产品数量*/
 	private int productNum;
@@ -94,11 +94,11 @@ public class Order extends BaseEntity implements Serializable {
 		this.productName = productName;
 	}
 
-	public double getProductPrice() {
+	public String getProductPrice() {
 		return productPrice;
 	}
 
-	public void setProductPrice(double productPrice) {
+	public void setProductPrice(String productPrice) {
 		this.productPrice = productPrice;
 	}
 
