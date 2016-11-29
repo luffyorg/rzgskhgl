@@ -4,17 +4,25 @@ import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import cn.yznu.rzgskhgl.pojo.SendSms;
+import cn.yznu.rzgskhgl.service.IUserService;
+/**
+ * 发送短信 调用接口类
+ * @author zhangwei
+ * @date 2016-11-15
+ */
 public class SendMsg_webchinese {
-
-	public String SendMsgForUser(String tel,int status)throws Exception{
-		String order= orderStatus(status);
-		
+	@Autowired
+	private IUserService userService;
+	public String SendMsgForUser(SendSms sms)throws Exception{
+		String tel = String.valueOf(sms.getSmsMob());
 		HttpClient client = new HttpClient();
 		PostMethod post = new PostMethod("http://gbk.sms.webchinese.cn");
 		post.addRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=gbk");// 在头文件中设置转码
 		NameValuePair[] data = { new NameValuePair("Uid", "我是路小飞"), new NameValuePair("Key", "51575d5643768729ca14"),
-				new NameValuePair("smsMob", tel), new NameValuePair("smsText", "亲，你在snake公司购买的产品，订单状态已更新为："+order+"") };
+				new NameValuePair("smsMob",tel), new NameValuePair("smsText", sms.getSmsText()) };
 		post.setRequestBody(data);
 
 		client.executeMethod(post);
@@ -25,6 +33,8 @@ public class SendMsg_webchinese {
 			System.out.println(h.toString());
 		}
 		String result = new String(post.getResponseBodyAsString().getBytes("gbk"));
+		sms.setStatus(1);
+		userService.saveOrUpdate(sms);
 		System.out.println(result); // 打印返回消息状态
 		post.releaseConnection();
 		return result;
@@ -45,7 +55,7 @@ public class SendMsg_webchinese {
 		}else if(status==7){
 			return "完成";
 		}
-		return "0";
+		return "未更新";
 	}
 
 }

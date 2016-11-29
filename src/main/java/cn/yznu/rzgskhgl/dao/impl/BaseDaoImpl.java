@@ -161,9 +161,9 @@ public class BaseDaoImpl implements IBaseDao {
 				.intResult(getSession().createQuery("select count(*) from " + clazz.getName()).list());
 		return count;
 	}
-	public <T> int getCountByCondition(Class<T> clazz) {
+	public <T> int getCountByCondition(String hql) {
 		int count = DataAccessUtils
-				.intResult(getSession().createQuery("select count(*) from " + clazz.getName()).list());
+				.intResult(getSession().createQuery(hql).list());
 		return count;
 	}
 

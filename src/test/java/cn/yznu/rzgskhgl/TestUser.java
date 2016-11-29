@@ -179,5 +179,11 @@ public class TestUser {
 		}
 			
 	}
-	
+	@Test
+	public void testLogin2(){
+		User u = new User();
+		u.setPassword("111111");
+		u.setName("admin");
+		userService.save(u);
+	}
 }

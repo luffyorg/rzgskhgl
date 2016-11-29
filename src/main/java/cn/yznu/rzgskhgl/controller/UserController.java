@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 import cn.yznu.rzgskhgl.common.PageBean;
+import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
@@ -131,7 +132,7 @@ public class UserController extends BaseController{
 		u.setMovable(movable);
 		u.setSolidSurfacing(solidSurfacing);
 		u.setIsEnable(isEnable);
-		u.setCreateBy(getSessionUser().toString());
+		u.setCreateBy(getSessionUser().getId().toString());
 		u.setCreateDate(new Date());
 		u.setCreateName(getSessionUser().getName());
 		userService.add(u, ridss);
@@ -206,20 +207,56 @@ public class UserController extends BaseController{
 		PageBean pb = new PageBean();
 		String pagesize = request.getParameter("pageSize");
 		String page1 = request.getParameter("page");
-		if(pagesize ==null || pagesize.equals("")){
+		String estate1 = request.getParameter("estate");
+		String movable1 = request.getParameter("movable");
+		String solidSurfacing1 = request.getParameter("solidSurfacing");
+		String company1 = request.getParameter("company");
+		String name = request.getParameter("name");
+		
+		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
 		}
-		if(page1 ==null || page1.equals("")){
+		if (page1 == null || page1.equals("")) {
 			page1 = "1";
 		}
 		int pageSize = Integer.parseInt(pagesize);
 		int page = Integer.parseInt(page1);
-		int count = userService.getCount(User.class);
-		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		
+		
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<User> list = userService.queryForPage("from User ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
+		String hql = "from User u where 1=1 ";
+		String hqlCount="select count(*) from User u where 1=1 ";
+		if(name != null && !name.equals("")){
+			hql += "and CONCAT(u.name,u.tel) LIKE '%"+name+"%'";
+			hqlCount += "and CONCAT(u.name,u.tel) LIKE '%"+name+"%'";
+		}
+		if(estate1 != null && !estate1.equals("") && !estate1.equals("2")){
+			int estate = Integer.parseInt(estate1);
+			hql += "and u.estate = "+estate+" ";
+			hqlCount += "and u.estate = "+estate+" ";
+		}
+		if(movable1 != null && !movable1.equals("")&&  !movable1.equals("2")){
+			int movable = Integer.parseInt(movable1);
+			hql += "and u.movable = "+movable+" ";
+			hqlCount += "and u.movable = "+movable+" ";
+		}
+		if(solidSurfacing1 != null &&  !solidSurfacing1.equals("")&& !solidSurfacing1.equals("2")){
+			int solidSurfacing = Integer.parseInt(solidSurfacing1);
+			hql += "and u.movable = "+solidSurfacing+" ";
+			hqlCount += "and u.movable = "+solidSurfacing+" ";
+		}
+		if(company1 != null && !company1.equals("")&& company1 != null && !company1.equals("2")){
+			int company = Integer.parseInt(company1);
+			hql += "and u.company = "+company+" ";
+			hqlCount += "and u.company = "+company+" ";
+		}
+		hql += "ORDER BY u.isEnable DESC,u.createDate DESC";
+		List<Product> list = userService.queryForPage(hql, offset,
+				length); // 该分页的记录
+		int count = userService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -227,8 +264,8 @@ public class UserController extends BaseController{
 		pb.setAllRow(count);
 		map.put("users", list);
 		map.put("pb", pb);
-		JSONObject json = JSONObject.fromObject( map ); 
-		return json;
+		JSONObject jsonObject = JSONObject.fromObject(map);
+		return jsonObject;
 	}
 	/**
 	 * 根据用户id获取用户的所以角色id
@@ -322,5 +359,74 @@ public class UserController extends BaseController{
 		userService.saveOrUpdate(user);
 		return "success";
 	}
-	
+	@SuppressWarnings("static-access")
+	@RequestMapping("/search")
+	@ResponseBody
+	public JSONObject search(HttpServletRequest request) {
+		log.info("搜索用户");
+		Map<String,Object> map = new HashMap<String,Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		String estate1 = request.getParameter("estate");
+		String movable1 = request.getParameter("movable");
+		String solidSurfacing1 = request.getParameter("solidSurfacing");
+		String company1 = request.getParameter("company");
+		String name = request.getParameter("name");
+		
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+		
+		
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		String hql = "from User u where 1=1 ";
+		String hqlCount="select count(*) from User u where 1=1 ";
+		if(name != null && !name.equals("")){
+			hql += "and CONCAT(u.name,u.tel) LIKE '%"+name+"%'";
+			hqlCount += "and CONCAT(u.name,u.tel) LIKE '%"+name+"%'";
+		}
+		if(estate1 != null && !estate1.equals("") && !estate1.equals("2")){
+			int estate = Integer.parseInt(estate1);
+			hql += "and u.estate = "+estate+" ";
+			hqlCount += "and u.estate = "+estate+" ";
+		}
+		if(movable1 != null && !movable1.equals("")&&  !movable1.equals("2")){
+			int movable = Integer.parseInt(movable1);
+			hql += "and u.movable = "+movable+" ";
+			hqlCount += "and u.movable = "+movable+" ";
+		}
+		if(solidSurfacing1 != null &&  !solidSurfacing1.equals("")&& !solidSurfacing1.equals("2")){
+			int solidSurfacing = Integer.parseInt(solidSurfacing1);
+			hql += "and u.movable = "+solidSurfacing+" ";
+			hqlCount += "and u.movable = "+solidSurfacing+" ";
+		}
+		if(company1 != null && !company1.equals("")&& company1 != null && !company1.equals("2")){
+			int company = Integer.parseInt(company1);
+			hql += "and u.company = "+company+" ";
+			hqlCount += "and u.company = "+company+" ";
+		}
+		hql += "ORDER BY u.isEnable DESC,u.createDate DESC";
+		List<Product> list = userService.queryForPage(hql, offset,
+				length); // 该分页的记录
+		int count = userService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("users", list);
+		map.put("pb", pb);
+		JSONObject jsonObject = JSONObject.fromObject(map);
+		return jsonObject;
+
+	}
 }

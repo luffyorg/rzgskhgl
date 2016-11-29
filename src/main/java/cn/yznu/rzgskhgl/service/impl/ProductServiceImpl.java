@@ -250,5 +250,9 @@ public class ProductServiceImpl extends CommonServiceimpl implements IProductSer
 	       
 		return workbook;  
 	} 
-
+	@Override
+	public List<Product> searchProduct(Product product){
+		
+		return null;
+	}
 }

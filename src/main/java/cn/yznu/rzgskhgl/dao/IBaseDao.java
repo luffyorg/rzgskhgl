@@ -112,6 +112,12 @@ public interface IBaseDao {
 	 * @return
 	 */
 	public <T> int getCount(Class<T> clazz);
+	/**
+	 * 查询总记录数 根据参数
+	 * @param clazz
+	 * @return
+	 */
+	public <T> int getCountByCondition(String hql);
 
 	public <T> List<T> findHql(String hql, Object... param);
 	/**

@@ -18,25 +18,30 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
+<script type="text/javascript" src="${basePath }static/js/echarts.js"></script>
 </head>
 <style type="text/css">
-.updateColor{
-	color:#05cc88;
-	cursor:pointer;
+.updateColor {
+	color: #05cc88;
+	cursor: pointer;
 }
-.deleteColor{
-color:#ee6450;
-cursor:pointer;
+
+.deleteColor {
+	color: #ee6450;
+	cursor: pointer;
 }
-.setReColor{
-color:#ea8010;
-cursor:pointer;
+
+.setReColor {
+	color: #ea8010;
+	cursor: pointer;
 }
-.cursorpointer{
-cursor:pointer;
+
+.cursorpointer {
+	cursor: pointer;
 }
-.cursorauto{
-cursor:Default;
+
+.cursorauto {
+	cursor: Default;
 }
 /**弹窗样式开始**/
 .tc {
@@ -96,17 +101,17 @@ cursor:Default;
 
 <script type="text/javascript">
 	/**弹窗效果开始**/
-	function tc(orderNo,buyName,productName,status) {
+	function tc(orderNo, buyName, productName, status) {
 		$("#orderNo").val(orderNo);
 		$("#productName").val(productName);
 		$("#buyName").val(buyName);
 		var selectTag = document.getElementById("orderStatus");
 		var options = selectTag.getElementsByTagName("option");
-		for(var i=0;i<options.length;i++){
-		  var value = options[i].value;
-		  if(value==status){
-		    options[i].setAttribute("selected","true");
-		  }
+		for (var i = 0; i < options.length; i++) {
+			var value = options[i].value;
+			if (value == status) {
+				options[i].setAttribute("selected", "true");
+			}
 		}
 
 		$("body").append("<div id='mask'></div>");
@@ -143,7 +148,10 @@ cursor:Default;
 			<div id="urHere">订单列表</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
-				<h3><a onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单</h3>
+				<h3>
+					<a onclick="excelOrder();" class="actionBtn"
+						style="cursor: pointer;">导出excel</a>订单
+				</h3>
 				<div id="msg"></div>
 				<div class="navList" id="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
@@ -174,17 +182,24 @@ cursor:Default;
 									<td>${order.description }</td>
 									<td>${order.productPrice }</td>
 
-									<td id="status${order.id }"><c:if test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
-											test="${order.orderStatus  eq 1 }">与客户签订合同</c:if> <c:if
+									<td id="status${order.id }"><c:if
+											test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
+											test="${order.orderStatus  eq 1 }">签订合同</c:if> <c:if
 											test="${order.orderStatus  eq 2 }">收齐资料</c:if> <c:if
 											test="${order.orderStatus  eq 3 }">递交渠道处</c:if> <c:if
 											test="${order.orderStatus  eq 4 }">审核阶段</c:if> <c:if
 											test="${order.orderStatus  eq 5 }">下款</c:if> <c:if
 											test="${order.orderStatus  eq 6 }">收费</c:if> <c:if
 											test="${order.orderStatus  eq 7 }">完成服务</c:if></td>
-											<td>${order.createDate }</td>
-											<td>${order.updateDate }</td>
-									<td><a  class="updateColor" onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a></td>
+									<td>${order.createDate }</td>
+									<td>${order.updateDate }</td>
+									<td><c:if test="${order.isEnable  eq 1 }">
+											<a class="updateColor"
+												onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a>
+										</c:if>
+										<c:if test="${order.isEnable  eq 0 }">
+											<a>更新状态</a>
+										</c:if></td>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -193,35 +208,36 @@ cursor:Default;
 				<!--弹窗开始 -->
 				<div class="tc">
 					<div class="tc1">
-						更新状态<img src="${basePath}static/images/closed.png" onclick="tcclose()"
+						更新状态<img src="${basePath}static/images/closed.png"
+							onclick="tcclose()"
 							style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 					</div>
 					<table>
 						<tr>
 							<td height="35" width="25%" align="right">订单号：</td>
 							<td><input type="text" name="orderNo" id="orderNo" value=""
-								size="80" class="inpMain" readonly="readonly"/></td>
+								size="80" class="inpMain" readonly="readonly" /></td>
 						</tr>
 						<tr>
 							<td height="35" width="25%" align="right">产品名称：</td>
-							<td><input type="text" name="productName" id="productName" value=""
-								size="80" class="inpMain"  readonly="readonly"/></td>
+							<td><input type="text" name="productName" id="productName"
+								value="" size="80" class="inpMain" readonly="readonly" /></td>
 						</tr>
 						<tr>
 							<td height="35" width="100px" align="right">购买人：</td>
-							<td><input type="text" name="buyName" id="buyName" value="" size="80"
-								class="inpMain" readonly="readonly"/></td>
+							<td><input type="text" name="buyName" id="buyName" value=""
+								size="80" class="inpMain" readonly="readonly" /></td>
 						</tr>
 						<tr>
 							<td height="35" width="100px" align="right">订单状态：</td>
 							<td><select id="orderStatus">
-								<option value="1">与客户签订合同</option>
-								<option value="2">收齐资料</option>
-								<option value="3">递交渠道处</option>
-								<option value="4">审核阶段</option>
-								<option value="5">下款</option>
-								<option value="6">收费</option>
-								<option value="7">完成服务</option>
+									<option value="1">与客户签订合同</option>
+									<option value="2">收齐资料</option>
+									<option value="3">递交渠道处</option>
+									<option value="4">审核阶段</option>
+									<option value="5">下款</option>
+									<option value="6">收费</option>
+									<option value="7">完成服务</option>
 							</select></td>
 						</tr>
 						<tr>
@@ -232,64 +248,63 @@ cursor:Default;
 					</table>
 				</div>
 				<!--弹窗结束-->
-				
+				<div id="s1" class="scatter" name="dten" style="display: block;">
+					<div style="margin: 20px 0; height: 325px; width: 946px;" id="main"></div>
+
+				</div>
 			</div>
-			
+
 		</div>
-		
+
 	</div>
 	<!--底部开始-->
-		<%@ include file="../include/footer.jsp"%>
-		<!--底部结束-->
-		<div class="clear"></div>
+	<%@ include file="../include/footer.jsp"%>
+	<!--底部结束-->
+	<div class="clear"></div>
 </body>
 <script type="text/javascript">
-
+	
 </script>
 <script type="text/javascript">
-function updateOrder(){
-	var orderNo = $("#orderNo").val();
-	var status = $("#orderStatus").val();
-	$.post("updateOrder?orderNo="+orderNo+"&status="+status+"", function(data) {
-		if(data.msg=="success"){
-			if(data.status==1){
-				$("#status"+data.id+"").html("签订合同");
+	function updateOrder() {
+		var orderNo = $("#orderNo").val();
+		var status = $("#orderStatus").val();
+		$.post("updateOrder?orderNo=" + orderNo + "&status=" + status + "",
+				function(data) {
+					if (data.msg == "success") {
+						if (data.status == 1) {
+							$("#status" + data.id + "").html("签订合同");
+						} else if (data.status == 2) {
+							$("#status" + data.id + "").html("收齐资料");
+						} else if (data.status == 3) {
+							$("#status" + data.id + "").html("递交渠道处");
+						} else if (data.status == 4) {
+							$("#status" + data.id + "").html("审核阶段");
+						} else if (data.status == 5) {
+							$("#status" + data.id + "").html("下款");
+						} else if (data.status == 6) {
+							$("#status" + data.id + "").html("收费");
+						} else {
+							$("#status" + data.id + "").html("完成服务");
+						}
+
+						tcclose();
+					}
+				});
+	}
+	function excelOrder() {
+		$.ajax({
+			type : "POST",
+			url : "exportOrder",
+			success : function(data) {
+				window.open('exportOrder');
 			}
-			else if(data.status==2){
-				$("#status"+data.id+"").html("收齐资料");
-			}
-			else if(data.status==3){
-				$("#status"+data.id+"").html("递交渠道处");
-			}
-			else if(data.status==4){
-				$("#status"+data.id+"").html("审核阶段");
-			}
-			else if(data.status==5){
-				$("#status"+data.id+"").html("下款");
-			}
-			else if(data.status==6){
-				$("#status"+data.id+"").html("收费");
-			}
-			else{
-				$("#status"+data.id+"").html("完成服务");
-			}
-			
-			
-			tcclose();
-		}
-	});
-}
-function excelOrder(){  
-    $.ajax({  
-        type:"POST",  
-        url:"exportOrder",  
-        success:function(data){  
-            window.open('exportOrder');  
-        }  
-          
-    });  
-}  
+
+		});
+	}
 </script>
+
+
 <script type="text/javascript">
 </script>
 </html>

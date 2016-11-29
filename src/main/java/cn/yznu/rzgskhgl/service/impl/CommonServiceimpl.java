@@ -102,6 +102,10 @@ public class CommonServiceimpl implements ICommonService {
 	public <T> int getCount(Class<T> clazz) {
 		return dao.getCount(clazz);
 	}
+	@Override
+	public <T> int getCountByParam(String hql) {
+		return dao.getCountByCondition(hql);
+	}
 
 	@Override
 	public <T> List<T> findHql(String hql, Object... param) {

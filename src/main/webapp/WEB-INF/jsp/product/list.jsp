@@ -131,7 +131,7 @@
 	line-height:30px;
 	border:1px solid #d8d8d8;
 	border-radius:4px;
-	font-size:16px;
+	font-size:13px;
 	color:#333;
 	font-family:'微软雅黑';
 	margin-left:10px;
@@ -269,36 +269,36 @@ $(function(){
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
 					产品管理
-					<input type="text" class="inp_name" placeholder="登录名或手机号"/>
+					<input type="text" class="inp_name" placeholder="产品名称或产品编号" id="searchProductNo"/>
 						<label class="label_select">房产
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchEstate">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
 						<label class="label_select">动产
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchMovable">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
 						<label class="label_select">公司
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchCompany">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
 						<label class="label_select">实体铺面
-						<select style="width:60px;height:30px;">
+						<select style="width:60px;height:30px;" id="searchSolidSurfacing">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
 						</select>
 						</label>
-						<input type="button" value="搜索" class="inp_btn"/>
+						<input type="button" value="搜索" class="inp_btn" id="search" onclick="search();"/>
 					<form name="upform" action="upload" method="POST"
 						onsubmit="return yz();" enctype="multipart/form-data">
 						<div class="R_right" style="float:right;margin-top:-40px;">
@@ -579,7 +579,12 @@ function updateStatus(id,isEnable){
 }
 
 function nextPage(size,page){
-	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
+	var estate = $("#searchEstate").val();
+	var movable = $("#searchMovable").val();
+	var company = $("#searchCompany").val();
+	var solidSurfacing = $("#searchSolidSurfacing").val();
+	var productNo = $("#searchProductNo").val();
+	 $.get("nextPage?pageSize="+size+"&page="+page+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
 		 //组装表格
 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
@@ -688,7 +693,7 @@ function addProduct(){
 		if(obj[i].checked) {
 			condition[i]=obj[i].value;
 		}else{
-			condition[i]=0;
+			condition[i]="0";
 		}
 	} 
 	var name = $("#productName").val();
@@ -785,5 +790,106 @@ function updateUser(){
 			}
 		});
 }
+/**
+ * 搜索产品
+ */
+ 
+ function search(){
+	var estate = $("#searchEstate").val();
+	var movable = $("#searchMovable").val();
+	var company = $("#searchCompany").val();
+	var solidSurfacing = $("#searchSolidSurfacing").val();
+	var productNo = $("#searchProductNo").val();
+	 $.get("search?pageSize="+10+"&page="+1+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
+		 //组装表格
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		htmlStr += "<tr> <th width='80'>序号</th>"+
+        "<th width='80'>产品名称</th>"+
+        "<th width='80'>产品编号</th>"+
+        "<th width='80'>产品价格</th>"+
+        "<th width='80'>产品介绍</th>"+
+        "<th width='80'>房产</th>"+
+        "<th width='80'>动产</th>"+
+        "<th width='80'>公司</th>"+
+        "<th width='80'>实体</th>"+
+        "<th width='80'>产品状态</th>"+
+        "<th width='80'>操作</th></tr>";
+        var pb=data.pb;
+	    for(var i = 0; i < data.products.length; i++){
+	         var product = data.products[i];
+	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td align='center'>"+product.name+" </td>"+
+				"<td align='center'>"+product.productNo+" </td>"+
+				"<td align='center'>"+product.productPrice+" </td>"+
+				"<td align='center'>"+product.description+" </td>"
+				if(product.estate==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(product.movable==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(product.company==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				
+				if(product.solidSurfacing==0){
+					htmlStr += "<td align='center'>无";
+				}else
+					htmlStr += "<td align='center'>有";
+				if(product.isEnable==0){
+					htmlStr += "<td align='center' id='updateStatus"+product.id+"'>"+
+					"<span class='stop' id='stop"+product.id +"'>下架 | </span>"+
+					"<a onclick='updateStatus("+product.id +","+product.isEnable+")'"+
+					"class='updateColor' id='start"+product.id+"'> 上架</a></td>";
+				}else{
+					htmlStr += "<td align='center' id='updateStatus"+product.id+"'>"+
+					"<span class='stop' id='stop${product.id }'>上架 | </span>"+
+					"<a onclick='updateStatus("+product.id +","+product.isEnable+")'"+
+					"class='updateColor' id='start"+product.id+"'> 下架</a></td>";
+				}
+	         htmlStr += "<td align='center'><a onclick=updateRes(this,"+product.id+"); class='updateColor'>更新</a></td></tr>";
+	    }
+	    //组装分页
+	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
+	   
+	    if(pb.currentPage==1){
+	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
+	    }
+	    else{
+	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
+	    }
+	    if(pb.hasPreviousPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
+	    }
+	    if(pb.hasNextPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
+	    }
+	    if(pb.totalPage==pb.currentPage){
+	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
+	    }else{
+	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
+	    }
+	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
+	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
+					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
+	    htmlStr += "</table>";
+	   
+	    $("#productList").html(htmlStr);
+	    $("#splitPage").html(htmlPage);
+	   
+	}) 
+}
+
 </script>
 </html>
