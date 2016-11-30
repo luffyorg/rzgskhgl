@@ -124,43 +124,47 @@
 .tips_false {
 	color: red;
 }
-.inp_name{
-	width:120px;
-	height:30px;
-	line-height:30px;
-	border:1px solid #d8d8d8;
-	border-radius:4px;
-	font-size:16px;
-	color:#333;
-	font-family:'微软雅黑';
-	margin-left:10px;
-	padding:0 14px;
-	margin-top:8px;
+
+.inp_name {
+	width: 120px;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #d8d8d8;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #333;
+	font-family: '微软雅黑';
+	margin-left: 10px;
+	padding: 0 14px;
+	margin-top: 8px;
 }
-.label_select{
-	font-size:16px;
-	color:#333;
-	font-family:"微软雅黑";
-	margin-top:-5px;
+
+.label_select {
+	font-size: 16px;
+	color: #333;
+	font-family: "微软雅黑";
+	margin-top: -5px;
 }
-.inp_btn{
-	font-size:16px;
-	color:#fff;
-	font-family:"微软雅黑";
-	height:30px;
-	width:60px;
-	line-height:30px;
-	text-align:center;
-	border:none;
-	border-radius:4px;
-	background-color:#5096fa;
-	margin-top:8px;
-	margin-left:15px;
-	cursor:pointer;
-		}
-	.inp_btn:hover{
-	background-color:#3c87f0;
-	}	
+
+.inp_btn {
+	font-size: 16px;
+	color: #fff;
+	font-family: "微软雅黑";
+	height: 30px;
+	width: 60px;
+	line-height: 30px;
+	text-align: center;
+	border: none;
+	border-radius: 4px;
+	background-color: #5096fa;
+	margin-top: 8px;
+	margin-left: 15px;
+	cursor: pointer;
+}
+
+.inp_btn:hover {
+	background-color: #3c87f0;
+}
 </style>
 
 <script type="text/javascript">
@@ -286,39 +290,51 @@
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="tc();" class="actionBtn">添加客户</a>
-					自定义客户
-					<input type="text" class="inp_name" placeholder="姓名或手机号" id="searchName"/>
-						<label class="label_select">房产
-						<select style="width:60px;height:30px;" id="searchEstate">
+					自定义客户 <input type="text" class="inp_name" placeholder="姓名或手机号"
+						id="searchName" /> <label class="label_select">房产 <select
+						style="width: 60px; height: 30px;" id="searchEstate">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
-						</select>
-						</label>
-						<label class="label_select">动产
-						<select style="width:60px;height:30px;" id="searchMovable">
+					</select>
+					</label> <label class="label_select">动产 <select
+						style="width: 60px; height: 30px;" id="searchMovable">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
-						</select>
-						</label>
-						<label class="label_select">公司
-						<select style="width:60px;height:30px;" id="searchCompany">
+					</select>
+					</label> <label class="label_select">公司 <select
+						style="width: 60px; height: 30px;" id="searchCompany">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
-						</select>
-						</label>
-						<label class="label_select">实体铺面
-						<select style="width:60px;height:30px;" id="searchSolidSurfacing">
+					</select>
+					</label> <label class="label_select">实体铺面 <select
+						style="width: 60px; height: 30px;" id="searchSolidSurfacing">
 							<option value="1">有</option>
 							<option value="0">无</option>
 							<option value="2" selected>--</option>
-						</select>
-						</label>
-						<input type="button" value="搜索" class="inp_btn" onclick="search()"/>
+					</select>
+					</label> <input type="button" value="搜索" class="inp_btn" onclick="search()" />
+					<form name="upform" action="upload" method="POST"
+						onsubmit="return yz();" enctype="multipart/form-data">
+						<div class="R_right" style="float: right; margin-top: -40px;">
+							<input type="file" id="up" value="导入Excel" name="myfile"
+								id="myfile"> <input type="hidden" name="ftype"
+								value="sheet1">
+							<div>
+								<input class="btn default green-stripe" type="submit" value="导入" />
+								<input class="btn default dark-stripe" type="button"
+									onclick="exporBtn()" value="导出客户信息" />
+							</div>
+						</div>
+					</form>
+					<div>
+						<a onclick="tc();"
+							style="display: inline-block; background-color: #0072C6; padding: 0 20px; height: 27px; line-height: 27px; color: #FFFFFF; font-size: 13px; font-weight: bold; cursor: pointer;">添加客户</a>
+					</div>
 				</h3>
+
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
@@ -371,251 +387,257 @@
 												class="updateColor" id="stop${user.id }"> 停用</a>
 										</c:if></td>
 									<td align="center"><shiro:hasAnyRoles name="ADMIN,EMP">
-											<a onclick="tcUpdate('${user.id }','${user.name }','${user.tel }','${user.address }',
+											<a
+												onclick="tcUpdate('${user.id }','${user.name }','${user.tel }','${user.address }',
 											'${user.gender }','${user.totalAssets }','${user.totalLiability }','${user.creditConditions }','${user.industry }',
-											'${user.estate }','${user.movable }','${user.company }','${user.solidSurfacing }');" class="updateColor">更新</a>
+											'${user.estate }','${user.movable }','${user.company }','${user.solidSurfacing }');"
+												class="updateColor">更新</a>
 										</shiro:hasAnyRoles></td>
 								</tr>
 							</c:forEach>
 					</table>
 				</div>
 				<!-- 分页开始 -->
-				<div style="float:right;margin-top:15px;" class="splitPage" id="splitPage">
+				<div style="float: right; margin-top: 15px;" class="splitPage"
+					id="splitPage">
 					<c:if test="${pb.currentPage==1 }">
-						<a  class='cursorauto'>首页</a> 
+						<a class='cursorauto'>首页</a>
 					</c:if>
 					<c:if test="${pb.currentPage!=1 }">
-						<a onclick="nextPage(10,1);" class="cursorpointer">首页</a> 
+						<a onclick="nextPage(10,1);" class="cursorpointer">首页</a>
 					</c:if>
 					<c:if test="${pb.hasPreviousPage==true}">
-						<a onclick="nextPage(10,${pb.currentPage-1});" class="cursorpointer"> ◄上一页</a>
+						<a onclick="nextPage(10,${pb.currentPage-1});"
+							class="cursorpointer"> ◄上一页</a>
 					</c:if>
 					<c:if test="${pb.hasPreviousPage==false}">
-						<a  class='cursorauto'> ◄上一页</a>
+						<a class='cursorauto'> ◄上一页</a>
 					</c:if>
 					<c:if test="${pb.hasNextPage==true }">
-						<a onclick="nextPage(10,${pb.currentPage+1});" class="cursorpointer">下一页► </a> 
+						<a onclick="nextPage(10,${pb.currentPage+1});"
+							class="cursorpointer">下一页► </a>
 					</c:if>
 					<c:if test="${pb.hasNextPage==false }">
-						<a class='cursorauto'>下一页► </a> 
+						<a class='cursorauto'>下一页► </a>
 					</c:if>
 					<c:if test="${pb.totalPage==pb.currentPage }">
-						<a  class='cursorauto'>末页</a> 
+						<a class='cursorauto'>末页</a>
 					</c:if>
 					<c:if test="${pb.totalPage!=pb.currentPage }">
-						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a> 
+						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a>
 					</c:if>
-					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第
-					<input  id="goInput" value='' style="border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;" />页,
-					<input type="button" class='cursorpointer'
-						value="搜索" onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
+					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第 <input
+						id="goInput" value=''
+						style="border: 1px solid #d8d8d8; width: 40px; height: 17px; line-height: 17px; text-align: center;" />页,
+					<input type="button" class='cursorpointer' value="搜索"
+						onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
 				</div>
 				<!-- 分页结束 -->
-		</div>
-		<!--主体内容部分结束-->
-
-
-		<!--弹窗开始-->
-		<div class="tc">
-			<div class="tc1">
-				添加客户<img src="${basePath}static/images/closed.png"
-					onclick="tcclose()"
-					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
-			<table>
-				<tr>
-					<td height="35" align="right">姓名：</td>
-					<td><input type="text" id="addName" onblur="isname2()"
-						value="" size="80" class="inpMain" placeholder="内容为2~7个汉字" maxlength="7"/> <span
-						class="tips" id="divname2">内容为2~7个汉字</span></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">电话：</td>
-					<td><input type="text" name="addTel" id="addTel" value="" onblur="checkTel()" onkeydown="onlyNum();" maxlength="11"
-						size="80" class="inpMain" /><span class="tips" id="divtel">请输入正确手机号码</span></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">地址：</td>
-					<td><input type="text" name="addAddress" id="addAddress"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">性别：</td>
-					<td><select name="addSex" id="addSex">
-							<option value="男">男</option>
-							<option value="女" selected>女</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">总资产：</td>
-					<td><input type="text" name="addtotalAssets"
-						id="addtotalAssets" value="" size="80" class="inpMain" onkeyup="checkTotalAssets()" onkeydown="onlyNum2();"/>
-						<span class="tips" id="divtotalAssets"></span></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">总负债：</td>
-					<td><input type="text" name="addtotalLiability"
-						id="addtotalLiability" value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">征信情况：</td>
-					<td>
-						<select id="addcreditConditions">
-							<option value="合格" selected="selected">合格</option>
-							<option value="不合格">不合格</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td height="35" align="right">行业：</td>
-					<td><input type="text" name="addindustry" id="addindustry"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">房产：</td>
-					<td><select name="addestate" id="addestate">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">动产：</td>
-					<td><select name="addmovable" id="addmovable">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">公司：</td>
-					<td><select name="addcompany" id="addcompany">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">实体铺面：</td>
-					<td><select name="addsolidSurfacing" id="addsolidSurfacing">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">状态：</td>
-					<td><select name="addisEnable" id="addisEnable">
-							<option value="1">启用</option>
-							<option value="0" selected>停用</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input name="button" class="btn" type="button"
-						onclick="addCustomer();" value="确认提交" /></td>
-				</tr>
-			</table>
-		</div>
-		<!--弹窗结束-->
+			<!--主体内容部分结束-->
 
-		<!--弹窗开始 更新 -->
-		<div class="tcUpdate">
-			<div class="tc1">
-				客户信息更新<img src="${basePath}static/images/closed.png"
-					onclick="tcupclose()"
-					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+
+			<!--弹窗开始-->
+			<div class="tc">
+				<div class="tc1">
+					添加客户<img src="${basePath}static/images/closed.png"
+						onclick="tcclose()"
+						style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+				</div>
+				<table>
+					<tr>
+						<td height="35" align="right">姓名：</td>
+						<td><input type="text" id="addName" onblur="isname2()"
+							value="" size="80" class="inpMain" placeholder="内容为2~7个汉字"
+							maxlength="7" /> <span class="tips" id="divname2">内容为2~7个汉字</span></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">电话：</td>
+						<td><input type="text" name="addTel" id="addTel" value=""
+							onblur="checkTel()" onkeydown="onlyNum();" maxlength="11"
+							size="80" class="inpMain" /><span class="tips" id="divtel">请输入正确手机号码</span></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">地址：</td>
+						<td><input type="text" name="addAddress" id="addAddress"
+							value="" size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">性别：</td>
+						<td><select name="addSex" id="addSex">
+								<option value="男">男</option>
+								<option value="女" selected>女</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">总资产(万元)：</td>
+						<td><input type="text" name="addtotalAssets" maxlength="11"
+							id="addtotalAssets" value="" size="80" class="inpMain"
+							onkeyup="checkTotalAssets()" /> <span class="tips"
+							id="divtotalAssets">可保留两位小数</span></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">总负债(万元)：</td>
+						<td><input type="text" name="addtotalLiability"
+							onkeyup="checkTotalLiability()" maxlength="11"
+							id="addtotalLiability" value="" size="80" class="inpMain" /> <span
+							class="tips" id="divtotalLiability">可保留两位小数</span></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">征信情况：</td>
+						<td><select id="addcreditConditions">
+								<option value="合格" selected="selected">合格</option>
+								<option value="不合格">不合格</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">行业：</td>
+						<td><input type="text" name="addindustry" id="addindustry"
+							value="" size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">房产：</td>
+						<td><select name="addestate" id="addestate">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">动产：</td>
+						<td><select name="addmovable" id="addmovable">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">公司：</td>
+						<td><select name="addcompany" id="addcompany">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">实体铺面：</td>
+						<td><select name="addsolidSurfacing" id="addsolidSurfacing">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">状态：</td>
+						<td><select name="addisEnable" id="addisEnable">
+								<option value="1">启用</option>
+								<option value="0" selected>停用</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input name="button" class="btn" type="button"
+							onclick="addCustomer();" value="确认提交" /></td>
+					</tr>
+				</table>
 			</div>
-			<table>
-				<tr style="display:none">
-					<td height="35" align="right">用户标识：</td>
-					<td><input type="text" name="upId" id="upId" value=""
-						size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">姓 名：</td>
-					<td><input type="text" name="upName" id="upName"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">电 话：</td>
-					<td><input type="text" name="upTel" id="upTel" value=""
-						size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">地 址：</td>
-					<td><input type="text" name="upAddress" id="upAddress"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">性 别：</td>
-					<td><select name="upSex" id="upSex">
-							<option value="男">男</option>
-							<option value="女" selected>女</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">资 产：</td>
-					<td><input type="text" name="upTotalAssets" id="upTotalAssets"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">负 债：</td>
-					<td><input type="text" name="upTotalLiability"
-						id="upTotalLiability" value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">征信情况：</td>
-					<td>
-						<select id="upcreditConditions">
-							<option value="合格" selected="selected">合格</option>
-							<option value="不合格">不合格</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td height="35" align="right">行业：</td>
-					<td><input type="text" name="upindustry" id="upindustry"
-						value="" size="80" class="inpMain" /></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">房产：</td>
-					<td><select name="upestate" id="upestate">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">动产：</td>
-					<td><select name="upmovable" id="upmovable">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">公司：</td>
-					<td><select name="upcompany" id="upcompany">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td height="35" align="right">实体铺面：</td>
-					<td><select name="upsolidSurfacing" id="upsolidSurfacing">
-							<option value="1">有</option>
-							<option value="0" selected>无</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input id="updateBtn" class="btn" type="button" value="提交"
-						onclick="updateCustomer();" /></td>
-				</tr>
-			</table>
-		</div>
-		<!--弹窗结束-->
+			<!--弹窗结束-->
+
+			<!--弹窗开始 更新 -->
+			<div class="tcUpdate">
+				<div class="tc1">
+					客户信息更新<img src="${basePath}static/images/closed.png"
+						onclick="tcupclose()"
+						style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+				</div>
+				<table>
+					<tr style="display: none">
+						<td height="35" align="right">用户标识：</td>
+						<td><input type="text" name="upId" id="upId" value=""
+							size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">姓 名：</td>
+						<td><input type="text" name="upName" id="upName" value=""
+							size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">电 话：</td>
+						<td><input type="text" name="upTel" id="upTel" value=""
+							size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">地 址：</td>
+						<td><input type="text" name="upAddress" id="upAddress"
+							value="" size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">性 别：</td>
+						<td><select name="upSex" id="upSex">
+								<option value="男">男</option>
+								<option value="女" selected>女</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">资 产：</td>
+						<td><input type="text" name="upTotalAssets"
+							id="upTotalAssets" value="" size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">负 债：</td>
+						<td><input type="text" name="upTotalLiability"
+							id="upTotalLiability" value="" size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">征信情况：</td>
+						<td><select id="upcreditConditions">
+								<option value="合格" selected="selected">合格</option>
+								<option value="不合格">不合格</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">行业：</td>
+						<td><input type="text" name="upindustry" id="upindustry"
+							value="" size="80" class="inpMain" /></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">房产：</td>
+						<td><select name="upestate" id="upestate">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">动产：</td>
+						<td><select name="upmovable" id="upmovable">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">公司：</td>
+						<td><select name="upcompany" id="upcompany">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td height="35" align="right">实体铺面：</td>
+						<td><select name="upsolidSurfacing" id="upsolidSurfacing">
+								<option value="1">有</option>
+								<option value="0" selected>无</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input id="updateBtn" class="btn" type="button"
+							value="提交" onclick="updateCustomer();" /></td>
+					</tr>
+				</table>
+			</div>
+			<!--弹窗结束-->
 
 
-		<!--底部开始-->
-		<%@ include file="../include/footer.jsp"%>
-		<!--底部结束-->
-		<div class="clear"></div>
+			<!--底部开始-->
+			<%@ include file="../include/footer.jsp"%>
+			<!--底部结束-->
+			<div class="clear"></div>
 		</div>
 	</div>
 	<!--end-->
@@ -835,8 +857,10 @@ function isname2(){
 	if (!patrn.exec(nickName)) 
 	{  	
 		divname2.innerHTML='<font class="tips_false">内容为2~7个汉字</font>';
+		return false;
 	}else{  
 		divname2.innerHTML='<font class="tips_true">输入正确</font>';
+		return true;
 	}  
 }
 
@@ -845,8 +869,12 @@ function checkTel(){
 	var patrn = /^1[34578]\d{9}$/;
 	if (!patrn.exec(tel)){
 		divtel.innerHTML='<font class="tips_false">请输入正确号码</font>';
-	}else
+		return false;
+	}else{
 		divtel.innerHTML='<font class="tips_true">输入正确</font>';
+		return true;
+	}
+		
 }
 function onlyNum(){
     if(!(event.keyCode==46)&&!(event.keyCode==8)&&!(event.keyCode==37)&&!(event.keyCode==39))
@@ -861,11 +889,30 @@ function onlyNum2(){
 function checkTotalAssets(){
 	var totalAssets = $("#addtotalAssets").val();
 	var patrn = /^[0-9]+$|^[0-9]+\.[0-9]{1,2}$/;
+	//var patrn = /^[0-9]+(.[0-9]{1,2})?$ /;
 	if(!patrn.exec(totalAssets)){
 		divtotalAssets.innerHTML='<font class="tips_false">输入类型错误</font>';
+		return false;
 	}
-	else
+	else {
 		divtotalAssets.innerHTML='<font class="tips_true">输入正确</font>';
+		return true;
+	}
+		
+}
+function checkTotalLiability(){
+	var totalAssets = $("#addtotalLiability").val();
+	var patrn = /^[0-9]+$|^[0-9]+\.[0-9]{1,2}$/;
+	//var patrn = /^[0-9]+(.[0-9]{1,2})?$ /;
+	if(!patrn.exec(totalAssets)){
+		divtotalLiability.innerHTML='<font class="tips_false">输入类型错误</font>';
+		return false;
+	}
+	else {
+		divtotalLiability.innerHTML='<font class="tips_true">输入正确</font>';
+		return true;
+	}
+		
 }
 
 function updateCustomer(){
@@ -1037,7 +1084,22 @@ function search() {
 	}) 
 
 }
-
+function exporBtn(){  
+	var estate = $("#searchEstate").val();
+	var movable = $("#searchMovable").val();
+	var company = $("#searchCompany").val();
+	var solidSurfacing = $("#searchSolidSurfacing").val();
+	var name = $("#searchName").val();
+    $.ajax({  
+        type:"POST",  
+        url:"exportCustomer?estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&name="+name+"",  
+        dataType: "text",  
+        success:function(data){  
+            window.open('exportCustomer?estate='+estate+'&movable='+movable+'&company='+company+'&solidSurfacing='+solidSurfacing+'&name='+name+'');  
+        }  
+          
+    });  
+}  
 </script>
 <script type="text/javascript">
 $("#customerli").addClass("cur");

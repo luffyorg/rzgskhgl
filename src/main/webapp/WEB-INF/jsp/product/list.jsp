@@ -308,14 +308,11 @@ $(function(){
 							<div>
 								<input class="btn default green-stripe" type="submit" value="导入" />
 								<input class="btn default dark-stripe" type="button"
-									onclick=""
-									value="模板" />
-								<input class="btn default dark-stripe" type="button"
 									onclick="exporBtn()"
 									value="导出产品" />
 							</div>
 						</div>
-					</form>${msg }
+					</form>
 				</h3>
 				<script type="text/javascript">
      

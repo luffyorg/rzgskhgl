@@ -230,7 +230,6 @@ public class ProductController extends BaseController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
-	@ResponseBody
 	public String upload(@RequestParam("myfile") MultipartFile file, HttpServletRequest request,
 			HttpServletResponse response) {
 		log.info("上传excel 产品数据");
@@ -261,6 +260,12 @@ public class ProductController extends BaseController {
 					"company", "solidSurfacing" };
 			Product product = new Product();
 			List<Product> list = excelManage.readFromExcel(product, names, 1);
+			for(Product c : list){
+				c.setIsEnable(1);
+				c.setCreateDate(new Date());
+				c.setCreateBy(getSessionUser().getId().toString());
+				c.setCreateName(getSessionUser().getName());
+			}
 			System.out.println(list.size() + ">>>>>>>>>>>>>>>size");
 			productService.batchSave(list);
 		} catch (Exception e) {
@@ -268,7 +273,7 @@ public class ProductController extends BaseController {
 			return msg;
 		}
 
-		return "导入成功";
+		return "redirect:list";
 	}
 
 	@RequestMapping("exportProduct")

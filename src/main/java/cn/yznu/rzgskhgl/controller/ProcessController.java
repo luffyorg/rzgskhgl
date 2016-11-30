@@ -2,6 +2,7 @@ package cn.yznu.rzgskhgl.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +36,10 @@ import cn.yznu.rzgskhgl.service.ICustomerService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * 业务流程处理 控制类
@@ -303,7 +306,7 @@ public class ProcessController extends BaseController{
 		}
 		mv.addObject("msg", msg);
 		mv.addObject("orders", orders);
-		mv.setViewName("process/orderList");
+		mv.setViewName("process/orderAllList");
 		return mv;
 	}
 
@@ -432,16 +435,15 @@ public class ProcessController extends BaseController{
 	@RequestMapping("/search")
 	@ResponseBody
 	public JSONObject search(HttpServletRequest request) {
-		log.info("产品购买---搜索产品");
+		log.info("订单列表---搜索订单");
 		Map<String,Object> map = new HashMap<String,Object>();
 		PageBean pb = new PageBean();
 		String pagesize = request.getParameter("pageSize");
 		String page1 = request.getParameter("page");
-		String estate1 = request.getParameter("estate");
-		String movable1 = request.getParameter("movable");
-		String solidSurfacing1 = request.getParameter("solidSurfacing");
-		String company1 = request.getParameter("company");
-		String productNo = request.getParameter("productNo");
+		String orderNo = request.getParameter("orderNo");
+		String name = request.getParameter("name");
+		String createDate = request.getParameter("createDate");
+		String orderStatus = request.getParameter("orderStatus");
 		
 		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
@@ -456,48 +458,42 @@ public class ProcessController extends BaseController{
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		String hql = "from Product p where 1=1 ";
-		String hqlCount="select count(*) from Product p where 1=1 ";
-		if(productNo != null && !productNo.equals("")){
-			hql += "and CONCAT(p.name,p.productNo) LIKE '%"+productNo+"%'";
-			hqlCount += "and CONCAT(p.name,p.productNo) LIKE '%"+productNo+"%'";
+		String hql = "from Order o where 1=1 ";
+		String hqlCount="select count(*) from Order o where 1=1 ";
+		if(orderNo != null && !orderNo.equals("") ){
+			hql += "and o.orderNo = "+orderNo+" ";
+			hqlCount += "and o.orderNo = "+orderNo+" ";
 		}
-		if(estate1 != null && !estate1.equals("") && !estate1.equals("2")){
-			int estate = Integer.parseInt(estate1);
-			hql += "and p.estate = "+estate+" ";
-			hqlCount += "and p.estate = "+estate+" ";
+		if(createDate != null && !createDate.equals("") ){
+			hql += "and o.createDate < "+createDate+" ";
+			hqlCount += "and o.createDate < "+createDate+" ";
 		}
-		if(movable1 != null && !movable1.equals("")&&  !movable1.equals("2")){
-			int movable = Integer.parseInt(movable1);
-			hql += "and p.movable = "+movable+" ";
-			hqlCount += "and p.movable = "+movable+" ";
+		if(name != null && !name.equals("") ){
+			hql += "and o.salesMan = "+name+" ";
+			hqlCount += "and o.salesMan = "+name+" ";
 		}
-		if(solidSurfacing1 != null &&  !solidSurfacing1.equals("")&& !solidSurfacing1.equals("2")){
-			int solidSurfacing = Integer.parseInt(solidSurfacing1);
-			hql += "and p.movable = "+solidSurfacing+" ";
-			hqlCount += "and p.movable = "+solidSurfacing+" ";
+		if(orderStatus != null && !orderStatus.equals("") ){
+			hql += "and o.orderStatus = "+orderStatus+" ";
+			hqlCount += "and o.orderStatus = "+orderStatus+" ";
 		}
-		if(company1 != null && !company1.equals("")&& company1 != null && !company1.equals("2")){
-			int company = Integer.parseInt(company1);
-			hql += "and p.company = "+company+" ";
-			hqlCount += "and p.company = "+company+" ";
-		}
-		hql += "ORDER BY p.isEnable DESC,p.createDate DESC";
-		List<Product> list = productService.queryForPage(hql, offset,
+		hql += "ORDER BY o.isEnable DESC,o.createDate DESC";
+		List<Order> list = processService.queryForPage(hql, offset,
 				length); // 该分页的记录
-		int count = productService.getCountByParam(hqlCount);
+		int count = processService.getCountByParam(hqlCount);
 		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		JsonConfig jsonConfig = new JsonConfig();  
+		jsonConfig.registerJsonValueProcessor(java.sql.Timestamp.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));  
+		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));  
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
 		pb.setTotalPage(totalPage);
 		pb.setAllRow(count);
-		map.put("products", list);
+		map.put("orders", list);
 		map.put("pb", pb);
-		JSONObject jsonObject = JSONObject.fromObject(map);
+		JSONObject jsonObject = JSONObject.fromObject(map,jsonConfig);
 		return jsonObject;
 
 	}
-	
 	
 }

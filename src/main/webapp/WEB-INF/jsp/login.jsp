@@ -72,11 +72,11 @@
 					</span>
 					<!-- <a href="javascript:void(0)" title="提示" class="warning" id="warn2">*</a> -->
 				</div>
-				<div class="rob" style="height: 100px;">
+				<a style="cursor: pointer;" id="loginbtn"><div class="rob" style="height: 100px;">
 					<div class="lbtn">
-						<a id="loginbtn">登录</a>
+						登录
 					</div>
-				</div>
+				</div></a>
 			</div>
 		</div>
 		<!--登录框结束-->

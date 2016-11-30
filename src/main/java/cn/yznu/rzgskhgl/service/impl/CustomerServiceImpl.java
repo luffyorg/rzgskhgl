@@ -139,7 +139,7 @@ public class CustomerServiceImpl extends CommonServiceimpl implements ICustomerS
 		cell.setCellStyle(style);
 
 		cell = row.createCell(13);
-		cell.setCellValue("用户状态");
+		cell.setCellValue("客户状态");
 		cell.setCellStyle(style);
 
 		for (int i = 0; i < customers.size(); i++) {
@@ -230,6 +230,11 @@ public class CustomerServiceImpl extends CommonServiceimpl implements ICustomerS
 		}
 
 		return workbook;
+	}
+
+	@Override
+	public List<Customer> getAllCustomer(String hql) {
+		return commonService.findHql(Customer.class, hql);
 	}
 
 }

@@ -26,5 +26,10 @@ public interface ICustomerService extends ICommonService {
 	 * @return
 	 */
 	public HSSFWorkbook createExcel(List<Customer> customers, HttpServletRequest request);
+	/**
+	 * 得到全部客户
+	 * @return
+	 */
+	public List<Customer> getAllCustomer(String hql);
 
 }
