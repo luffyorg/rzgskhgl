@@ -478,7 +478,7 @@ public class ProcessController extends BaseController{
 		}
 		hql += "ORDER BY o.isEnable DESC,o.createDate DESC";
 		List<Order> list = processService.queryForPage(hql, offset,
-				length); // 该分页的记录
+				length); // 该分页的记录 
 		int count = processService.getCountByParam(hqlCount);
 		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
 		JsonConfig jsonConfig = new JsonConfig();  
