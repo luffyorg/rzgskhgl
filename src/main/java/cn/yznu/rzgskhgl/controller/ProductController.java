@@ -59,7 +59,7 @@ public class ProductController extends BaseController {
 		return mv;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 	@RequestMapping(value = "addProduct", method = RequestMethod.POST)
 	@ResponseBody
 	public Map addProduct(@RequestBody JSONObject json) {

@@ -16,6 +16,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>我的订单</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
 <script type="text/javascript" src="${basePath }static/js/echarts.js"></script>
@@ -49,7 +50,7 @@
 	height: 300px;
 	display: none;
 	position: absolute;
-	margin: -300px auto;
+	margin: -25% auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -98,7 +99,7 @@
 }
 /**弹窗样式结束**/
 .inp_name {
-	width: 120px;
+	width: 160px;
 	height: 30px;
 	line-height: 30px;
 	border: 1px solid #d8d8d8;
@@ -178,7 +179,7 @@
 		<!--主体内容部分开始-->
 		<div id="dcMain">
 			<!-- 当前位置 -->
-			<div id="urHere">订单列表</div>
+			<div id="urHere">订单列表<b>></b><strong>我的订单</strong></div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
@@ -194,26 +195,26 @@
 						class="tableBasic">
 						<thead>
 							<tr>
-								<td>序号</td>
-								<td>订单号</td>
-								<td>购买人</td>
-								<td>业务员</td>
-								<td>产品名称</td>
-								<td>订单状态</td>
-								<td>创建时间</td>
-								<td>更新时间</td>
-								<td>操作</td>
+								<td align="center">序号</td>
+								<td align="center">订单号</td>
+								<td align="center">购买人</td>
+								<td align="center">业务员</td>
+								<td align="center">产品名称</td>
+								<td align="center">订单状态</td>
+								<td align="center">创建时间</td>
+								<td align="center">更新时间</td>
+								<td align="center">操作</td>
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach items="${orders }" var="order" varStatus="status">
 								<tr>
-									<td>${status.index+1 }</td>
-									<td>${order.orderNo }</td>
-									<td>${order.buyName }</td>
-									<td>${order.salesMan }</td>
-									<td>${order.productName }</td>
-									<td id="status${order.id }"><c:if
+									<td align='center'>${status.index+1 }</td>
+									<td align='center'>${order.orderNo }</td>
+									<td align='center'>${order.buyName }</td>
+									<td align='center'>${order.salesMan }</td>
+									<td align='center'>${order.productName }</td>
+									<td  align='center' id="status${order.id }"><c:if
 											test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
 											test="${order.orderStatus  eq 1 }">签订合同</c:if> <c:if
 											test="${order.orderStatus  eq 2 }">收齐资料</c:if> <c:if
@@ -222,9 +223,9 @@
 											test="${order.orderStatus  eq 5 }">下款</c:if> <c:if
 											test="${order.orderStatus  eq 6 }">收费</c:if> <c:if
 											test="${order.orderStatus  eq 7 }">完成服务</c:if></td>
-									<td>${order.createDate }</td>
-									<td>${order.updateDate }</td>
-									<td><c:if test="${order.isEnable  eq 1 }">
+									<td align='center'>${order.createDate }</td>
+									<td align='center'>${order.updateDate }</td>
+									<td align='center'><c:if test="${order.isEnable  eq 1 }">
 											<a class="updateColor"
 												onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a>
 										</c:if> <c:if test="${order.isEnable  eq 0 }">
@@ -237,7 +238,7 @@
 				</div>
 
 				<!-- 分页开始 -->
-				<div style="float: right; margin-top: 15px;" class="splitPage"
+				<div style="float: right; margin-top: 12px;" class="splitPage"
 					id="splitPage">
 					<c:if test="${pb.currentPage==1 }">
 						<a class='cursorauto'>首页</a>
@@ -317,10 +318,10 @@
 				</table>
 			</div>
 			<!--弹窗结束-->
-			<div id="s1" class="scatter" name="dten" style="display: block;">
+			<!-- <div id="s1" class="scatter" name="dten" style="display: block;">
 				<div style="margin: 20px 0; height: 325px; width: 946px;" id="main"></div>
 
-			</div>
+			</div> -->
 		</div>
 
 	</div>
@@ -363,11 +364,12 @@
 				});
 	}
 	function excelOrder() {
+		var orderNo = $("#searchOrderNo").val();
 		$.ajax({
 			type : "POST",
-			url : "exportOrder",
+			url : "exportOrder?orderNo="+orderNo+"",
 			success : function(data) {
-				window.open('exportOrder');
+				window.open('exportOrder?orderNo='+orderNo+'');
 			}
 
 		});
@@ -377,15 +379,15 @@
 			 $.get("search?pageSize="+10+"&page="+1+"&orderNo="+orderNo+"", function(data){
 				 //组装表格
 				var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-				htmlStr += "<tr> <th width='80'>序号</th>"+
-		        "<th width='80'>订单号</th>"+
-		        "<th width='80'>购买人</th>"+
-		        "<th width='80'>业务员</th>"+
-		        "<th width='80'>产品名称</th>"+
-		        "<th width='80'>订单状态</th>"+
-		        "<th width='80'>创建时间</th>"+
-		        "<th width='80'>更新时间</th>"+
-		        "<th width='80'>操作</th></tr>";
+				htmlStr += "<tr> <th >序号</th>"+
+		        "<th >订单号</th>"+
+		        "<th >购买人</th>"+
+		        "<th >业务员</th>"+
+		        "<th >产品名称</th>"+
+		        "<th >订单状态</th>"+
+		        "<th >创建时间</th>"+
+		        "<th >更新时间</th>"+
+		        "<th >操作</th></tr>";
 		        var pb=data.pb;
 			    for(var i = 0; i < data.pb.list.length; i++){
 			         var order = data.pb.list[i];
@@ -393,14 +395,30 @@
 						"<td align='center'>"+order.orderNo+" </td>"+
 						"<td align='center'>"+order.buyName+" </td>"+
 						"<td align='center'>"+order.salesMan+" </td>"+
-						"<td align='center'>"+order.productName+" </td>"+
-						"<td align='center'>"+order.orderStatus+" </td>"+
-						"<td align='center'>"+order.createDate+" </td>"+
+						"<td align='center'>"+order.productName+" </td>";
+						if(order.orderStatus==1){
+							htmlStr +="<td align='center' id='status"+order.id +"'>签订合同 </td>";
+						}else if(order.orderStatus==2){
+							htmlStr +="<td align='center' id='status"+order.id +"'>收齐资料 </td>";
+						}else if(order.orderStatus==3){
+							htmlStr +="<td align='center' id='status"+order.id +"'>递交渠道处 </td>";
+						}else if(order.orderStatus==4){
+							htmlStr +="<td align='center' id='status"+order.id +"'>审核阶段 </td>";
+						}else if(order.statorderStatusus==5){
+							htmlStr +="<td align='center' id='status"+order.id +"'>下款 </td>";
+						}else if(order.orderStatus==6){
+							htmlStr +="<td align='center' id='status"+order.id +"'>收费 </td>";
+						}else if(order.orderStatus==7){
+							htmlStr +="<td align='center' id='status"+order.id +"'>完成服务 </td>";
+						}else{
+							htmlStr +="<td align='center' id='status"+order.id +"'>暂无更新 </td>";
+						}
+						htmlStr +="<td align='center'>"+order.createDate+" </td>"+
 						"<td align='center'>"+order.updateDate+" </td>"
 			         htmlStr += "<td align='center'><a onclick=updateRes(this,"+order.id+"); class='updateColor'>更新</a></td></tr>";
 			    }
 			    //组装分页
-			    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
+			    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
 			   
 			    if(pb.currentPage==1){
 			    	htmlPage += "<a  class='cursorauto'>首页</a> ";
@@ -437,39 +455,50 @@
 	 }
 	//页面跳转
 	 function nextPage(size,page){
-	 	var name = $("#searchName").val();
-	 	 $.get("nextPage?pageSize="+size+"&page="+page+"&name="+name+"", function(data){
+	 	var orderNo = $("#searchOrderNo").val();
+	 	 $.get("nextPageOrder?pageSize="+size+"&page="+page+"&orderNo="+orderNo+"", function(data){
 	 		 //组装表格
 	 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-	 		htmlStr += "<tr> <th width='80'>序号</th>"+
-	 			      "<th width='80'>登录名称</th>"+
-	 			      "<th width='80'>电话</th>"+
-	 			      "<th width='80'>用户状态</th>"+
-	 			      "<th width='80'>操作</th></tr>";
-	       var pb=data.pb;
-	 	    for(var i = 0; i < data.users.length; i++){
-	 	         var user = data.users[i];
-	 	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-	 				"<td align='center'>"+user.name+" </td>"+
-	 				"<td align='center'>"+user.tel+" </td>";
-	 				
-	 				if(user.isEnable==0){
-	 					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
-	 								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
-	 								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
-	 								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
-	 				}else{
-	 					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
-	 							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
-	 							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
-	 							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
-	 				}
-	 	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
-	 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"'); class='updateColor'>更新</a> | "+
-	 							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
-	 	    }
+	 		htmlStr += "<tr> <th >序号</th>"+
+				        "<th >订单号</th>"+
+				        "<th >购买人</th>"+
+				        "<th >业务员</th>"+
+				        "<th >产品名称</th>"+
+				        "<th >订单状态</th>"+
+				        "<th >创建时间</th>"+
+				        "<th >更新时间</th>"+
+				        "<th >操作</th></tr>";
+	 		 var pb=data.pb;
+			    for(var i = 0; i < data.pb.list.length; i++){
+			         var order = data.pb.list[i];
+			         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+						"<td align='center'>"+order.orderNo+" </td>"+
+						"<td align='center'>"+order.buyName+" </td>"+
+						"<td align='center'>"+order.salesMan+" </td>"+
+						"<td align='center'>"+order.productName+" </td>";
+						if(order.orderStatus==1){
+							htmlStr +="<td align='center' id='status"+order.id +"'>签订合同 </td>";
+						}else if(order.orderStatus==2){
+							htmlStr +="<td align='center' id='status"+order.id +"'>收齐资料 </td>";
+						}else if(order.orderStatus==3){
+							htmlStr +="<td align='center' id='status"+order.id +"'>递交渠道处 </td>";
+						}else if(order.orderStatus==4){
+							htmlStr +="<td align='center' id='status"+order.id +"'>审核阶段 </td>";
+						}else if(order.statorderStatusus==5){
+							htmlStr +="<td align='center' id='status"+order.id +"'>下款 </td>";
+						}else if(order.orderStatus==6){
+							htmlStr +="<td align='center' id='status"+order.id +"'>收费 </td>";
+						}else if(order.orderStatus==7){
+							htmlStr +="<td align='center' id='status"+order.id +"'>完成服务 </td>";
+						}else{
+							htmlStr +="<td align='center' id='status"+order.id +"'>暂无更新 </td>";
+						}
+						htmlStr +="<td align='center'>"+order.createDate+" </td>"+
+						"<td align='center'>"+order.updateDate+" </td>"
+			         htmlStr += "<td align='center'><a onclick=updateRes(this,"+order.id+"); class='updateColor'>更新</a></td></tr>";
+			    }
 	 	    //组装分页
-	 	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
+	 	    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
 	 	   
 	 	    if(pb.currentPage==1){
 	 	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
@@ -499,8 +528,8 @@
 	 					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
 	 	    htmlStr += "</table>";
 	 	   
-	 	    $("#main").html(htmlStr);
-	 	    $(".splitPage").html(htmlPage);
+	 	   $("#navList").html(htmlStr);
+		    $("#splitPage").html(htmlPage);
 	 	   
 	 	}) 
 	 }

@@ -1,7 +1,7 @@
 .loginbox{
 	width:100%;
-	min-height:800px;
-	background:url('../images/bbg.png');
+	min-height:700px;
+	background:url('${basePath }static/images/bbg.png');
 }
 .box{
 	width:611px;
@@ -9,7 +9,7 @@
 	position:absolute;
 	top:25%;
 	left:35%;
-    background:url('../images/1.png');
+    background:url('${basePath }static/images/1.png');
 }
 .rob1{
 	height:75px;

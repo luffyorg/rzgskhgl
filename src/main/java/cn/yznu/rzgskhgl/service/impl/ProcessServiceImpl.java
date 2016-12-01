@@ -111,7 +111,7 @@ public class ProcessServiceImpl extends CommonServiceimpl implements IProcessSer
 		cell.setCellStyle(style);
 
 		cell = row.createCell(6);
-		cell.setCellValue("产品价格");
+		cell.setCellValue("产品定价");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(7);
