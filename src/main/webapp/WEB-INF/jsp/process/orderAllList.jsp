@@ -98,37 +98,39 @@
 	display: block;
 }
 /**弹窗样式结束**/
-.inp_name{
-	width:160px;
-	height:30px;
-	line-height:30px;
-	border:1px solid #d8d8d8;
-	border-radius:4px;
-	font-size:13px;
-	color:#333;
-	font-family:'微软雅黑';
-	margin-left:10px;
-	padding:0 14px;
-	margin-top:8px;
+.inp_name {
+	width: 160px;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #d8d8d8;
+	border-radius: 4px;
+	font-size: 13px;
+	color: #333;
+	font-family: '微软雅黑';
+	margin-left: 10px;
+	padding: 0 14px;
+	margin-top: 8px;
 }
-.inp_btn{
-	font-size:16px;
-	color:#fff;
-	font-family:"微软雅黑";
-	height:30px;
-	width:60px;
-	line-height:30px;
-	text-align:center;
-	border:none;
-	border-radius:4px;
-	background-color:#5096fa;
-	margin-top:8px;
-	margin-left:15px;
-	cursor:pointer;
-		}
-	.inp_btn:hover{
-	background-color:#3c87f0;
-	}	
+
+.inp_btn {
+	font-size: 16px;
+	color: #fff;
+	font-family: "微软雅黑";
+	height: 30px;
+	width: 60px;
+	line-height: 30px;
+	text-align: center;
+	border: none;
+	border-radius: 4px;
+	background-color: #5096fa;
+	margin-top: 8px;
+	margin-left: 15px;
+	cursor: pointer;
+}
+
+.inp_btn:hover {
+	background-color: #3c87f0;
+}
 </style>
 
 <script type="text/javascript">
@@ -177,17 +179,19 @@
 		<!--主体内容部分开始-->
 		<div id="dcMain">
 			<!-- 当前位置 -->
-			<div id="urHere">订单列表<b>></b><strong>全部订单</strong></div>
+			<div id="urHere">
+				订单列表<b>></b><strong>全部订单</strong>
+			</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="excelOrder();" class="actionBtn"
-						style="cursor: pointer;">导出excel</a>订单
-						<input type="text" class="inp_name" placeholder="订单号" id="searchOrderNo"/>
-						<input type="text" class="inp_name" placeholder="业务员" id="searchName"/>
-						<input type="button" value="搜索" class="inp_btn" id="search" onclick="search();"/>
+					<!-- <a onclick="report();" class="actionBtn" style="cursor: pointer;">分析</a> --><a
+						onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单
+					<input type="text" class="inp_name" placeholder="订单号"
+						id="searchOrderNo" /> <input type="text" class="inp_name"
+						placeholder="业务员" id="searchName" /> <input type="button"
+						value="搜索" class="inp_btn" id="search" onclick="search();" />
 				</h3>
-				<div id="msg">${msg }</div>
 				<div class="navList" id="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
 						class="tableBasic">
@@ -226,8 +230,7 @@
 									<td><c:if test="${order.isEnable  eq 1 }">
 											<a class="updateColor"
 												onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a>
-										</c:if>
-										<c:if test="${order.isEnable  eq 0 }">
+										</c:if> <c:if test="${order.isEnable  eq 0 }">
 											<a>已失效</a>
 										</c:if></td>
 								</tr>
@@ -314,10 +317,7 @@
 					</table>
 				</div>
 				<!--弹窗结束-->
-				<!-- <div id="s1" class="scatter" name="dten" style="display: block;">
-					<div style="margin: 20px 0; height: 325px; width: 946px;" id="main"></div>
-
-				</div> -->
+				<div id="main" style="width: 1300px; height: 400px;"></div>
 			</div>
 
 		</div>
@@ -328,9 +328,6 @@
 	<!--底部结束-->
 	<div class="clear"></div>
 </body>
-<script type="text/javascript">
-	
-</script>
 <script type="text/javascript">
 	function updateOrder() {
 		var orderNo = $("#orderNo").val();
@@ -546,5 +543,169 @@
 
 
 <script type="text/javascript">
+$(function(){
+	$("#main").hide();
+})
+function report(){
+	$("#navList").hide();
+	$("#splitPage").hide();
+	$("#main").show();
+	
+}
+	var myChart = echarts.init(document.getElementById('main'));
+	
+	// 指定图表的配置项和数据
+	var option = {
+		title : {
+		text: '',
+		
+		x:'left'
+	},
+	tooltip: {
+		trigger: 'axis'
+	},
+	
+	legend: {
+		data:['admin','zw','ysy','qsy','dlm','test']
+	},
+	
+	xAxis : [  
+        {  
+            type : 'category',  
+            boundaryGap : false,  
+            data : ['7月','8月','9月','10月','11月','12月'],  
+            show : true,  
+            axisLabel:{  
+                interval:0 ,//设置X轴间隔  
+               
+            }  
+        }  
+    ] , 
+	
+	
+	
+	yAxis: [
+	{
+	    type: 'value',
+	    name: '订单量',
+	    min: 0,
+	    max: 20,
+	    interval: 4,
+	    axisLabel: {
+	        formatter: '{value}'
+	    }
+	}
+	],
+	series: [
+	{
+	    name:'admin',
+	    type:'line',
+		
+		symbol:'none',//去掉折线上的小圆点
+		itemStyle : {  
+	         normal : {  
+	             color:'#00FF00',  
+	             lineStyle:{  
+	                 color:'#00FF00'  
+	             }  
+	         }  
+	     }, 
+		smooth:true,
+	    data:[13,12,14,16,17,11]
+	},
+	{
+	    name:'zw',
+	    type:'line',
+		
+		symbol:'none',//去掉折线上的小圆点
+		itemStyle : {  
+             normal : {  
+                 color:'#00FF00',  
+                 lineStyle:{  
+                     color:'#00FF00'  
+                 }  
+             }  
+         }, 
+		smooth:true,
+	    data:[3,12,14,6,7,11]
+	},
+	 {
+	    name:'ysy',
+	    type:'line',
+		
+		symbol:'none',//去掉折线上的小圆点
+		itemStyle : {  
+	                        normal : {  
+	                            color:'#F447BD',  
+	                            lineStyle:{  
+	                                color:'#F447BD'  
+	                            }  
+	                        }  
+	                    }, 
+		smooth:true,
+	    data:[6,12,4,15,8,3]
+	},
+	 {
+	    name:'qsy',
+	    type:'line',
+		
+		symbol:'none',//去掉折线上的小圆点
+		itemStyle : {  
+             normal : {  
+                 color:'#F3F149',  
+                 lineStyle:{  
+                     color:'#F3F149'  
+                 }  
+             }  
+         }, 
+		smooth:true,
+	    data:[12,3,8,12,3,9]
+	},
+	 {
+	    name:'dlm',
+	    type:'line',
+		
+		symbol:'none',//去掉折线上的小圆点
+		itemStyle : {  
+            normal : {  
+                color:'#4A55F2',  
+                lineStyle:{  
+                    color:'#4A55F2'  
+                }  
+            }  
+        }, 
+		smooth:true,
+	    data:[5,7,12,17,9,6]
+	}
+	,
+	 {
+	    name:'test',
+	    type:'line',
+		
+		symbol:'none',//去掉折线上的小圆点
+		itemStyle : {  
+           normal : {  
+               color:'#4A55F2',  
+               lineStyle:{  
+                   color:'#4A55F2'  
+               }  
+           }  
+       }, 
+		smooth:true,
+	    data:[5,7,12,17,9,6]
+	}
+	]
+	};
+	
+	
+	// 使用刚指定的配置项和数据显示图表。
+	myChart.setOption(option);
+	
+	myChart.on('click', function (params) {
+	     loadAll(params.name);  
+	 });
+	
+
+
 </script>
 </html>

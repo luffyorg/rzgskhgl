@@ -325,16 +325,11 @@
 		</div>
 
 	</div>
-
-	</div>
 	<!--底部开始-->
 	<%@ include file="../include/footer.jsp"%>
 	<!--底部结束-->
 	<div class="clear"></div>
 </body>
-<script type="text/javascript">
-	
-</script>
 <script type="text/javascript">
 	function updateOrder() {
 		var orderNo = $("#orderNo").val();
@@ -543,9 +538,5 @@
 	 	}else
 	 		nextPage(10,page);
 	 }
-</script>
-
-
-<script type="text/javascript">
 </script>
 </html>
