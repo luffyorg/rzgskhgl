@@ -2,6 +2,7 @@ package cn.yznu.rzgskhgl.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
+import cn.yznu.rzgskhgl.util.DateUtil;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -230,6 +232,7 @@ public class ProcessController extends BaseController {
 				order.setDescription(product.getDescription());
 				order.setProductName(product.getName());
 				order.setProductPrice(product.getProductPrice());
+				order.setYears(DateUtil.currentYears());
 				productService.save(order);
 
 				SendMsg_webchinese sendMsg = new SendMsg_webchinese();
@@ -346,7 +349,9 @@ public class ProcessController extends BaseController {
 				orders = processService.queryForPage(hql, offset, length); // 该分页的记录
 			}
 		}
-
+		//获取全部业务员
+		String hqlCustomer = "from Customer";
+		List<Customer> customers = userService.findHql(Customer.class, hqlCustomer);
 		pb.setList(orders);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -355,6 +360,7 @@ public class ProcessController extends BaseController {
 		mv.addObject("pb", pb);
 		mv.addObject("msg", msg);
 		mv.addObject("orders", orders);
+		mv.addObject("customers", customers);
 		mv.setViewName("process/orderAllList");
 		return mv;
 	}
@@ -819,5 +825,34 @@ public class ProcessController extends BaseController {
 		JSONObject jsonObject = JSONObject.fromObject(map, jsonConfig);
 		return jsonObject;
 
+	}
+	
+	/**
+	 * 图表分析
+	 */
+	@RequestMapping(value = "chart", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject chart(){
+		log.info("图表分析");
+		String hql = "from User";
+		List<User> list = userService.findHql(User.class, hql);
+		List<String> m = DateUtil.beforeJune();
+		Map<String,Object> map = new HashMap<String,Object>();
+		for(User c : list){
+			List<Integer> strName = new ArrayList<Integer>();
+			int i=0;
+			for(String str : m){
+				
+				String hql2 = "select count(*) from Order o where salesMan='"+c.getName()+"' and years='"+str+"'";
+				int count2 = userService.getCountByParam(hql2);
+				strName.add(i++, count2);
+			}
+			map.put(c.getName(), strName);
+		}
+		map.put("users", list);
+		map.put("years", m);
+		JSONObject json = JSONObject.fromObject(map);
+		log.info(json);
+		return json;
 	}
 }

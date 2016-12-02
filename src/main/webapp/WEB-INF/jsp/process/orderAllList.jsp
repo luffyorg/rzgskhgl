@@ -65,6 +65,17 @@
 .tc table tr {
 	margin-top: 20px;
 }
+.chart {
+	width: 800px;
+	height: 500px;
+	display: none;
+	position: absolute;
+	margin: -35% auto;
+	z-index: 999;
+	background: #fff;
+	left: 35%;
+	border-radius: 5px;
+}
 
 .tc1 {
 	width: 100%;
@@ -131,6 +142,18 @@
 .inp_btn:hover {
 	background-color: #3c87f0;
 }
+.actionBtn2{
+    float: right;
+    display: inline-block;
+    background-color: #c60700;
+    padding: 0 20px;
+    height: 27px;
+    line-height: 27px;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
 </style>
 
 <script type="text/javascript">
@@ -185,7 +208,7 @@
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<!-- <a onclick="report();" class="actionBtn" style="cursor: pointer;">分析</a> --><a
+					<a onclick="report();" class="actionBtn2" style="cursor: pointer;">分析</a><a
 						onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单
 					<input type="text" class="inp_name" placeholder="订单号"
 						id="searchOrderNo" /> <input type="text" class="inp_name"
@@ -317,7 +340,15 @@
 					</table>
 				</div>
 				<!--弹窗结束-->
-				<div id="main" style="width: 1300px; height: 400px;"></div>
+				 <div id="count" style="height: 70px;"></div> 
+				<div class="chart" id="chart">
+					<div class="tc1">
+						订单图表（近6个月订单量统计）<img src="${basePath}static/images/closed.png"
+							onclick="chartclose()"
+							style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
+					</div>
+					<div id="main" style="width: 800px; height: 400px;"></div>
+				</div>
 			</div>
 
 		</div>
@@ -545,12 +576,60 @@
 <script type="text/javascript">
 $(function(){
 	$("#main").hide();
+	$("#count").hide();
 })
+ function chartclose(){
+	$(".chart").fadeOut("fast");
+	$("#mask").css({
+		display : 'none'
+	});
+	  };
 function report(){
-	$("#navList").hide();
-	$("#splitPage").hide();
-	$("#main").show();
-	
+	$("body").append("<div id='mask'></div>");
+	$("#mask").addClass("mask").fadeIn("slow");
+	$(".chart").fadeIn("slow");
+		var salesMan=[];
+		$.get("chart",function(data) {
+			for(var i=0;i<data.users.length;i++){
+				var user = data.users[i];
+				salesMan.push(user.name);
+				myChart.setOption({ //载入数据
+					series : [ //填入系列（内容）数据
+					{
+						// 根据名字对应到相应的系列
+						name : 'admin',
+						data : data.admin
+					},{
+						// 根据名字对应到相应的系列
+						name : 'zw',
+						data : data.zw
+					},{
+						// 根据名字对应到相应的系列
+						name : 'ysy',
+						data : data.ysy
+					},{
+						// 根据名字对应到相应的系列
+						name : 'dlm',
+						data : data.dlm
+					},{
+						// 根据名字对应到相应的系列
+						name : 'qsy',
+						data : data.qsy
+					},{
+						// 根据名字对应到相应的系列
+						name : 'test',
+						data : data.test
+					}]
+				});
+				
+			}
+			myChart.setOption({ //载入数据
+				xAxis : {
+					data : data.years
+				}
+			});
+			$("#main").show();
+		});
 }
 	var myChart = echarts.init(document.getElementById('main'));
 	
@@ -568,12 +647,12 @@ function report(){
 	legend: {
 		data:['admin','zw','ysy','qsy','dlm','test']
 	},
-	
+	//
 	xAxis : [  
         {  
             type : 'category',  
             boundaryGap : false,  
-            data : ['7月','8月','9月','10月','11月','12月'],  
+            data : [],  
             show : true,  
             axisLabel:{  
                 interval:0 ,//设置X轴间隔  
@@ -604,14 +683,14 @@ function report(){
 		symbol:'none',//去掉折线上的小圆点
 		itemStyle : {  
 	         normal : {  
-	             color:'#00FF00',  
+	             color:'#00FFf0',  
 	             lineStyle:{  
-	                 color:'#00FF00'  
+	                 color:'#00FFf0'  
 	             }  
 	         }  
 	     }, 
 		smooth:true,
-	    data:[13,12,14,16,17,11]
+	    data:[]
 	},
 	{
 	    name:'zw',
@@ -627,7 +706,7 @@ function report(){
              }  
          }, 
 		smooth:true,
-	    data:[3,12,14,6,7,11]
+	    data:[]
 	},
 	 {
 	    name:'ysy',
@@ -635,15 +714,15 @@ function report(){
 		
 		symbol:'none',//去掉折线上的小圆点
 		itemStyle : {  
-	                        normal : {  
-	                            color:'#F447BD',  
-	                            lineStyle:{  
-	                                color:'#F447BD'  
-	                            }  
-	                        }  
-	                    }, 
+            normal : {  
+                color:'#F447BD',  
+                lineStyle:{  
+                    color:'#F447BD'  
+                }  
+            }  
+        }, 
 		smooth:true,
-	    data:[6,12,4,15,8,3]
+	    data:[]
 	},
 	 {
 	    name:'qsy',
@@ -659,7 +738,7 @@ function report(){
              }  
          }, 
 		smooth:true,
-	    data:[12,3,8,12,3,9]
+	    data:[]
 	},
 	 {
 	    name:'dlm',
@@ -675,7 +754,7 @@ function report(){
             }  
         }, 
 		smooth:true,
-	    data:[5,7,12,17,9,6]
+	    data:[]
 	}
 	,
 	 {
@@ -685,14 +764,14 @@ function report(){
 		symbol:'none',//去掉折线上的小圆点
 		itemStyle : {  
            normal : {  
-               color:'#4A55F2',  
+               color:'#4A5502',  
                lineStyle:{  
-                   color:'#4A55F2'  
+                   color:'#4A5502'  
                }  
            }  
        }, 
 		smooth:true,
-	    data:[5,7,12,17,9,6]
+	    data:[]
 	}
 	]
 	};
@@ -705,7 +784,7 @@ function report(){
 	     loadAll(params.name);  
 	 });
 	
-
+	
 
 </script>
 </html>

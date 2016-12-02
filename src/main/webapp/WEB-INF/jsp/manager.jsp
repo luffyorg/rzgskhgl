@@ -217,11 +217,11 @@
 
 	<div id="dcWrap">
 		<!--头部导航开始-->
-		<%@ include file="../include/header.jsp"%>
+		<%@ include file="include/header.jsp"%>
 		<!--头部导航结束-->
 
 		<!--左侧边栏导航开始-->
-		<%@ include file="../include/leftMenu.jsp"%>
+		<%@ include file="include/leftMenu.jsp"%>
 		<!--左侧边栏导航结束-->
 
 		<!--主体内容部分开始-->
@@ -233,9 +233,7 @@
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="tc();" class="actionBtn">添加用户</a> 自定义用户 <input
-						type="text" class="inp_name" placeholder="登录名或手机号" id="searchName" />
-					<input type="button" value="搜索" class="inp_btn" onclick="search()" />
+					<a onclick="tc();" class="actionBtn">添加用户</a> 自定义用户
 				</h3>
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
@@ -250,7 +248,7 @@
 						<tbody>
 							<c:forEach items="${users }" var="user" varStatus="i">
 								<tr>
-									<td align="center">${i.count + (pb.currentPage-1)*10}</td>
+									<td align="center">${i.count }</td>
 									<td align="center">${user.name }</td>
 									<td align="center">${user.tel }</td>
 									<td align="center" id="updateStatus${user.id }"><c:if
@@ -274,42 +272,6 @@
 							</c:forEach>
 					</table>
 				</div>
-				<!-- 分页开始 -->
-				<div style="float: right; margin-top: 15px;" class="splitPage"
-					id="splitPage">
-					<c:if test="${pb.currentPage==1 }">
-						<a class='cursorauto'>首页</a>
-					</c:if>
-					<c:if test="${pb.currentPage!=1 }">
-						<a onclick="nextPage(10,1);" class="cursorpointer">首页</a>
-					</c:if>
-					<c:if test="${pb.hasPreviousPage==true}">
-						<a onclick="nextPage(10,${pb.currentPage-1});"
-							class="cursorpointer"> ◄上一页</a>
-					</c:if>
-					<c:if test="${pb.hasPreviousPage==false}">
-						<a class='cursorauto'> ◄上一页</a>
-					</c:if>
-					<c:if test="${pb.hasNextPage==true }">
-						<a onclick="nextPage(10,${pb.currentPage+1});"
-							class="cursorpointer">下一页► </a>
-					</c:if>
-					<c:if test="${pb.hasNextPage==false }">
-						<a class='cursorauto'>下一页► </a>
-					</c:if>
-					<c:if test="${pb.totalPage==pb.currentPage }">
-						<a class='cursorauto'>末页</a>
-					</c:if>
-					<c:if test="${pb.totalPage!=pb.currentPage }">
-						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a>
-					</c:if>
-					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第 <input
-						id="goInput" value=''
-						style="border: 1px solid #d8d8d8; width: 40px; height: 17px; line-height: 17px; text-align: center;" />页,
-					<input type="button" class='cursorpointer' value="搜索"
-						onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
-				</div>
-				<!-- 分页结束 -->
 			</div>
 			<!--主体内容部分结束-->
 
@@ -431,7 +393,7 @@
 
 
 			<!--底部开始-->
-			<%@ include file="../include/footer.jsp"%>
+			<%@ include file="include/footer.jsp"%>
 			<!--底部结束-->
 			<div class="clear"></div>
 		</div>
@@ -472,52 +434,13 @@ function nextPage(size,page){
 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"'); class='updateColor'>更新</a> | "+
 							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
 	    }
-	    //组装分页
-	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-	   
-	    if(pb.currentPage==1){
-	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
-	    }
-	    else{
-	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
-	    }
-	    if(pb.hasPreviousPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
-	    }
-	    if(pb.hasNextPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
-	    }
-	    if(pb.totalPage==pb.currentPage){
-	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
-	    }else{
-	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
-	    }
-	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
-	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
-					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
 	    htmlStr += "</table>";
 	   
 	    $("#main").html(htmlStr);
-	    $(".splitPage").html(htmlPage);
 	   
 	}) 
 }
 
-function gotoPageByInput(currentPage,totalpage){
-	var page = $("#goInput").val();
-	if(page<1 || page>totalpage){
-		alert("请输入正确页码！");
-	}else if(page==currentPage){
-		
-	}else
-		nextPage(10,page);
-}
 function updateStatus(id,isEnable){
 	$.get("updateStatus/"+id+"", function(result){
 		if(result.isEnable==1){
@@ -762,39 +685,9 @@ function search() {
 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"'); class='updateColor'>更新</a> | "+
 							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
 	    }
-	    //组装分页
-	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-	   
-	    if(pb.currentPage==1){
-	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
-	    }
-	    else{
-	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
-	    }
-	    if(pb.hasPreviousPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
-	    }
-	    if(pb.hasNextPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
-	    }
-	    if(pb.totalPage==pb.currentPage){
-	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
-	    }else{
-	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
-	    }
-	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
-	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
-					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
 	    htmlStr += "</table>";
 	   
 	    $("#main").html(htmlStr);
-	    $(".splitPage").html(htmlPage);
 	   
 	}) 
 
@@ -802,6 +695,6 @@ function search() {
 
 </script>
 <script type="text/javascript">
-$("#userli").addClass("cur");
+$("#managerli").addClass("cur");
 </script>
 </html>

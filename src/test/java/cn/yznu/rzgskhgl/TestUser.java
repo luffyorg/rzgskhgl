@@ -2,7 +2,9 @@ package cn.yznu.rzgskhgl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sun.org.glassfish.external.statistics.annotations.Reset;
 
 import cn.yznu.rzgskhgl.dao.IBaseDao;
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.shiro.ShiroKit;
+import cn.yznu.rzgskhgl.util.DateUtil;
 import net.sf.json.JSONObject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -146,4 +150,38 @@ public class TestUser {
 		u.setName("admin");
 		userService.save(u);
 	}
+	
+	@Test
+	public void testCustomer(){
+		String hql = "from User";
+		List<User> list = userService.findHql(User.class, hql);
+		List<String> m = DateUtil.beforeJune();
+		Map<String,List<Integer>> map = new HashMap<String,List<Integer>>();
+		for(User c : list){
+			List<Integer> strName = new ArrayList<Integer>();
+			int i=0;
+			for(String str : m){
+				
+				String hql2 = "select count(*) from Order o where salesMan='"+c.getName()+"' and years='"+str+"'";
+				int count = userService.getCountByParam(hql2);
+				strName.add(i++, count);
+			}
+			map.put(c.getName(), strName);
+		}
+		JSONObject json = JSONObject.fromObject(map);
+		System.out.println(">>>>" + json);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

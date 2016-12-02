@@ -16,16 +16,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.pojo.Customer;
+import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.Resource;
+import cn.yznu.rzgskhgl.pojo.Role;
+import cn.yznu.rzgskhgl.pojo.RoleResource;
+import cn.yznu.rzgskhgl.pojo.SendSms;
 import cn.yznu.rzgskhgl.pojo.User;
+import cn.yznu.rzgskhgl.pojo.UserRole;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
 
 /**
  * 
     * @ClassName: BackupController  
-    * @Description: TODO
-    * @author Administrator  
+    * @Description: 数据库备份与恢复
+    * @author zhangwei  
     * @date 2016年11月25日  
     *
  */
@@ -43,6 +49,15 @@ public class BackupController extends BaseController{
 	public ModelAndView backup(){
 		log.info("跳转到备份页面");
 		ModelAndView mv = new ModelAndView();
+		mv.addObject("user", userService.getCount(User.class));
+		mv.addObject("userRole", userService.getCount(UserRole.class));
+		mv.addObject("role", userService.getCount(Role.class));
+		mv.addObject("roleResource", userService.getCount(RoleResource.class));
+		mv.addObject("resource", userService.getCount(Resource.class));
+		mv.addObject("product", userService.getCount(Product.class));
+		mv.addObject("sendSms", userService.getCount(SendSms.class));
+		mv.addObject("customer", userService.getCount(Customer.class));
+		mv.addObject("order", userService.getCount(Order.class));
 		mv.setViewName("backup");
 		return mv;
 	}
