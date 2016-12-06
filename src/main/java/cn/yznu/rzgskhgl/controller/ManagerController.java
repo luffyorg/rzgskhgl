@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
 
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Product;
@@ -29,61 +30,31 @@ import cn.yznu.rzgskhgl.shiro.ShiroKit;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+
 /**
- * 
- * @author zhangwei
- *
+ * @deprecated 网址管理员控制类
+ * @author 张伟
+ * @date  2016-12-2
  */
-
-@RequestMapping("/admin/user")
 @Controller
-public class UserController extends BaseController{
-	Logger log = Logger.getLogger(UserController.class);
-
+@RequestMapping("/admin/manager")
+public class ManagerController extends BaseController{
+	Logger log = LoggerFactory.getLogger(ManagerController.class);
 	@Autowired
 	private IUserService userService;
 	@Autowired
 	private IRoleService roleService;
-
-	/**
-	 * 用户列表
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("static-access")
-	@RequestMapping(value = "list")
-	public ModelAndView list(HttpServletRequest request) {
-		log.info("开始执行admin/user/list 方法");
-		ModelAndView mav = new ModelAndView();
-		PageBean pb = new PageBean();
-		String pagesize = request.getParameter("pageSize");
-		String page1 = request.getParameter("page");
-		if(pagesize ==null || pagesize.equals("")){
-			pagesize = "10";
-		}
-		if(page1 ==null || page1.equals("")){
-			page1 = "1";
-		}
-		int pageSize = Integer.parseInt(pagesize);
-		int page = Integer.parseInt(page1);
-		int count = userService.getCount(User.class);
-		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
-		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
-		int length = pageSize; // 每页记录数
-		int currentPage = pb.countCurrentPage(page);
-		List<User> list = userService.queryForPage("from User order by isEnable desc ,createDate desc", offset, length); // 该分页的记录
-		pb.setList(list);
-		pb.setCurrentPage(currentPage);
-		pb.setPageSize(pageSize);
-		pb.setTotalPage(totalPage);
-		pb.setAllRow(count);
-		mav.addObject("pb", pb);
-		mav.addObject("users", list);
-		mav.addObject("roles",roleService.listRole());
-		mav.setViewName("user/list");
-		return mav;
+	
+	@RequestMapping("list")
+	public ModelAndView list(){
+		ModelAndView mv = new ModelAndView();
+		String hql = "select u from User u,UserRole ur,Role r where ur.user.id=u.id and r.id=ur.role.id and r.sn='ADMIN'";
+		List<User> users = userService.findHql(User.class , hql);
+		mv.setViewName("manager");
+		mv.addObject("users", users);
+		mv.addObject("roles",roleService.listRole());
+		return mv;
 	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value="save" ,method=RequestMethod.POST)
 	@ResponseBody
@@ -117,6 +88,8 @@ public class UserController extends BaseController{
 		map.put("msg", "success");
 		return map;
 	}
+	
+	
 	/**
 	 * 更新用户状态 
 	 * @param id
@@ -176,46 +149,6 @@ public class UserController extends BaseController{
 		return msg;
 	}
 	
-	@SuppressWarnings("static-access")
-	@RequestMapping(value="nextPage" ,method=RequestMethod.GET)
-	@ResponseBody
-	public JSONObject nextPage(HttpServletRequest request) {
-		log.info("开始执行admin/user/nextPage 方法");
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageBean pb = new PageBean();
-		String pagesize = request.getParameter("pageSize");
-		String page1 = request.getParameter("page");
-		
-		if (pagesize == null || pagesize.equals("")) {
-			pagesize = "10";
-		}
-		if (page1 == null || page1.equals("")) {
-			page1 = "1";
-		}
-		int pageSize = Integer.parseInt(pagesize);
-		int page = Integer.parseInt(page1);
-		
-		
-		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
-		int length = pageSize; // 每页记录数
-		int currentPage = pb.countCurrentPage(page);
-		String hql = "from User u where 1=1 ";
-		String hqlCount="select count(*) from User u where 1=1 ";
-		hql += "ORDER BY u.isEnable DESC,u.createDate DESC";
-		List<Product> list = userService.queryForPage(hql, offset,
-				length); // 该分页的记录
-		int count = userService.getCountByParam(hqlCount);
-		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
-		pb.setList(list);
-		pb.setCurrentPage(currentPage);
-		pb.setPageSize(pageSize);
-		pb.setTotalPage(totalPage);
-		pb.setAllRow(count);
-		map.put("users", list);
-		map.put("pb", pb);
-		JSONObject jsonObject = JSONObject.fromObject(map);
-		return jsonObject;
-	}
 	/**
 	 * 根据用户id获取用户的所以角色id
 	 * @param request
@@ -288,50 +221,5 @@ public class UserController extends BaseController{
 		userService.saveOrUpdate(user);
 		return "success";
 	}
-	@SuppressWarnings("static-access")
-	@RequestMapping("/search")
-	@ResponseBody
-	public JSONObject search(HttpServletRequest request) {
-		log.info("搜索用户");
-		Map<String,Object> map = new HashMap<String,Object>();
-		PageBean pb = new PageBean();
-		String pagesize = request.getParameter("pageSize");
-		String page1 = request.getParameter("page");
-		String name = request.getParameter("name");
-		
-		if (pagesize == null || pagesize.equals("")) {
-			pagesize = "10";
-		}
-		if (page1 == null || page1.equals("")) {
-			page1 = "1";
-		}
-		int pageSize = Integer.parseInt(pagesize);
-		int page = Integer.parseInt(page1);
-		
-		
-		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
-		int length = pageSize; // 每页记录数
-		int currentPage = pb.countCurrentPage(page);
-		String hql = "from User u where 1=1 ";
-		String hqlCount="select count(*) from User u where 1=1 ";
-		if(name != null && !name.equals("")){
-			hql += "and CONCAT(u.name,u.tel) LIKE '%"+name+"%'";
-			hqlCount += "and CONCAT(u.name,u.tel) LIKE '%"+name+"%'";
-		}
-		hql += "ORDER BY u.isEnable DESC,u.createDate DESC";
-		List<Product> list = userService.queryForPage(hql, offset,
-				length); // 该分页的记录
-		int count = userService.getCountByParam(hqlCount);
-		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
-		pb.setList(list);
-		pb.setCurrentPage(currentPage);
-		pb.setPageSize(pageSize);
-		pb.setTotalPage(totalPage);
-		pb.setAllRow(count);
-		map.put("users", list);
-		map.put("pb", pb);
-		JSONObject jsonObject = JSONObject.fromObject(map);
-		return jsonObject;
-
-	}
 }
+ 

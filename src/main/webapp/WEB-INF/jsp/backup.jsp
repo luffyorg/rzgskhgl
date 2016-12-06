@@ -58,91 +58,82 @@
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_admin checked></td>
-       <td align="left">dou_admin</td>
+       <td align="left">user</td>
        <td align="center">MyISAM</td>
-       <td align="center">1</td>
+       <td align="center">${user }</td>
        <td align="center">84</td>
        <td align="center">2048</td>
        <td align="center">0</td>
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_admin_log checked></td>
-       <td align="left">dou_admin_log</td>
+       <td align="left">user_role</td>
        <td align="center">MyISAM</td>
-       <td align="center">12</td>
+       <td align="center">${userRole }</td>
+       <td align="center">660</td>
+       <td align="center">4096</td>
+       <td align="center">0</td>
+      </tr>
+        <tr>
+       <td align="center"><input type=checkbox name=tables[] value=dou_admin_log checked></td>
+       <td align="left">role</td>
+       <td align="center">MyISAM</td>
+       <td align="center">${role }</td>
        <td align="center">660</td>
        <td align="center">4096</td>
        <td align="center">0</td>
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_article checked></td>
-       <td align="left">dou_article</td>
+       <td align="left">role_resource</td>
        <td align="center">MyISAM</td>
-       <td align="center">10</td>
+       <td align="center">${roleResource }</td>
        <td align="center">45KB</td>
        <td align="center">2048</td>
        <td align="center">0</td>
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_article_category checked></td>
-       <td align="left">dou_article_category</td>
+       <td align="left">resource</td>
        <td align="center">MyISAM</td>
-       <td align="center">2</td>
+       <td align="center">${resource }</td>
        <td align="center">140</td>
        <td align="center">2048</td>
        <td align="center">0</td>
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_config checked></td>
-       <td align="left">dou_config</td>
+       <td align="left">product</td>
        <td align="center">MyISAM</td>
-       <td align="center">44</td>
+       <td align="center">${product }</td>
+       <td align="center">2284</td>
+       <td align="center">1024</td>
+       <td align="center">0</td>
+      </tr>
+          <tr>
+       <td align="center"><input type=checkbox name=tables[] value=dou_config checked></td>
+       <td align="left">customer</td>
+       <td align="center">MyISAM</td>
+       <td align="center">${customer }</td>
        <td align="center">2284</td>
        <td align="center">1024</td>
        <td align="center">0</td>
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_nav checked></td>
-       <td align="left">dou_nav</td>
+       <td align="left">product_order</td>
        <td align="center">MyISAM</td>
-       <td align="center">31</td>
+       <td align="center">${order }</td>
        <td align="center">1284</td>
        <td align="center">2048</td>
        <td align="center">0</td>
       </tr>
             <tr>
        <td align="center"><input type=checkbox name=tables[] value=dou_page checked></td>
-       <td align="left">dou_page</td>
+       <td align="left">send_sms</td>
        <td align="center">MyISAM</td>
-       <td align="center">6</td>
+       <td align="center">${sendSms }</td>
        <td align="center">2148</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
-      </tr>
-            <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_product checked></td>
-       <td align="left">dou_product</td>
-       <td align="center">MyISAM</td>
-       <td align="center">15</td>
-       <td align="center">45KB</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
-      </tr>
-            <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_product_category checked></td>
-       <td align="left">dou_product_category</td>
-       <td align="center">MyISAM</td>
-       <td align="center">5</td>
-       <td align="center">384</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
-      </tr>
-            <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_show checked></td>
-       <td align="left">dou_show</td>
-       <td align="center">MyISAM</td>
-       <td align="center">8</td>
-       <td align="center">672</td>
        <td align="center">2048</td>
        <td align="center">0</td>
       </tr>

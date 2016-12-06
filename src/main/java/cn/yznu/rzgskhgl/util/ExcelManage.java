@@ -17,7 +17,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-
 /**
  * 从excel读取数据/往excel中写入 excel有表头，表头每列的内容对应实体类的属性
  * 
@@ -173,10 +172,10 @@ public class ExcelManage {
 						if (data.matches("^[-+]?(([0]+)([.]([0]+))?|([.]([0]+))?)$")) {
 							data = "";
 						}
-						if(data.indexOf(".") > 0){
-						     //正则表达
-							data = data.replaceAll("0+?$", "");//去掉后面无用的零
-							data = data.replaceAll("[.]$", "");//如小数点后面全是零则去掉小数点
+						if (data.indexOf(".") > 0) {
+							// 正则表达
+							data = data.replaceAll("0+?$", "");// 去掉后面无用的零
+							data = data.replaceAll("[.]$", "");// 如小数点后面全是零则去掉小数点
 						}
 						method.invoke(obj, data); // 执行该方法
 					} else if (fieldTypes[columnIndex].equals("int")) {
@@ -188,6 +187,10 @@ public class ExcelManage {
 						method = class_.getDeclaredMethod(methodName, double.class); // 设置要执行的方法--set方法参数为int
 						double data_double = Double.parseDouble(data.equals("") ? "0" : data);
 						method.invoke(obj, data_double); // 执行该方法
+					} else if (fieldTypes[columnIndex].equals("long")) {
+						method = class_.getDeclaredMethod(methodName, long.class); // 设置要执行的方法--set方法参数为int
+						long data_long = Long.parseLong(data.equals("") ? " " : data);
+						method.invoke(obj, data_long); // 执行该方法
 					}
 
 				}

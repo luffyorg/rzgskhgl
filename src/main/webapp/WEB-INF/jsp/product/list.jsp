@@ -14,6 +14,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>产品管理</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
 <script type="text/javascript">
@@ -171,12 +172,13 @@ function tc(){
   $("#mask").addClass("mask").fadeIn("slow");
   $(".tc").fadeIn("slow");
 }; 
-function tcUpdate(id,name,productNo,productPrice,description,estate,movable,company,solidSurfacing){
+function tcUpdate(id,name,productNo,productPrice,description,estate,movable,company,solidSurfacing,suitable){
 	  $("#upId").val(id);
 	  $("#upName").val(name);
 	  $("#upProductNo").val(productNo);
 	  $("#upDescription").val(description);
 	  $("#upProductPrice").val(productPrice);
+	  $("#upSuitable").val(suitable);
 	  
 	  var selectTag = document.getElementById("upestate");
 	  var options = selectTag.getElementsByTagName("option");
@@ -307,14 +309,11 @@ $(function(){
 							<div>
 								<input class="btn default green-stripe" type="submit" value="导入" />
 								<input class="btn default dark-stripe" type="button"
-									onclick=""
-									value="模板" />
-								<input class="btn default dark-stripe" type="button"
 									onclick="exporBtn()"
 									value="导出产品" />
 							</div>
 						</div>
-					</form>${msg }
+					</form>
 				</h3>
 				<script type="text/javascript">
      
@@ -341,8 +340,7 @@ $(function(){
 									<th width="80">序号</th>
 									<th width="80">产品名称</th>
 									<th width="80">产品编号</th>
-									<th width="80">产品价格</th>
-									<th width="80">产品介绍</th>
+									<th width="80">产品定价</th>
 									<th width="80">房产</th>
 									<th width="80">动产</th>
 									<th width="80">公司</th>
@@ -353,11 +351,10 @@ $(function(){
 								<!--数据循环开始-->
 								<c:forEach items="${products }" var="product" varStatus="i">
 									<tr>
-										<td align="center">${i.count + (pb.currentPage-1)*10}</td>
+										<td align="center">${i.count}</td>
 										<td align="center">${product.name }</td>
 										<td align="center">${product.productNo }</td>
-										<td align="center">${product.productPrice }</td>
-										<td align="center">${product.description }</td>
+										<td >${product.productPrice }</td>
 										<td align="center"><c:if test="${product.estate eq 0 }">无</c:if>
 											<c:if test="${product.estate eq 1 }">有</c:if></td>
 										<td align="center"><c:if test="${product.movable eq 0 }">无</c:if>
@@ -381,7 +378,7 @@ $(function(){
 											</c:if></td>
 										<td align="center"><a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
 										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
-										'${product.solidSurfacing }')"
+										'${product.solidSurfacing }','${product.suitable }')"
 											class="updateColor">更新</a></td>
 									</tr>
 								</c:forEach>
@@ -390,42 +387,6 @@ $(function(){
 
 						</div>
 						<!--产品列表结束-->
-						<!-- 分页开始 -->
-						<div style="float: right; margin-top: 15px;" class="splitPage"
-							id="splitPage">
-							<c:if test="${pb.currentPage==1 }">
-								<a class='cursorauto'>首页</a>
-							</c:if>
-							<c:if test="${pb.currentPage!=1 }">
-								<a onclick="nextPage(10,1);" class="cursorpointer">首页</a>
-							</c:if>
-							<c:if test="${pb.hasPreviousPage==true}">
-								<a onclick="nextPage(10,${pb.currentPage-1});"
-									class="cursorpointer"> ◄上一页</a>
-							</c:if>
-							<c:if test="${pb.hasPreviousPage==false}">
-								<a class='cursorauto'> ◄上一页</a>
-							</c:if>
-							<c:if test="${pb.hasNextPage==true }">
-								<a onclick="nextPage(10,${pb.currentPage+1});"
-									class="cursorpointer">下一页► </a>
-							</c:if>
-							<c:if test="${pb.hasNextPage==false }">
-								<a class='cursorauto'>下一页► </a>
-							</c:if>
-							<c:if test="${pb.totalPage==pb.currentPage }">
-								<a class='cursorauto'>末页</a>
-							</c:if>
-							<c:if test="${pb.totalPage!=pb.currentPage }">
-								<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a>
-							</c:if>
-							总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第 <input
-								id="goInput" value=''
-								style="border: 1px solid #d8d8d8; width: 40px; height: 17px; line-height: 17px; text-align: center;" />页,
-							<input type="button" class='cursorpointer' value="搜索"
-								onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
-						</div>
-						<!-- 分页结束 -->
 						<!--添加产品开始-->
 						<div id="addProduct">
 							<table width="100%" border="0" cellpadding="8" cellspacing="0"
@@ -440,15 +401,21 @@ $(function(){
 									<td><input type="text" name="productNo" id="productNo"
 										value="" size="80" class="inpMain" /></td>
 								</tr>
-								<tr>
-									<td align="right">产品价格：</td>
-									<td><input type="text" name="productPrice"
-										id="productPrice" value="" size="80" class="inpMain" /></td>
-								</tr>
+								
 								<tr>
 									<td align="right">产品介绍：</td>
 									<td><input type="text" name="description" id="description"
 										value="" size="80" class="inpMain" /></td>
+								</tr>
+								<tr>
+									<td align="right">适用对象：</td>
+									<td><input type="text" name="suitable" id="suitable"
+										value="" size="80" class="inpMain" /></td>
+								</tr>
+								<tr>
+									<td align="right">产品定价：</td>
+									<td><input type="text" name="productPrice"
+										id="productPrice" value="" size="80" class="inpMain" /></td>
 								</tr>
 								<tr>
 									<td align="right">购买条件：</td>
@@ -507,7 +474,7 @@ $(function(){
 						value="" size="80" class="inpMain" readonly/></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">产品价格：</td>
+					<td height="35" align="right">产品定价：</td>
 					<td><input type="text" name="upProductPrice" id="upProductPrice" value=""
 						size="80" class="inpMain" /></td>
 				</tr>
@@ -517,8 +484,8 @@ $(function(){
 						value="" size="80" class="inpMain" /></td>
 				</tr>
 				<tr>
-					<td height="35" align="right">资 产：</td>
-					<td><input type="text" name="upTotalAssets" id="upTotalAssets"
+					<td align="right">适用对象：</td>
+					<td><input type="text" name="upSuitable" id="upSuitable"
 						value="" size="80" class="inpMain" /></td>
 				</tr>
 				
@@ -589,9 +556,7 @@ function nextPage(size,page){
 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
         "<th width='80'>产品名称</th>"+
-        "<th width='80'>产品编号</th>"+
-        "<th width='80'>产品价格</th>"+
-        "<th width='80'>产品介绍</th>"+
+        "<th width='80'>产品定价</th>"+
         "<th width='80'>房产</th>"+
         "<th width='80'>动产</th>"+
         "<th width='80'>公司</th>"+
@@ -603,9 +568,7 @@ function nextPage(size,page){
 	         var product = data.products[i];
 	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
 				"<td align='center'>"+product.name+" </td>"+
-				"<td align='center'>"+product.productNo+" </td>"+
-				"<td align='center'>"+product.productPrice+" </td>"+
-				"<td align='center'>"+product.description+" </td>"
+				"<td align='center'>"+product.productPrice+" </td>";
 				if(product.estate==0){
 					htmlStr += "<td align='center'>无";
 				}else
@@ -638,39 +601,9 @@ function nextPage(size,page){
 				}
 	         htmlStr += "<td align='center'><a onclick=updateRes(this,"+product.id+"); class='updateColor'>更新</a></td></tr>";
 	    }
-	    //组装分页
-	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-	   
-	    if(pb.currentPage==1){
-	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
-	    }
-	    else{
-	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
-	    }
-	    if(pb.hasPreviousPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
-	    }
-	    if(pb.hasNextPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
-	    }
-	    if(pb.totalPage==pb.currentPage){
-	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
-	    }else{
-	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
-	    }
-	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
-	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
-					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
 	    htmlStr += "</table>";
 	   
 	    $("#productList").html(htmlStr);
-	    $("#splitPage").html(htmlPage);
 	   
 	}) 
 }
@@ -697,6 +630,7 @@ function addProduct(){
 		}
 	} 
 	var name = $("#productName").val();
+	var suitable = $("#suitable").val();
 	var productNo = $("#productNo").val();
 	var productPrice = $("#productPrice").val();
 	var description = $("#description").val();
@@ -704,6 +638,7 @@ function addProduct(){
 	var sendInfo={
 			"productName" : name,
 			"productNo" : productNo,
+			"suitable" : suitable,
 			"productPrice" : productPrice,
 			"description" :description,
 			"isEnable" : isEnable,

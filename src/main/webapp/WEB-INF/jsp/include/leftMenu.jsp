@@ -17,12 +17,15 @@
 					</ul>
 				
 				<ul>
+						<li id="customerli"><a href="${basePath}admin/customer/list"><i
+											class="page"></i><em>客户管理</em></a></li>
 						<li id="productli"><a href="${basePath}admin/product/list"><i
 								class="productCat"></i><em>产品管理</em></a></li>
+								
 				</ul>
 				<ul class="bot">
 					<li id="datali"><a href="${basePath}admin/backup/index"><i class="backup"></i><em>数据备份</em></a></li>
-					<li id="adminli"><a href="manager.html"><i class="manager"></i><em>网站管理员</em></a></li>
+					<li id="managerli"><a href="${basePath}admin/manager/list"><i class="manager"></i><em>网站管理员</em></a></li>
 					<li id="opli"><a href="manager_log.html"><i class="managerLog"></i><em>操作记录</em></a></li>
 				</ul>
 				</shiro:authenticated>

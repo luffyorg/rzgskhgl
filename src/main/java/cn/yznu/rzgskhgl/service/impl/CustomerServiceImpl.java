@@ -1,6 +1,5 @@
 package cn.yznu.rzgskhgl.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,25 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import cn.yznu.rzgskhgl.pojo.Order;
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.service.ICommonService;
-import cn.yznu.rzgskhgl.service.IProcessService;
+import cn.yznu.rzgskhgl.service.ICustomerService;
+import cn.yznu.rzgskhgl.service.IRoleService;
 
-/**
- * 
- * @author zhangwei
- *
- */
-@SuppressWarnings("deprecation")
-@Service("processService")
-public class ProcessServiceImpl extends CommonServiceimpl implements IProcessService {
-
+@Service("customerService")
+public class CustomerServiceImpl extends CommonServiceimpl implements ICustomerService {
 	@Autowired
 	@Qualifier("commonService")
 	private ICommonService commonService;
+	@Autowired
+	@Qualifier("roleService")
+	private IRoleService roleService;
 
 	@Override
-	public HSSFWorkbook createExcel(List<Order> orders, HttpServletRequest request) {
+	public HSSFWorkbook createExcel(List<Customer> customers, HttpServletRequest request) {
 
 		// 创建一个webbook，对应一个excel文件
 		HSSFWorkbook workbook = new HSSFWorkbook();
@@ -91,41 +87,64 @@ public class ProcessServiceImpl extends CommonServiceimpl implements IProcessSer
 		cell.setCellStyle(style);
 
 		cell = row.createCell(1);
-		cell.setCellValue("订单号");
+		cell.setCellValue("姓名");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(2);
-		cell.setCellValue("购买人");
+		cell.setCellValue("电话");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(3);
-		cell.setCellValue("业务员");
+		cell.setCellValue("地址");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(4);
-		cell.setCellValue("产品名称");
+		cell.setCellValue("性别");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(5);
-		cell.setCellValue("产品说明");
+		cell.setCellValue("总资产");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(6);
-		cell.setCellValue("产品定价");
+		cell.setCellValue("总负债");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(7);
-		cell.setCellValue("订单状态");
+		cell.setCellValue("征信情况");
 		cell.setCellStyle(style);
 
 		cell = row.createCell(8);
-		cell.setCellValue("创建时间");
+		cell.setCellValue("行业");
 		cell.setCellStyle(style);
 
+		cell = row.createCell(9);
+		cell.setCellValue("房产");
 		cell.setCellStyle(style);
-		for (int i = 0; i < orders.size(); i++) {
+
+		cell = row.createCell(10);
+		cell.setCellValue("动产");
+		cell.setCellStyle(style);
+
+		cell = row.createCell(11);
+		cell.setCellValue("动产");
+		cell.setCellStyle(style);
+
+		cell = row.createCell(12);
+		cell.setCellValue("公司");
+		cell.setCellStyle(style);
+
+		cell = row.createCell(12);
+		cell.setCellValue("实体");
+		cell.setCellStyle(style);
+
+		cell = row.createCell(13);
+		cell.setCellValue("客户状态");
+		cell.setCellStyle(style);
+
+		for (int i = 0; i < customers.size(); i++) {
 			row = sheet.createRow(i + 1);
-			Order order = orders.get(i);
+			Customer user = customers.get(i);
 			// 创建单元格，并设置值
 			// 编号列居左
 			HSSFCell c1 = row.createCell(0);
@@ -133,57 +152,80 @@ public class ProcessServiceImpl extends CommonServiceimpl implements IProcessSer
 			c1.setCellValue(i + 1);
 			HSSFCell c2 = row.createCell(1);
 			c2.setCellStyle(style1);
-			c2.setCellValue(order.getOrderNo());
+			c2.setCellValue(user.getName());
 
 			HSSFCell c3 = row.createCell(2);
 			c3.setCellStyle(style1);
-			c3.setCellValue(order.getBuyName());
+			c3.setCellValue(user.getTel());
 
 			HSSFCell c4 = row.createCell(3);
 			c4.setCellStyle(style1);
-			c4.setCellValue(order.getCreateName());
+			c4.setCellValue(user.getAddress());
 
 			HSSFCell c5 = row.createCell(4);
 			c5.setCellStyle(style1);
-			c5.setCellValue(order.getProductName());
+			c5.setCellValue(user.getGender());
 
 			HSSFCell c6 = row.createCell(5);
 			c6.setCellStyle(style1);
-			c6.setCellValue(order.getDescription());
+			c6.setCellValue(user.getTotalAssets());
 
 			HSSFCell c7 = row.createCell(6);
 			c7.setCellStyle(style1);
-			c7.setCellValue(order.getProductPrice());
-			// 客户签订合同---2收齐资料---3递交渠道处----4审核阶段---5下款，6收费，7完成服务
-			String status = "";
-			if (order.getOrderStatus() == 1) {
-				status = "签订合同";
-			} else if (order.getOrderStatus() == 2) {
-				status = "收齐资料";
-			} else if (order.getOrderStatus() == 3) {
-				status = "递交渠道处";
-			} else if (order.getOrderStatus() == 4) {
-				status = "审核阶段";
-			} else if (order.getOrderStatus() == 5) {
-				status = "下款";
-			} else if (order.getOrderStatus() == 6) {
-				status = "收费";
-			} else if (order.getOrderStatus() == 7) {
-				status = "完成服务";
-			}else
-				status ="无";
+			c7.setCellValue(user.getTotalLiability());
 
 			HSSFCell c8 = row.createCell(7);
 			c8.setCellStyle(style1);
-			c8.setCellValue(status);
+			c8.setCellValue(user.getCreditConditions());
 
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 定义文件名格式
-			HSSFCell c9 = row.createCell(8);// 创建时间
+			HSSFCell c9 = row.createCell(8);
 			c9.setCellStyle(style1);
-			if (order.getCreateDate() == null || order.getCreateDate().equals("")) {
-				c9.setCellValue("无");
+			c9.setCellValue(user.getIndustry());
+
+			String estate = "";
+			if (user.getEstate() == 1) {
+				estate = "有";
 			} else
-				c9.setCellValue(sdf.format(order.getCreateDate()));
+				estate = "无";
+			HSSFCell c10 = row.createCell(9);
+			c10.setCellStyle(style1);
+			c10.setCellValue(estate);
+
+			String movable = "";
+			if (user.getMovable() == 1) {
+				movable = "有";
+			} else
+				movable = "无";
+			HSSFCell c11 = row.createCell(10);
+			c11.setCellStyle(style1);
+			c11.setCellValue(movable);
+
+			String company = "";
+			if (user.getCompany() == 1) {
+				company = "有";
+			} else
+				company = "无";
+			HSSFCell c12 = row.createCell(11);
+			c12.setCellStyle(style1);
+			c12.setCellValue(company);
+
+			String solidSurfacing = "";
+			if (user.getSolidSurfacing() == 1) {
+				solidSurfacing = "有";
+			} else
+				solidSurfacing = "无";
+			HSSFCell c13 = row.createCell(12);
+			c13.setCellStyle(style1);
+			c13.setCellValue(solidSurfacing);
+
+			String isEnable = "";
+			if (user.getIsEnable() == 1) {
+				isEnable = "启用";
+			} else
+				isEnable = "停用";
+			HSSFCell c14 = row.createCell(13);// 状态
+			c14.setCellStyle(style1);
+			c14.setCellValue(isEnable);
 
 		}
 
@@ -191,10 +233,8 @@ public class ProcessServiceImpl extends CommonServiceimpl implements IProcessSer
 	}
 
 	@Override
-	public Order queryOrderbByOrderNo(String orderNo) {
-		String hql = "from Order where orderNo='"+orderNo+"' and isEnable=1";
-		Order order = commonService.getSingleByHQL(hql);
-		return order;
+	public List<Customer> getAllCustomer(String hql) {
+		return commonService.findHql(Customer.class, hql);
 	}
 
 }

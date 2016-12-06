@@ -261,7 +261,7 @@ cursor:pointer;
 					style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 			</div>
 			<table>
-				<tr>
+				<tr style="display: none">
 					<td height="35" align="right">角色标识：</td>
 					<td><input type="text" name="updateId" id="updateId" value=""
 						size="80" class="inpMain" readonly="readonly"/></td>

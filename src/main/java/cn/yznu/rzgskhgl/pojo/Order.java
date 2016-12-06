@@ -43,9 +43,9 @@ public class Order extends BaseEntity implements Serializable {
 	/** 产品描述*/
 	private String description;
 	
-	/** 产品价格*/
-	@Column(name = "product_price",columnDefinition =( "double default null comment '产品价格'"))
-	private double productPrice;
+	/** 产品定价*/
+	@Column(name = "product_price")
+	private String productPrice;
 	
 	/** 产品数量*/
 	private int productNum;
@@ -53,6 +53,9 @@ public class Order extends BaseEntity implements Serializable {
 	/** 订单状态 ：1与客户签订合同---2收齐资料---3递交渠道处----4审核阶段---5下款，6收费，7完成服务 */
 	@Column(name = "order_status" ,columnDefinition =( "int(11) default null comment '1与客户签订合同---2收齐资料---3递交渠道处----4审核阶段---5下款，6收费，7完成服务'"))
 	private int orderStatus;
+	
+	/**年月 2016-12*/
+	private String years;
 
 	public String getOrderNo() {
 		return orderNo;
@@ -94,11 +97,11 @@ public class Order extends BaseEntity implements Serializable {
 		this.productName = productName;
 	}
 
-	public double getProductPrice() {
+	public String getProductPrice() {
 		return productPrice;
 	}
 
-	public void setProductPrice(double productPrice) {
+	public void setProductPrice(String productPrice) {
 		this.productPrice = productPrice;
 	}
 
@@ -132,6 +135,14 @@ public class Order extends BaseEntity implements Serializable {
 
 	public void setProductNum(int productNum) {
 		this.productNum = productNum;
+	}
+
+	public String getYears() {
+		return years;
+	}
+
+	public void setYears(String years) {
+		this.years = years;
 	}
 
 	

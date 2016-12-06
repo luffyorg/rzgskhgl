@@ -14,6 +14,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>购买产品</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
 </head>
@@ -46,7 +47,7 @@
 	height: 300px;
 	display: none;
 	position: absolute;
-	margin: -400px auto;
+	margin: -10% auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -67,7 +68,7 @@
 	height: 300px;
 	display: none;
 	position: absolute;
-	margin: -400px auto;
+	margin: 10% auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -291,20 +292,11 @@
 							<td>序号</td>
 							<td>产品名称</td>
 							<td>产品编号</td>
-							<td>产品价格</td>
-							<td colspan="4">
-								<table>
-									<tr>购买条件
-									</tr>
-									<tr>
-										<td align="center">房产</td>
-										<td align="center">动产</td>
-										<td align="center">公司</td>
-										<td align="center">实体</td>
-									</tr>
-								</table>
-
-							</td>
+							<td>产品定价</td>
+							<td align="center">房产</td>
+							<td align="center">动产</td>
+							<td align="center">公司</td>
+							<td align="center">实体</td>
 
 							<td align="center">产品状态</td>
 							<td>操作</td>
@@ -312,7 +304,7 @@
 						<tbody>
 							<c:forEach items="${products }" var="product" varStatus="i">
 								<tr>
-									<td>${i.count + (pb.currentPage-1)*10}</td>
+									<td>${i.count}</td>
 									<td>${product.name }</td>
 									<td>${product.productNo }</td>
 									<td>${product.productPrice }</td>
@@ -344,42 +336,6 @@
 						</tbody>
 					</table>
 				</div>
-				<!-- 分页开始 -->
-				<div style="float: right; margin-top: 15px;" class="splitPage"
-					id="splitPage">
-					<c:if test="${pb.currentPage==1 }">
-						<a class='cursorauto'>首页</a>
-					</c:if>
-					<c:if test="${pb.currentPage!=1 }">
-						<a onclick="nextPage(10,1);" class="cursorpointer">首页</a>
-					</c:if>
-					<c:if test="${pb.hasPreviousPage==true}">
-						<a onclick="nextPage(10,${pb.currentPage-1});"
-							class="cursorpointer"> ◄上一页</a>
-					</c:if>
-					<c:if test="${pb.hasPreviousPage==false}">
-						<a class='cursorauto'> ◄上一页</a>
-					</c:if>
-					<c:if test="${pb.hasNextPage==true }">
-						<a onclick="nextPage(10,${pb.currentPage+1});"
-							class="cursorpointer">下一页► </a>
-					</c:if>
-					<c:if test="${pb.hasNextPage==false }">
-						<a class='cursorauto'>下一页► </a>
-					</c:if>
-					<c:if test="${pb.totalPage==pb.currentPage }">
-						<a class='cursorauto'>末页</a>
-					</c:if>
-					<c:if test="${pb.totalPage!=pb.currentPage }">
-						<a onclick="nextPage(10,${pb.totalPage});" class="cursorpointer">末页</a>
-					</c:if>
-					总${pb.allRow }条，第${pb.currentPage}/${pb.totalPage }页，到第 <input
-						id="goInput" value=''
-						style="border: 1px solid #d8d8d8; width: 40px; height: 17px; line-height: 17px; text-align: center;" />页,
-					<input type="button" class='cursorpointer' value="搜索"
-						onclick="gotoPageByInput(${pb.currentPage},${pb.totalPage});" />
-				</div>
-				<!-- 分页结束 -->
 				<!--弹窗开始 -->
 				<div class="tc">
 					<div class="tc1">
@@ -442,103 +398,6 @@
 	</div>
 </body>
 <script type="text/javascript">
-function nextPage(size,page){
-	var estate = $("#searchEstate").val();
-	var movable = $("#searchMovable").val();
-	var company = $("#searchCompany").val();
-	var solidSurfacing = $("#searchSolidSurfacing").val();
-	var productNo = $("#searchName").val();
-		$.get("nextPage?pageSize="+size+"&page="+page+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
-
-		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-		htmlStr += "<tr> <th width='80'>序号</th>"+
-       "<th width='80'>产品名称</th>"+
-       "<th width='80'>产品编号</th>"+
-       "<th width='80'>产品价格</th>"+
-       "<th width='80'>产品简介</th>"+
-       "<th width='80'>房产</th>"+
-       "<th width='80'>动产</th>"+
-       "<th width='80'>公司</th>"+
-       "<th width='80'>实体</th>"+
-       "<th width='80'>产品状态</th>"+
-       "<th width='80'>操作</th></tr>";
-       var pb=data.pb;
-	    for(var i = 0; i < data.products.length; i++){
-	         var product = data.products[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+product.name+" </td>"+
-				"<td align='center'>"+product.productNo+" </td>"+
-				"<td align='center'>"+product.productPrice+" </td>"+
-				"<td align='center'>"+product.description+" </td>"
-				if(product.estate==0){
-					htmlStr += "<td align='center'>无";
-				}else
-					htmlStr += "<td align='center'>有";
-				
-				if(product.movable==0){
-					htmlStr += "<td align='center'>无";
-				}else
-					htmlStr += "<td align='center'>有";
-				
-				if(product.company==0){
-					htmlStr += "<td align='center'>无";
-				}else
-					htmlStr += "<td align='center'>有";
-				
-				if(product.solidSurfacing==0){
-					htmlStr += "<td align='center'>无";
-				}else
-					htmlStr += "<td align='center'>有";
-				if(product.isEnable==0){
-					htmlStr += "<td align='center'>下架";
-				}else{
-					htmlStr += "<td align='center'>上架</td>";
-				}
-	       	  	htmlStr += "<td align='center'><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索</a>  | ";
-	       		if(product.isEnable==0){
-	         		htmlStr += "<a>购买</a></td></td></tr>";
-	       		}else{
-	       			htmlStr += "<a onclick=buy("+product.productNo+",'"+product.name+"','"+product.productPrice+"'); class='setReColor'>购买</a></td></td></tr>";
-	       		}
-	       			/* htmlStr += "<a href='buy/"+product.id +"' class='setReColor'>购买</a></td></td></tr>"; */
-	    }
-	    //组装分页
-	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-	   
-	    if(pb.currentPage==1){
-	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
-	    }
-	    else{
-	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
-	    }
-	    if(pb.hasPreviousPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
-	    }
-	    if(pb.hasNextPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
-	    }
-	    if(pb.totalPage==pb.currentPage){
-	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
-	    }else{
-	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
-	    }
-	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
-	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
-					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
-	    htmlStr += "</table>";
-	   
-	    $("#main").html(htmlStr);
-	    $(".splitPage").html(htmlPage);
-	   
-	}) 
-}
 
 function gotoPageByInput(currentPage,totalpage){
 	var page = $("#goInput").val();
@@ -553,9 +412,9 @@ function buy(id,name,price){
 	var options="";
 	 $.get("queryBuyUser?id="+id+"", function(data){
 		 if(data.msg=="success"){
-			 for(var i = 0; i < data.users.length; i++){
-				 var user = data.users[i];
-				 options += "<option value='"+user.name+"'></option>";
+			 for(var i = 0; i < data.customers.length; i++){
+				 var customer = data.customers[i];
+				 options += "<option value='"+customer.name+"'></option>";
 			 }
 			 $("#users").empty();
 			 $("#users").append(options);
@@ -594,6 +453,7 @@ function buyProduct(){
 				success : function(data) {
 					if (data.msg == "success") {
 						alert("购买成功");
+						tcclose();
 					} else {
 						alert(data.msg);
 					}
@@ -609,8 +469,7 @@ function queryBuyUser(id){
 	$.get("queryBuyUser?id="+id+"", function(data){
 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
-			      "<th width='80'>登录名称</th>"+
-			      "<th width='80'>真实姓名</th>"+
+			      "<th width='80'>姓名</th>"+
 			      "<th width='80'>电话</th>"+
 			      "<th width='80'>地址</th>"+
 			      "<th width='80'>性别</th>"+
@@ -619,11 +478,10 @@ function queryBuyUser(id){
 			      "<th width='80'>征信情况</th>"+
 			      "<th width='80'>行业</th>"
       var pb=data.pb;
-	    for(var i = 0; i < data.users.length; i++){
-	         var user = data.users[i];
+	    for(var i = 0; i < data.customers.length; i++){
+	         var user = data.customers[i];
 	         htmlStr += "<tr><td align='center'>"+(i+1)+" </td>"+
 				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+user.nickName+" </td>"+
 				"<td align='center'>"+user.tel+" </td>"+
 				"<td align='center'>"+user.address+" </td>"+
 				"<td align='center'>"+user.gender+" </td>"+
@@ -637,8 +495,8 @@ function queryBuyUser(id){
 	    $(".splitPage").hide();
 	    
 	    $("#user").html(htmlStr);
-	    $("#h3").html("<input type='text' id='userName'class='inpMain1' placeholder='登录名称'/>"+
-	    		"<input type='button' value='查找' class=''>");
+	    $("#h3").html("<input type='text' id='userName'class='inp_name' placeholder='登录名称'/>"+
+	    		"<input type='button' value='查找' class='inp_btn'>");
 	    
 	})
 }
@@ -650,8 +508,7 @@ function queryUserByNameOrCode(){
 		}else{
 			var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 			htmlStr += "<tr> <th width='80'>序号</th>"+
-				      "<th width='80'>登录名称</th>"+
-				      "<th width='80'>真实姓名</th>"+
+				      "<th width='80'>姓名</th>"+
 				      "<th width='80'>电话</th>"+
 				      "<th width='80'>地址</th>"+
 				      "<th width='80'>性别</th>"+
@@ -660,11 +517,10 @@ function queryUserByNameOrCode(){
 				      "<th width='80'>征信情况</th>"+
 				      "<th width='80'>行业</th>"
 	      var pb=data.pb;
-		    for(var i = 0; i < data.users.length; i++){
-		         var user = data.users[i];
+		    for(var i = 0; i < data.customers.length; i++){
+		         var user = data.customers[i];
 		         htmlStr += "<tr><td align='center'>"+(i+1)+" </td>"+
 					"<td align='center'>"+user.name+" </td>"+
-					"<td align='center'>"+user.nickName+" </td>"+
 					"<td align='center'>"+user.tel+" </td>"+
 					"<td align='center'>"+user.address+" </td>"+
 					"<td align='center'>"+user.gender+" </td>"+
@@ -675,11 +531,10 @@ function queryUserByNameOrCode(){
 		    }
 		    htmlStr += "</table>";
 		    $("#main").hide();
-		    $(".splitPage").hide();
 		    
 		    $("#user").html(htmlStr);
-		    $("#h3").html("<input type='text' id='userName'class='inpMain1' placeholder='登录名称'/>"+
-		    		"<input type='button' value='查找' class=''>");
+		    $("#h3").html("<input type='text' id='userName'class='inp_name' placeholder='登录名称'/>"+
+		    		"<input type='button' value='查找' class='inp_btn'>");
 		}
 		
 	    
@@ -699,7 +554,6 @@ function search(){
 	       "<th width='80'>产品名称</th>"+
 	       "<th width='80'>产品编号</th>"+
 	       "<th width='80'>产品价格</th>"+
-	       "<th width='80'>产品简介</th>"+
 	       "<th width='80'>房产</th>"+
 	       "<th width='80'>动产</th>"+
 	       "<th width='80'>公司</th>"+
@@ -712,8 +566,7 @@ function search(){
 		         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
 					"<td align='center'>"+product.name+" </td>"+
 					"<td align='center'>"+product.productNo+" </td>"+
-					"<td align='center'>"+product.productPrice+" </td>"+
-					"<td align='center'>"+product.description+" </td>"
+					"<td align='center'>"+product.productPrice+" </td>";
 					if(product.estate==0){
 						htmlStr += "<td align='center'>无";
 					}else
@@ -738,7 +591,7 @@ function search(){
 					}else{
 						htmlStr += "<td align='center'>上架</td>";
 					}
-		       	  	htmlStr += "<td align='center'><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索</a>  | ";
+		       	  	htmlStr += "<td align='center'><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索客户</a>  | ";
 		       		if(product.isEnable==0){
 		         		htmlStr += "<a>购买</a></td></td></tr>";
 		       		}else{
@@ -746,39 +599,9 @@ function search(){
 		       		}
 		       			/* htmlStr += "<a href='buy/"+product.id +"' class='setReColor'>购买</a></td></td></tr>"; */
 		    }
-		    //组装分页
-		    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-		   
-		    if(pb.currentPage==1){
-		    	htmlPage += "<a  class='cursorauto'>首页</a> ";
-		    }
-		    else{
-		    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
-		    }
-		    if(pb.hasPreviousPage==true){
-		    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
-		    }
-		    else{
-		    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
-		    }
-		    if(pb.hasNextPage==true){
-		    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
-		    }
-		    else{
-		    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
-		    }
-		    if(pb.totalPage==pb.currentPage){
-		    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
-		    }else{
-		    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
-		    }
-		    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
-		   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
-						"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
 		    htmlStr += "</table>";
 		   
 		    $("#main").html(htmlStr);
-		    $(".splitPage").html(htmlPage);
 		   
 		}) 
 }

@@ -2,6 +2,7 @@ package cn.yznu.rzgskhgl.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,15 +27,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.common.MakeOrderNum;
 import cn.yznu.rzgskhgl.common.PageBean;
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.SendSms;
 import cn.yznu.rzgskhgl.pojo.User;
+import cn.yznu.rzgskhgl.service.ICustomerService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
+import cn.yznu.rzgskhgl.util.DateUtil;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * 业务流程处理 控制类
@@ -45,16 +51,19 @@ import net.sf.json.JSONObject;
 @SuppressWarnings("deprecation")
 @Controller
 @RequestMapping("/admin/process")
-public class ProcessController extends BaseController{
+public class ProcessController extends BaseController {
 	Logger log = Logger.getLogger(ProcessController.class);
 
 	@Autowired
 	private IProductService productService;
 	@Autowired
 	private IUserService userService;
-	
+
 	@Autowired
 	private IProcessService processService;
+
+	@Autowired
+	private ICustomerService customerService;
 
 	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
@@ -64,10 +73,10 @@ public class ProcessController extends BaseController{
 		PageBean pb = new PageBean();
 		String pagesize = request.getParameter("pageSize");
 		String page1 = request.getParameter("page");
-		if(pagesize ==null || pagesize.equals("")){
+		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
 		}
-		if(page1 ==null || page1.equals("")){
+		if (page1 == null || page1.equals("")) {
 			page1 = "1";
 		}
 		int pageSize = Integer.parseInt(pagesize);
@@ -77,8 +86,9 @@ public class ProcessController extends BaseController{
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
-		
+		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset,
+				length); // 该分页的记录
+
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -108,7 +118,7 @@ public class ProcessController extends BaseController{
 			order.setProductPrice(product.getProductPrice());
 			order.setOrderStatus(0);
 			order.setDescription(product.getDescription());
-			mv.addObject("users", productService.queryBuyUsers(product));
+			mv.addObject("users", productService.queryBuyCustomers(product));
 			mv.addObject("order", order);
 		}
 		mv.setViewName("process/order");
@@ -119,7 +129,7 @@ public class ProcessController extends BaseController{
 	@ResponseBody
 	public JSONObject queryBuyUser(HttpServletRequest request) {
 		log.info("查询条件满足的客户");
-		Map<String ,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		Product product = productService.findUniqueByProperty(Product.class, "productNo", request.getParameter("id"));
 		int bmovable = product.getMovable();
 		int bEstate = product.getEstate();
@@ -127,48 +137,50 @@ public class ProcessController extends BaseController{
 		int bCompany = product.getCompany();
 		log.info("产品的购买条件：bmovable=" + bmovable + ",bEstate=" + bEstate + ",bSolidS=" + bSolidS + ",bCompany="
 				+ bCompany);
-		List<User> users = productService.queryBuyUsers(product);
-		System.out.println(">>>" + users);
-		if (users == null || users.size() == 0) {
+		List<Customer> customers = productService.queryBuyCustomers(product);
+		System.out.println(">>>" + customers);
+		if (customers == null || customers.size() == 0) {
 			map.put("msg", "没有符合要求的客户");
 		} else {
 			map.put("msg", "success");
 		}
-		map.put("users", users);
-		JSONObject json = JSONObject.fromObject( map ); 
+		map.put("customers", customers);
+		JSONObject json = JSONObject.fromObject(map);
 		return json;
 	}
+
 	@RequestMapping(value = "queryUserByNameOrCode", method = RequestMethod.GET)
 	@ResponseBody
 	public JSONObject queryUserByNameOrCode(HttpServletRequest request) {
 		log.info("查询条件满足的客户");
-		Map<String ,Object> map = new HashMap<String,Object>();
-		Product product = productService.findUniqueByProperty(Product.class, "productNo", request.getParameter("customer"));
-		if(product==null){
+		Map<String, Object> map = new HashMap<String, Object>();
+		Product product = productService.findUniqueByProperty(Product.class, "productNo",
+				request.getParameter("customer"));
+		if (product == null) {
 			product = productService.findUniqueByProperty(Product.class, "name", request.getParameter("customer"));
 		}
-		if(product==null){
+		if (product == null) {
 			map.put("msg", "error");
-			JSONObject json = JSONObject.fromObject( map ); 
+			JSONObject json = JSONObject.fromObject(map);
 			return json;
 		}
-			
+
 		int bmovable = product.getMovable();
 		int bEstate = product.getEstate();
 		int bSolidS = product.getSolidSurfacing();
 		int bCompany = product.getCompany();
 		log.info("产品的购买条件：bmovable=" + bmovable + ",bEstate=" + bEstate + ",bSolidS=" + bSolidS + ",bCompany="
 				+ bCompany);
-		List<User> users = productService.queryBuyUsers(product);
-		System.out.println(">>>" + users);
-		if (users == null || users.size() == 0) {
+		List<Customer> customers = productService.queryBuyCustomers(product);
+		System.out.println(">>>" + customers);
+		if (customers == null || customers.size() == 0) {
 			map.put("msg", "没有符合要求的客户");
 		} else {
 			map.put("msg", "success");
 		}
 		map.put("msg", "success");
-		map.put("users", users);
-		JSONObject json = JSONObject.fromObject( map ); 
+		map.put("customers", customers);
+		JSONObject json = JSONObject.fromObject(map);
 		return json;
 	}
 
@@ -177,46 +189,52 @@ public class ProcessController extends BaseController{
 	@ResponseBody
 	public Map addOrder(@RequestBody JSONObject json) {
 		log.info("购买产品");
-		Map<String ,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		String msg = "";
-		User user = (User) getSessionUser();//获取当前系统的业务员
+		User user = (User) getSessionUser();// 获取当前系统的业务员
 		Order order = new Order();
 		String id = json.getString("id");
 		String buyName = json.getString("buyName");
 		int orderStatus = json.getInt("orderStatus");
-		User u = new User();
+		Customer customer = new Customer();
 		Product product = null;
-		List<User> users = null;
-		if(!buyName.equals("")){
-			u = userService.findUniqueByProperty(User.class, "name", buyName);
+		List<Customer> customers = null;
+		if (!buyName.equals("")) {
+			customer = userService.findUniqueByProperty(Customer.class, "name", buyName);
 		}
-		
-		if(u == null || u.equals("")){
+
+		if (customer == null || customer.equals("")) {
 			msg = "购买人不存在！";
-		}else{
+		} else {
 			product = productService.findUniqueByProperty(Product.class, "productNo", id);
-			users = productService.queryBuyUsers(product);
-			if(!users.contains(u)){
+			customers = productService.queryBuyCustomers(product);
+			if (!customers.contains(customer)) {
 				msg = "购买人不符合购买条件！";
-			}else if(u.getTotalAssets() < product.getProductPrice()){
-				msg = "购买人的资产不足以购买止产品！";
-			}else {
+			} /*
+				 * else if(customer.getTotalAssets() <
+				 * product.getProductPrice()){ msg = "购买人的资产不足以购买止产品！"; }else
+				 * if(!customer.getCreditConditions().equals("合格")){ msg =
+				 * "购买人的征信情况不合格！"; }
+				 */
+			else {
 				MakeOrderNum mon = new MakeOrderNum();
-				order.setOrderNo(mon.makeOrderNum());//生成订单号
+				order.setOrderNo(mon.makeOrderNum());// 生成订单号
 				order.setCreateDate(new Date());
 				order.setSalesMan(user.getName());
 				order.setOrderStatus(orderStatus);
 				order.setSalesManId(user.getId());
-				order.setBuyNameId(u.getId());
-				order.setBuyName(u.getName());
+				order.setBuyNameId(customer.getId());
+				order.setBuyName(customer.getName());
 				order.setCreateName(user.getName());
 				order.setCreateBy(user.getId().toString());
 				order.setCreateDate(new Date());
 				order.setIsEnable(1);
 				order.setDescription(product.getDescription());
 				order.setProductName(product.getName());
+				order.setProductPrice(product.getProductPrice());
+				order.setYears(DateUtil.currentYears());
 				productService.save(order);
-				
+
 				SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 				String orderStatus2 = sendMsg.orderStatus(orderStatus);
 				SendSms sms = new SendSms();
@@ -224,17 +242,16 @@ public class ProcessController extends BaseController{
 				sms.setCreateDate(new Date());
 				sms.setCreateName(getSessionUser().getName());
 				sms.setStatus(0);
-				sms.setSmsText("亲，你已成功在XX融资公司购买产品【"+order.getProductName()+"】，订单号：【"+order.getOrderNo()+"】，"
-						+ "订单状态为：【"+orderStatus2+"】。如有问题，请联系tel：1330000000");
+				sms.setSmsText("亲，你已成功在XX融资公司购买产品【" + order.getProductName() + "】，订单号：【" + order.getOrderNo() + "】，"
+						+ "订单状态为：【" + orderStatus2 + "】。如有问题，请联系tel：1330000000");
 				sms.setSmsMob(user.getTel());
 				processService.saveOrUpdate(sms);
-				/*try {
-					String result = sendMsg.SendMsgForUser(sms);
-					log.info("发送短信返回结果：" + result);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}*/
-				
+				/*
+				 * try { String result = sendMsg.SendMsgForUser(sms);
+				 * log.info("发送短信返回结果：" + result); } catch (Exception e) {
+				 * e.printStackTrace(); }
+				 */
+
 				msg = "success";
 			}
 		}
@@ -242,70 +259,120 @@ public class ProcessController extends BaseController{
 		return map;
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "static-access" })
 	@RequestMapping(value = "orderList")
-	public ModelAndView orderList() {
+	public ModelAndView orderList(HttpServletRequest request) {
 		log.info("查看订单列表");
 		ModelAndView mv = new ModelAndView();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+
 		User user = getSessionUser();
 		List<Order> orders = null;
 		String msg = "";
-		if(user==null){
+		String hqlCount = "select count(*) from Order where isEnable=1 and salesMan='" + user.getName() + "' ";
+		int count = processService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		if (user == null) {
 			msg = "请登录";
-		}else{
+		} else {
 			List<String> roles = userService.listRoleSnByUser(user);
 			if (user == null) {
 				mv.addObject("orders", new Order());
 			} else {
-					msg = "查询成功";
-					String hql = "from Order where salesMan=? order by  createDate desc";
-					orders = userService.findHql(hql, user.getName());
+				msg = "查询成功";
+				String hql = "from Order where isEnable=1 and salesMan='" + user.getName()
+						+ "' order by  createDate desc";
+				orders = processService.queryForPage(hql, offset, length); // 该分页的记录
 			}
 		}
-		mv.addObject("msg", msg);
-		mv.addObject("orders", orders);
-		mv.setViewName("process/orderList");
-		return mv;
-	}
-	@SuppressWarnings("unused")
-	@RequestMapping(value = "allOrderList")
-	public ModelAndView allOrderList() {
-		log.info("查看全部订单列表");
-		ModelAndView mv = new ModelAndView();
-		User user = getSessionUser();
-		List<Order> orders = null;
-		String msg = "";
-		if(user==null){
-			msg = "请登录";
-		}else{
-			List<String> roles = userService.listRoleSnByUser(user);
-			if (user == null) {
-				mv.addObject("orders", new Order());
-			} else {
-				if(roles.contains("ADMIN")){
-					msg = "查询成功";
-					String hql = "from Order  order by  createDate desc";
-					orders = userService.findHql(Order.class, hql);
-				} else {
-					msg = "你没有权限，请联系管理员！";
-					orders = null;
-				}
-			}
-		}
+
+		pb.setList(orders);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		mv.addObject("pb", pb);
 		mv.addObject("msg", msg);
 		mv.addObject("orders", orders);
 		mv.setViewName("process/orderList");
 		return mv;
 	}
 
+	@SuppressWarnings({ "unused", "static-access" })
+	@RequestMapping(value = "allOrderList")
+	public ModelAndView allOrderList(HttpServletRequest request) {
+		log.info("查看全部订单列表");
+		ModelAndView mv = new ModelAndView();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");
+		String page1 = request.getParameter("page");
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+
+		User user = getSessionUser();
+		List<Order> orders = null;
+		String msg = "";
+		String hqlCount = "select count(*) from Order where isEnable=1  ";
+		int count = processService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		if (user == null) {
+			msg = "请登录";
+		} else {
+			List<String> roles = userService.listRoleSnByUser(user);
+			if (user == null) {
+				mv.addObject("orders", new Order());
+			} else {
+				msg = "查询成功";
+				String hql = "from Order where isEnable=1  order by  createDate desc";
+				orders = processService.queryForPage(hql, offset, length); // 该分页的记录
+			}
+		}
+		//获取全部业务员
+		String hqlCustomer = "from Customer";
+		List<Customer> customers = userService.findHql(Customer.class, hqlCustomer);
+		pb.setList(orders);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		mv.addObject("pb", pb);
+		mv.addObject("msg", msg);
+		mv.addObject("orders", orders);
+		mv.addObject("customers", customers);
+		mv.setViewName("process/orderAllList");
+		return mv;
+	}
+
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "updateOrder",method=RequestMethod.POST)
+	@RequestMapping(value = "updateOrder", method = RequestMethod.POST)
 	public @ResponseBody Map updateOrderStatus(HttpServletRequest request) {
 		log.info("更新订单状态");
-		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		String orderNo = request.getParameter("orderNo");
 		int status = Integer.parseInt(request.getParameter("status"));
-		Order o = processService.queryOrderbByOrderNo( orderNo);
+		Order o = processService.queryOrderbByOrderNo(orderNo);
 		o.setUpdateBy(getSessionUser().getId().toString());
 		o.setUpdateDate(new Date());
 		o.setUpdateName(getSessionUser().getName());
@@ -323,14 +390,17 @@ public class ProcessController extends BaseController{
 		order.setSalesMan(o.getSalesMan());
 		order.setSalesManId(o.getSalesManId());
 		order.setIsEnable(1);
-		order.setCreateBy(getSessionUser().getId().toString());
-		order.setCreateDate(new Date());
-		order.setCreateName(getSessionUser().getName());
+		order.setCreateBy(o.getCreateBy());
+		order.setCreateDate(o.getCreateDate());
+		order.setCreateName(o.getCreateName());
+		order.setUpdateBy(getSessionUser().getId().toString());
+		order.setUpdateDate(new Date());
+		order.setUpdateName(getSessionUser().getName());
 		productService.save(order);
 		map.put("msg", "success");
 		map.put("id", o.getId());
 		map.put("status", status);
-		User user = userService.getUserByName(o.getBuyName());
+		Customer customer = customerService.load(Customer.class, o.getBuyNameId());
 		SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 		String orderStatus = sendMsg.orderStatus(status);
 		SendSms sms = new SendSms();
@@ -338,31 +408,37 @@ public class ProcessController extends BaseController{
 		sms.setCreateDate(new Date());
 		sms.setCreateName(getSessionUser().getName());
 		sms.setStatus(0);
-		sms.setSmsText("亲，你在XX融资公司购买的产品，订单号：【"+order.getOrderNo()+"】订单状态已更新为：【"+orderStatus+"】。如有问题，请联系tel：1330000000");
-		sms.setSmsMob(user.getTel());
+		sms.setSmsText(
+				"亲，你在XX融资公司购买的产品，订单号：【" + order.getOrderNo() + "】订单状态已更新为：【" + orderStatus + "】。如有问题，请联系：1330000000");
+		sms.setSmsMob(customer.getTel());
 		processService.saveOrUpdate(sms);
-		/*try {
-			String result = sendMsg.SendMsgForUser(sms);
-			log.info("发送短信返回结果：" + result);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { String result = sendMsg.SendMsgForUser(sms);
+		 * log.info("发送短信返回结果：" + result); } catch (Exception e) {
+		 * e.printStackTrace(); }
+		 */
 		return map;
 	}
-	
+
+	/**
+	 * 产品购买 下一页
+	 * 
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings("static-access")
-	@RequestMapping(value="nextPage" ,method=RequestMethod.GET)
+	@RequestMapping(value = "nextPage", method = RequestMethod.GET)
 	@ResponseBody
 	public JSONObject nextPage(HttpServletRequest request) {
-		log.info("开始执行admin/process/nextPage 方法");
-		Map<String,Object> map = new HashMap<String,Object>();
+		log.info("产品购买--开始执行admin/process/nextPage 方法");
+		Map<String, Object> map = new HashMap<String, Object>();
 		PageBean pb = new PageBean();
 		String pagesize = request.getParameter("pageSize");
 		String page1 = request.getParameter("page");
-		if(pagesize ==null || pagesize.equals("")){
+		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
 		}
-		if(page1 ==null || page1.equals("")){
+		if (page1 == null || page1.equals("")) {
 			page1 = "1";
 		}
 		int pageSize = Integer.parseInt(pagesize);
@@ -372,7 +448,8 @@ public class ProcessController extends BaseController{
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset, length); // 该分页的记录
+		List<Product> list = productService.queryForPage("from Product ORDER BY isEnable DESC,createDate DESC", offset,
+				length); // 该分页的记录
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
@@ -380,29 +457,88 @@ public class ProcessController extends BaseController{
 		pb.setAllRow(count);
 		map.put("products", list);
 		map.put("pb", pb);
-		JSONObject json = JSONObject.fromObject( map ); 
+		JSONObject json = JSONObject.fromObject(map);
 		return json;
 
 	}
-	@RequestMapping(value="searchProduct" ,method=RequestMethod.GET)
+
+	@RequestMapping(value = "searchProduct", method = RequestMethod.GET)
 	@ResponseBody
 	public JSONObject searchProduct(HttpServletRequest request) {
 		log.info("开始执行admin/process/searchProduct 方法");
-		Map<String,Object> map = new HashMap<String,Object>();
-		String productName=request.getParameter("productName");
+		Map<String, Object> map = new HashMap<String, Object>();
+		String productName = request.getParameter("productName");
 		List<Product> lists = productService.findHql(Product.class,
-				"from Product p where p.name='"+productName+"' OR p.productNo='"+productName+"'");
+				"from Product p where p.name='" + productName + "' OR p.productNo='" + productName + "'");
 		map.put("products", lists);
-		JSONObject json = JSONObject.fromObject( map ); 
+		JSONObject json = JSONObject.fromObject(map);
 		return json;
-		
+
 	}
-	
+
 	@RequestMapping("exportOrder")
-	public void exportOrder(HttpServletRequest request,HttpServletResponse response) {
+	public void exportOrder(HttpServletRequest request, HttpServletResponse response) {
 		log.info("导出订单");
+		String orderNo = request.getParameter("orderNo");// 订单号
+		String createDate = request.getParameter("createDate");// 创建时间
+		String orderStatus = request.getParameter("orderStatus");// 订单状态
+
 		// 获取需要导出的数据List
-		String hql = "from Order where isEnable=1 order by  createDate desc";
+		String hql = "from Order o where 1=1 and isEnable =1 and salesMan='" + getSessionUser().getName() + "' ";
+		if (orderNo != null && !orderNo.equals("")) {
+			hql += "and o.orderNo = '" + orderNo + "' ";
+		}
+		if (createDate != null && !createDate.equals("")) {
+			hql += "and o.createDate < '" + createDate + "' ";
+		}
+		if (orderStatus != null && !orderStatus.equals("")) {
+			hql += "and o.orderStatus = " + orderStatus + " ";
+		}
+		hql += "ORDER BY o.createDate DESC";
+		List<Order> orders = processService.findHql(Order.class, hql);
+		// 使用方法生成excle模板样式
+		HSSFWorkbook workbook = processService.createExcel(orders, request);
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss"); // 定义文件名格式
+
+		try {
+			// 定义excle名称 ISO-8859-1防止名称乱码
+			String msg = new String(("订单信息_" + format.format(new Date()) + ".xls").getBytes(), "ISO-8859-1");
+			// 以导出时间作为文件名
+			response.setContentType("application/vnd.ms-excel");
+			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
+			workbook.write(response.getOutputStream());
+		} catch (IOException e) {
+			log.error(e);
+		}
+	}
+	/**
+	 * 导出全部订单
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("exportAllOrder")
+	public void exportAllOrder(HttpServletRequest request, HttpServletResponse response) {
+		log.info("导出全部订单");
+		String orderNo = request.getParameter("orderNo");// 订单号
+		String name = request.getParameter("name");// 业务员账户
+		String createDate = request.getParameter("createDate");// 创建时间
+		String orderStatus = request.getParameter("orderStatus");// 订单状态
+
+		// 获取需要导出的数据List
+		String hql = "from Order o where 1=1 and isEnable =1 ";
+		if (orderNo != null && !orderNo.equals("")) {
+			hql += "and o.orderNo = '" + orderNo + "' ";
+		}
+		if (createDate != null && !createDate.equals("")) {
+			hql += "and o.createDate < '" + createDate + "' ";
+		}
+		if (name != null && !name.equals("")) {
+			hql += "and o.salesMan = '" + name + "' ";
+		}
+		if (orderStatus != null && !orderStatus.equals("")) {
+			hql += "and o.orderStatus = " + orderStatus + " ";
+		}
+		hql += "ORDER BY o.createDate DESC";
 		List<Order> orders = processService.findHql(Order.class, hql);
 		// 使用方法生成excle模板样式
 		HSSFWorkbook workbook = processService.createExcel(orders, request);
@@ -423,17 +559,16 @@ public class ProcessController extends BaseController{
 	@RequestMapping("/search")
 	@ResponseBody
 	public JSONObject search(HttpServletRequest request) {
-		log.info("产品购买---搜索产品");
-		Map<String,Object> map = new HashMap<String,Object>();
+		log.info("订单列表---搜索订单");
+		Map<String, Object> map = new HashMap<String, Object>();
 		PageBean pb = new PageBean();
-		String pagesize = request.getParameter("pageSize");
-		String page1 = request.getParameter("page");
-		String estate1 = request.getParameter("estate");
-		String movable1 = request.getParameter("movable");
-		String solidSurfacing1 = request.getParameter("solidSurfacing");
-		String company1 = request.getParameter("company");
-		String productNo = request.getParameter("productNo");
-		
+		String pagesize = request.getParameter("pageSize");// 每页显示的数量
+		String page1 = request.getParameter("page");// 当前页
+		String orderNo = request.getParameter("orderNo");// 订单号
+		String name = request.getParameter("name");// 业务员账户
+		String createDate = request.getParameter("createDate");// 创建时间
+		String orderStatus = request.getParameter("orderStatus");// 订单状态
+
 		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
 		}
@@ -442,53 +577,282 @@ public class ProcessController extends BaseController{
 		}
 		int pageSize = Integer.parseInt(pagesize);
 		int page = Integer.parseInt(page1);
-		
-		
+
 		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
-		String hql = "from Product p where 1=1 ";
-		String hqlCount="select count(*) from Product p where 1=1 ";
-		if(productNo != null && !productNo.equals("")){
-			hql += "and CONCAT(p.name,p.productNo) LIKE '%"+productNo+"%'";
-			hqlCount += "and CONCAT(p.name,p.productNo) LIKE '%"+productNo+"%'";
+		String hql = "from Order o where 1=1 and isEnable =1 and salesMan='" + getSessionUser().getName() + "' ";
+		String hqlCount = "select count(*) from Order o where 1=1 and isEnable =1 and salesMan='"
+				+ getSessionUser().getName() + "' ";
+		if (orderNo != null && !orderNo.equals("")) {
+			hql += "and o.orderNo = '" + orderNo + "' ";
+			hqlCount += "and o.orderNo = '" + orderNo + "' ";
 		}
-		if(estate1 != null && !estate1.equals("") && !estate1.equals("2")){
-			int estate = Integer.parseInt(estate1);
-			hql += "and p.estate = "+estate+" ";
-			hqlCount += "and p.estate = "+estate+" ";
+		if (createDate != null && !createDate.equals("")) {
+			hql += "and o.createDate < '" + createDate + "' ";
+			hqlCount += "and o.createDate < '" + createDate + "' ";
 		}
-		if(movable1 != null && !movable1.equals("")&&  !movable1.equals("2")){
-			int movable = Integer.parseInt(movable1);
-			hql += "and p.movable = "+movable+" ";
-			hqlCount += "and p.movable = "+movable+" ";
+		if (name != null && !name.equals("")) {
+			hql += "and o.salesMan = '" + name + "' ";
+			hqlCount += "and o.salesMan = '" + name + "' ";
 		}
-		if(solidSurfacing1 != null &&  !solidSurfacing1.equals("")&& !solidSurfacing1.equals("2")){
-			int solidSurfacing = Integer.parseInt(solidSurfacing1);
-			hql += "and p.movable = "+solidSurfacing+" ";
-			hqlCount += "and p.movable = "+solidSurfacing+" ";
+		if (orderStatus != null && !orderStatus.equals("")) {
+			hql += "and o.orderStatus = " + orderStatus + " ";
+			hqlCount += "and o.orderStatus = " + orderStatus + " ";
 		}
-		if(company1 != null && !company1.equals("")&& company1 != null && !company1.equals("2")){
-			int company = Integer.parseInt(company1);
-			hql += "and p.company = "+company+" ";
-			hqlCount += "and p.company = "+company+" ";
-		}
-		hql += "ORDER BY p.isEnable DESC,p.createDate DESC";
-		List<Product> list = productService.queryForPage(hql, offset,
-				length); // 该分页的记录
-		int count = productService.getCountByParam(hqlCount);
+		hql += "ORDER BY o.createDate DESC";
+		List<Order> list = processService.queryForPage(hql, offset, length); // 该分页的记录
+		int count = processService.getCountByParam(hqlCount);
 		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		// 转为json格式是对 日期对象做处理。
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.registerJsonValueProcessor(java.sql.Timestamp.class,
+				new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
 		pb.setList(list);
 		pb.setCurrentPage(currentPage);
 		pb.setPageSize(pageSize);
 		pb.setTotalPage(totalPage);
 		pb.setAllRow(count);
-		map.put("products", list);
+		map.put("orders", list);
 		map.put("pb", pb);
-		JSONObject jsonObject = JSONObject.fromObject(map);
+		JSONObject jsonObject = JSONObject.fromObject(map, jsonConfig);
+		return jsonObject;
+
+	}
+
+	@SuppressWarnings("static-access")
+	@RequestMapping("/searchAll")
+	@ResponseBody
+	public JSONObject searchAll(HttpServletRequest request) {
+		log.info("订单列表---搜索订单");
+		Map<String, Object> map = new HashMap<String, Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");// 每页显示的数量
+		String page1 = request.getParameter("page");// 当前页
+		String orderNo = request.getParameter("orderNo");// 订单号
+		String name = request.getParameter("name");// 业务员账户
+		String createDate = request.getParameter("createDate");// 创建时间
+		String orderStatus = request.getParameter("orderStatus");// 订单状态
+
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		String hql = "from Order o where 1=1 and isEnable =1 ";
+		String hqlCount = "select count(*) from Order o where 1=1 and isEnable =1 ";
+		if (orderNo != null && !orderNo.equals("")) {
+			hql += "and o.orderNo = '" + orderNo + "' ";
+			hqlCount += "and o.orderNo = '" + orderNo + "' ";
+		}
+		if (createDate != null && !createDate.equals("")) {
+			hql += "and o.createDate < '" + createDate + "' ";
+			hqlCount += "and o.createDate < '" + createDate + "' ";
+		}
+		if (name != null && !name.equals("")) {
+			hql += "and o.salesMan = '" + name + "' ";
+			hqlCount += "and o.salesMan = '" + name + "' ";
+		}
+		if (orderStatus != null && !orderStatus.equals("")) {
+			hql += "and o.orderStatus = " + orderStatus + " ";
+			hqlCount += "and o.orderStatus = " + orderStatus + " ";
+		}
+		hql += "ORDER BY o.isEnable DESC,o.createDate DESC";
+		List<Order> list = processService.queryForPage(hql, offset, length); // 该分页的记录
+		int count = processService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		// 转为json格式是对 日期对象做处理。
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.registerJsonValueProcessor(java.sql.Timestamp.class,
+				new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("orders", list);
+		map.put("pb", pb);
+		JSONObject jsonObject = JSONObject.fromObject(map, jsonConfig);
+		return jsonObject;
+
+	}
+
+	/**
+	 * 订单列表下一页
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("static-access")
+	@RequestMapping(value = "nextPageOrder", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject nextPageOrder(HttpServletRequest request) {
+		log.info("订单列表--开始执行admin/process/nextPageOder 方法");
+		Map<String, Object> map = new HashMap<String, Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");// 每页显示的数量
+		String page1 = request.getParameter("page");// 当前页
+		String orderNo = request.getParameter("orderNo");// 订单号
+		String name = request.getParameter("name");// 业务员账户
+		String createDate = request.getParameter("createDate");// 创建时间
+		String orderStatus = request.getParameter("orderStatus");// 订单状态
+
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		String hql = "from Order o where 1=1 and isEnable =1 and salesMan='" + getSessionUser().getName() + "' ";
+		String hqlCount = "select count(*) from Order o where 1=1 and isEnable =1 and salesMan='"
+				+ getSessionUser().getName() + "' ";
+		if (orderNo != null && !orderNo.equals("")) {
+			hql += "and o.orderNo = " + orderNo + " ";
+			hqlCount += "and o.orderNo = " + orderNo + " ";
+		}
+		if (createDate != null && !createDate.equals("")) {
+			hql += "and o.createDate < '" + createDate + "' ";
+			hqlCount += "and o.createDate < '" + createDate + "' ";
+		}
+		if (name != null && !name.equals("")) {
+			hql += "and o.salesMan = '" + name + "' ";
+			hqlCount += "and o.salesMan = '" + name + "' ";
+		}
+		if (orderStatus != null && !orderStatus.equals("")) {
+			hql += "and o.orderStatus = " + orderStatus + " ";
+			hqlCount += "and o.orderStatus = " + orderStatus + " ";
+		}
+		hql += "ORDER BY o.isEnable DESC,o.createDate DESC";
+		List<Order> list = processService.queryForPage(hql, offset, length); // 该分页的记录
+		int count = processService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		// 转为json格式是对 日期对象做处理。
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.registerJsonValueProcessor(java.sql.Timestamp.class,
+				new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("pb", pb);
+		JSONObject jsonObject = JSONObject.fromObject(map, jsonConfig);
+		return jsonObject;
+
+	}
+
+	/**
+	 * 全部订单列表下一页
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("static-access")
+	@RequestMapping(value = "nextPageAllOrder", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject nextPageAllOrder(HttpServletRequest request) {
+		log.info("全部订单列表--开始执行admin/process/nextPageAllOrder 方法");
+		Map<String, Object> map = new HashMap<String, Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");// 每页显示的数量
+		String page1 = request.getParameter("page");// 当前页
+		String orderNo = request.getParameter("orderNo");// 订单号
+		String name = request.getParameter("name");// 业务员账户
+		String createDate = request.getParameter("createDate");// 创建时间
+		String orderStatus = request.getParameter("orderStatus");// 订单状态
+
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
+
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		String hql = "from Order o where 1=1 and isEnable =1 ";
+		String hqlCount = "select count(*) from Order o where 1=1 and isEnable =1  ";
+		if (orderNo != null && !orderNo.equals("")) {
+			hql += "and o.orderNo = " + orderNo + " ";
+			hqlCount += "and o.orderNo = " + orderNo + " ";
+		}
+		if (createDate != null && !createDate.equals("")) {
+			hql += "and o.createDate < '" + createDate + "' ";
+			hqlCount += "and o.createDate < '" + createDate + "' ";
+		}
+		if (name != null && !name.equals("")) {
+			hql += "and o.salesMan = '" + name + "' ";
+			hqlCount += "and o.salesMan = '" + name + "' ";
+		}
+		if (orderStatus != null && !orderStatus.equals("")) {
+			hql += "and o.orderStatus = " + orderStatus + " ";
+			hqlCount += "and o.orderStatus = " + orderStatus + " ";
+		}
+		hql += "ORDER BY o.isEnable DESC,o.createDate DESC";
+		List<Order> list = processService.queryForPage(hql, offset, length); // 该分页的记录
+		int count = processService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		// 转为json格式是对 日期对象做处理。
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.registerJsonValueProcessor(java.sql.Timestamp.class,
+				new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("pb", pb);
+		JSONObject jsonObject = JSONObject.fromObject(map, jsonConfig);
 		return jsonObject;
 
 	}
 	
-	
+	/**
+	 * 图表分析
+	 */
+	@RequestMapping(value = "chart", method = RequestMethod.GET)
+	@ResponseBody
+	public JSONObject chart(){
+		log.info("图表分析");
+		String hql = "from User";
+		List<User> list = userService.findHql(User.class, hql);
+		List<String> m = DateUtil.beforeJune();
+		Map<String,Object> map = new HashMap<String,Object>();
+		for(User c : list){
+			List<Integer> strName = new ArrayList<Integer>();
+			int i=0;
+			for(String str : m){
+				
+				String hql2 = "select count(*) from Order o where salesMan='"+c.getName()+"' and years='"+str+"'";
+				int count2 = userService.getCountByParam(hql2);
+				strName.add(i++, count2);
+			}
+			map.put(c.getName(), strName);
+		}
+		map.put("users", list);
+		map.put("years", m);
+		JSONObject json = JSONObject.fromObject(map);
+		log.info(json);
+		return json;
+	}
 }

@@ -59,14 +59,14 @@ public class TestProduct {
 		productService.save(p);
 	}
 
-	@Test
+	/*@Test
 	public void testUser() {
 		Product p = productService.load(Product.class, 3);
 		List<User> users = productService.queryBuyUsers(p);
 		for (User u : users) {
 			System.out.println(">>>>" + u.getName());
 		}
-	}
+	}*/
 
 	@Test
 	public void testOrder() {

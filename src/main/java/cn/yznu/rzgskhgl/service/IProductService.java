@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Product;
-import cn.yznu.rzgskhgl.pojo.User;
 
 /**
  * 产品服务接口
@@ -24,11 +24,11 @@ public interface IProductService extends ICommonService{
 	
 	
 	/**
-	 * 根据产品查询出符合条件的用户
+	 * 根据产品查询出符合条件的客户
 	 * @param product
 	 * @return
 	 */
-	public List<User> queryBuyUsers(Product product);
+	public List<Customer> queryBuyCustomers(Product product);
 	
 	/**
 	 * excel导入数据的时候 批了更新数据和保存数据
