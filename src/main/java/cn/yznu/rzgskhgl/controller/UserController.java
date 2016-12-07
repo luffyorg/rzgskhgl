@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 
+
+
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
 import cn.yznu.rzgskhgl.pojo.User;
+import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.service.IRoleService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.shiro.ShiroKit;
@@ -44,6 +49,8 @@ public class UserController extends BaseController{
 	private IUserService userService;
 	@Autowired
 	private IRoleService roleService;
+	@Autowired
+	private IRecordService iRecordService;
 
 	/**
 	 * 用户列表
@@ -87,7 +94,7 @@ public class UserController extends BaseController{
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value="save" ,method=RequestMethod.POST)
 	@ResponseBody
-	public Map saveUser(@RequestBody JSONObject json){
+	public Map saveUser(@RequestBody JSONObject json,HttpServletRequest request){
 		Map<String,String> map = new HashMap<String,String>();
 		String name = json.getString("name");
 		String pwd = json.getString("pwd");
@@ -114,6 +121,14 @@ public class UserController extends BaseController{
 		u.setCreateDate(new Date());
 		u.setCreateName(getSessionUser().getName());
 		userService.add(u, ridss);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("添加用户:"+name);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}
@@ -125,20 +140,31 @@ public class UserController extends BaseController{
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("updateStatus/{id}")
 	@ResponseBody
-	public Map updateStatus(@PathVariable int id) {
+	public Map updateStatus(@PathVariable int id,HttpServletRequest request) {
 		log.info("更新用户状态");
 		Map<String,Object> map = new HashMap<String,Object>();
 		User u = userService.load(User.class, id);
+		String status=null;
 		if (u.getIsEnable() == 0) {
 			u.setIsEnable(1);
+			status="启用";
 		} else {
 			u.setIsEnable(0);
+			status="停用";
 		}
 		u.setUpdateBy(getSessionUser().getId().toString());
 		u.setUpdateDate(new Date());
 		u.setUpdateName(getSessionUser().getName());
 		userService.saveOrUpdate(u);
 		//map.put("user", userService.load(User.class, id));
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("更新用户ID:"+u.getId()+",状态:"+status);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("isEnable", u.getIsEnable());
 		map.put("msg", "更新成功");
 		return map;
@@ -217,7 +243,7 @@ public class UserController extends BaseController{
 		return jsonObject;
 	}
 	/**
-	 * 根据用户id获取用户的所以角色id
+	 * 根据用户id获取用户的所有角色id
 	 * @param request
 	 * @return
 	 */
@@ -244,7 +270,7 @@ public class UserController extends BaseController{
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value="updateUser",method=RequestMethod.POST)
 	@ResponseBody
-	public Object updateUser(@RequestBody JSONObject json){
+	public Object updateUser(@RequestBody JSONObject json,HttpServletRequest request){
 		Map<String,String> map = new HashMap<String,String>();
 		int id = json.getInt("id");
 		User u = userService.load(User.class, id);
@@ -270,6 +296,14 @@ public class UserController extends BaseController{
 		u.setUpdateDate(new Date());
 		u.setUpdateName(getSessionUser().getName());
 		userService.update(u, ridss);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("修改用户信息ID:"+u.getId());
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}
@@ -286,6 +320,14 @@ public class UserController extends BaseController{
 		}
 		user.setPassword(ShiroKit.md5(user.getPassword(), user.getName()));
 		userService.saveOrUpdate(user);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("修改密码");
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		return "success";
 	}
 	@SuppressWarnings("static-access")

@@ -30,11 +30,13 @@ import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.SendSms;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.ICustomerService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
+import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import cn.yznu.rzgskhgl.util.DateUtil;
@@ -64,6 +66,10 @@ public class ProcessController extends BaseController {
 
 	@Autowired
 	private ICustomerService customerService;
+	
+
+	@Autowired
+	private IRecordService iRecordService;
 
 	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
@@ -187,7 +193,7 @@ public class ProcessController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "buyProduct", method = RequestMethod.POST)
 	@ResponseBody
-	public Map addOrder(@RequestBody JSONObject json) {
+	public Map addOrder(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("购买产品");
 		Map<String, Object> map = new HashMap<String, Object>();
 		String msg = "";
@@ -235,6 +241,13 @@ public class ProcessController extends BaseController {
 				order.setYears(DateUtil.currentYears());
 				productService.save(order);
 
+				Record record = new Record();
+				record.setUserid(getSessionUser().getId());
+				record.setIpv4(getIpAddr(request));
+				record.setRecord("用户ID:"+customer.getId()+",购买产品:"+product.getName()+",订单号:"+order.getOrderNo());
+				record.setTime(getTime());
+				iRecordService.add(record);
+				
 				SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 				String orderStatus2 = sendMsg.orderStatus(orderStatus);
 				SendSms sms = new SendSms();
@@ -403,6 +416,14 @@ public class ProcessController extends BaseController {
 		Customer customer = customerService.load(Customer.class, o.getBuyNameId());
 		SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 		String orderStatus = sendMsg.orderStatus(status);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("用户ID:"+o.getBuyNameId()+",购买的产品:"+o.getProductName()+",订单号:"+order.getOrderNo()+",状态更新为"+orderStatus);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		SendSms sms = new SendSms();
 		sms.setCreateBy(getSessionUser().getId().toString());
 		sms.setCreateDate(new Date());
@@ -507,6 +528,14 @@ public class ProcessController extends BaseController {
 			response.setContentType("application/vnd.ms-excel");
 			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
 			workbook.write(response.getOutputStream());
+			
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("导出订单信息");
+			record.setTime(getTime());
+			iRecordService.add(record);
+			
 		} catch (IOException e) {
 			log.error(e);
 		}
@@ -551,6 +580,13 @@ public class ProcessController extends BaseController {
 			response.setContentType("application/vnd.ms-excel");
 			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
 			workbook.write(response.getOutputStream());
+			
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("导出全部订单信息");
+			record.setTime(getTime());
+			iRecordService.add(record);
 		} catch (IOException e) {
 			log.error(e);
 		}

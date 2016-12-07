@@ -26,9 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 
+
+
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.service.IProductService;
+import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.util.ExcelManage;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -46,7 +50,9 @@ public class ProductController extends BaseController {
 
 	@Autowired
 	private IProductService productService;
-
+	@Autowired
+	private IRecordService iRecordService;
+	
 	@RequestMapping("/list")
 	public ModelAndView list(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
@@ -62,7 +68,7 @@ public class ProductController extends BaseController {
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 	@RequestMapping(value = "addProduct", method = RequestMethod.POST)
 	@ResponseBody
-	public Map addProduct(@RequestBody JSONObject json) {
+	public Map addProduct(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("添加产品");
 		Map<String, String> map = new HashMap<String, String>();
 		String productName = json.getString("productName");
@@ -104,6 +110,14 @@ public class ProductController extends BaseController {
 		p.setCreateDate(new Date());
 		p.setCreateName(getSessionUser().getName());
 		productService.save(p);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("添加产品:"+productName);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}
@@ -117,19 +131,30 @@ public class ProductController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("updateStatus/{id}")
 	@ResponseBody
-	public Map updateStatus(@PathVariable int id) {
+	public Map updateStatus(@PathVariable int id,HttpServletRequest request) {
 		log.info("更新产品状态");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Product product = productService.load(Product.class, id);
+		String status=null;
 		if (product.getIsEnable() == 0) {
 			product.setIsEnable(1);
+			status="启用";
 		} else {
 			product.setIsEnable(0);
+			status="停用";
 		}
 		product.setUpdateDate(new Date());
 		product.setUpdateBy(getSessionUser().getId().toString());
 		product.setUpdateName(getSessionUser().getName());
 		productService.saveOrUpdate(product);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("更新产品ID:"+product.getId()+",状态:"+status);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("isEnable", product.getIsEnable());
 		return map;
 	}
@@ -268,6 +293,14 @@ public class ProductController extends BaseController {
 			}
 			System.out.println(list.size() + ">>>>>>>>>>>>>>>size");
 			productService.batchSave(list);
+			
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("导入产品信息");
+			record.setTime(getTime());
+			iRecordService.add(record);
+			
 		} catch (Exception e) {
 			msg = "出错，未能全部导入!";
 			return msg;
@@ -292,6 +325,13 @@ public class ProductController extends BaseController {
 			response.setContentType("application/vnd.ms-excel");
 			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
 			workbook.write(response.getOutputStream());
+			
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("导出产品信息");
+			record.setTime(getTime());
+			iRecordService.add(record);
 		} catch (IOException e) {
 			log.error(e);
 		}
@@ -304,7 +344,7 @@ public class ProductController extends BaseController {
 	 */
 	@RequestMapping(value="updateUser",method=RequestMethod.POST)
 	@ResponseBody
-	public Object updateUser(@RequestBody JSONObject json){
+	public Object updateUser(@RequestBody JSONObject json,HttpServletRequest request){
 		log.info("修改产品");
 		Map<String,String> map = new HashMap<String,String>();
 		int id = json.getInt("id");
@@ -330,6 +370,14 @@ public class ProductController extends BaseController {
 		product.setUpdateDate(new Date());
 		product.setUpdateName(getSessionUser().getName());
 		productService.saveOrUpdate(product);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("修改产品信息ID:"+product.getId());
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}

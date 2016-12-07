@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.taskdefs.condition.Http;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 
+
+
+
 import cn.yznu.rzgskhgl.common.PageBean;
+import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.Resource;
+import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.service.IResourceService;
 import net.sf.json.JSONObject;
 @SuppressWarnings("rawtypes")
@@ -28,6 +34,8 @@ public class ResourceController extends BaseController {
 	Logger log = Logger.getLogger(ResourceController.class);
 	@Autowired
 	private IResourceService resourceService;
+	@Autowired
+	private IRecordService iRecordService;
 
 	@SuppressWarnings("static-access")
 	@RequestMapping("list")
@@ -65,7 +73,7 @@ public class ResourceController extends BaseController {
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Map save(@RequestBody JSONObject json) {
+	public Map save(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("执行方法>>>save");
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "";
@@ -82,12 +90,20 @@ public class ResourceController extends BaseController {
 		res.setIsEnable(1);
 		resourceService.save(res);
 		msg = "success";
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("添加资源:"+name);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("success", msg);
 		return map;
 	}
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Map updateRes(@RequestBody JSONObject json) {
+	public Map updateRes(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("执行方法>>>update");
 		
 		Map<String,String> map = new HashMap<String,String>();
@@ -105,6 +121,14 @@ public class ResourceController extends BaseController {
 		res.setUpdateDate(new Date());
 		resourceService.saveOrUpdate(res);
 		msg = "success";
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("更新资源信息ID:"+res.getId());
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("success", msg);
 		return map;
 	}
@@ -114,11 +138,19 @@ public class ResourceController extends BaseController {
 	
 	@RequestMapping(value = "/del", method = RequestMethod.POST)
 	@ResponseBody
-	public Map del(@RequestBody JSONObject json) {
+	public Map del(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("执行方法>>>delete");
 		Map<String,String> map = new HashMap<String,String>();
 		int id =json.getInt("id");
 		resourceService.deleteEntityById(Resource.class, id);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("删除资源ID:"+id);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +24,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import cn.yznu.rzgskhgl.common.PageBean;
 import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.ICustomerService;
+import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.util.ExcelManage;
 import net.sf.json.JSONObject;
@@ -48,6 +52,8 @@ public class CustomerController extends BaseController {
 	private IUserService userService;
 	@Autowired
 	private ICustomerService customerService;
+	@Autowired
+	private IRecordService iRecordService;
 
 	/**
 	 * 客户列表
@@ -91,7 +97,7 @@ public class CustomerController extends BaseController {
 	@SuppressWarnings({ "rawtypes" })
 	@RequestMapping(value = "save", method = RequestMethod.POST)
 	@ResponseBody
-	public Map saveUser(@RequestBody JSONObject json) {
+	public Map saveUser(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("添加客户");
 		Map<String, String> map = new HashMap<String, String>();
 		String name = json.getString("name");
@@ -125,6 +131,14 @@ public class CustomerController extends BaseController {
 		u.setCreateDate(new Date());
 		u.setCreateName(getSessionUser().getName());
 		customerService.save(u);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("添加客户:"+name);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}
@@ -138,20 +152,31 @@ public class CustomerController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("updateStatus/{id}")
 	@ResponseBody
-	public Map updateStatus(@PathVariable int id) {
+	public Map updateStatus(@PathVariable int id,HttpServletRequest request) {
 		log.info("更新客户状态");
 		Map<String, Object> map = new HashMap<String, Object>();
 		Customer u = userService.load(Customer.class, id);
+		String status=null;
 		if (u.getIsEnable() == 0) {
 			u.setIsEnable(1);
+			status="启用";
 		} else {
 			u.setIsEnable(0);
+			status="停用";
 		}
 		u.setUpdateBy(getSessionUser().getId().toString());
 		u.setUpdateDate(new Date());
 		u.setUpdateName(getSessionUser().getName());
 		customerService.saveOrUpdate(u);
 		// map.put("user", userService.load(User.class, id));
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("更新客户ID:"+u.getId()+",状态:"+status);
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("isEnable", u.getIsEnable());
 		map.put("msg", "更新成功");
 		return map;
@@ -233,7 +258,7 @@ public class CustomerController extends BaseController {
 	 */
 	@RequestMapping(value = "updateCustomer", method = RequestMethod.POST)
 	@ResponseBody
-	public Object updateCustomer(@RequestBody JSONObject json) {
+	public Object updateCustomer(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("更新客户信息");
 		Map<String, String> map = new HashMap<String, String>();
 		int id = json.getInt("id");
@@ -266,6 +291,14 @@ public class CustomerController extends BaseController {
 		u.setUpdateDate(new Date());
 		u.setUpdateName(getSessionUser().getName());
 		customerService.saveOrUpdate(u);
+		
+		Record record = new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("修改客户信息ID:"+u.getId());
+		record.setTime(getTime());
+		iRecordService.add(record);
+		
 		map.put("msg", "success");
 		return map;
 	}
@@ -381,6 +414,14 @@ public class CustomerController extends BaseController {
 			response.setContentType("application/vnd.ms-excel");
 			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
 			workbook.write(response.getOutputStream());
+			
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("导出客户信息");
+			record.setTime(getTime());
+			iRecordService.add(record);
+			
 		} catch (IOException e) {
 			log.error(e);
 		}
@@ -434,6 +475,14 @@ public class CustomerController extends BaseController {
 			}
 			System.out.println(list.size() + ">>>>>>>>>>>>>>>size");
 			customerService.batchSave(list);
+			
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("导入客户信息");
+			record.setTime(getTime());
+			iRecordService.add(record);
+			
 			msg = "导入成功";
 		} catch (Exception e) {
 			msg = "出错，未能全部导入!";
