@@ -24,8 +24,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.yznu.rzgskhgl.common.PageBean;
+import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.Resource;
 import cn.yznu.rzgskhgl.pojo.Role;
+import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.service.IResourceService;
 import cn.yznu.rzgskhgl.service.IRoleService;
 /**
@@ -42,6 +44,8 @@ public class RoleController extends BaseController{
 	private IRoleService roleService;
 	@Autowired
 	private IResourceService resourceService;
+	@Autowired
+	private IRecordService recordService;
 	
 	@SuppressWarnings("static-access")
 	@RequestMapping("list")
@@ -80,7 +84,7 @@ public class RoleController extends BaseController{
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Map save(@RequestBody JSONObject json) {
+	public Map save(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("执行方法>>>save");
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "";
@@ -103,6 +107,13 @@ public class RoleController extends BaseController{
 			role.setCreateName(getSessionUser().getName());
 			role.setCreateDate(new Date());
 			role.setIsEnable(1);
+			
+			Record record=new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("添加角色:"+roleName);
+			record.setTime(getTime());
+			recordService.add(record);
 		}
 		roleService.saveOrUpdate(role);
 		msg = "success";
@@ -111,7 +122,7 @@ public class RoleController extends BaseController{
 	}
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Map updateRole(@RequestBody JSONObject json) {
+	public Map updateRole(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("执行方法>>>update");
 		
 		Map<String,String> map = new HashMap<String,String>();
@@ -127,6 +138,14 @@ public class RoleController extends BaseController{
 		role.setUpdateDate(new Date());
 		role.setIsEnable(1);
 		roleService.saveOrUpdate(role);
+		
+		Record record=new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("更新角色:"+role.getName());
+		record.setTime(getTime());
+		recordService.add(record);
+		
 		msg = "success";
 		map.put("success", msg);
 		return map;
@@ -204,7 +223,7 @@ public class RoleController extends BaseController{
 	
 	@RequestMapping(value = "/del", method = RequestMethod.POST)
 	@ResponseBody
-	public Map del(@RequestBody JSONObject json) {
+	public Map del(@RequestBody JSONObject json,HttpServletRequest request) {
 		log.info("执行方法>>>delete");
 		Map<String,String> map = new HashMap<String,String>();
 		String msg = "";
@@ -222,6 +241,14 @@ public class RoleController extends BaseController{
 			log.info("角色资源关系删除失败--用户角色关系删除失败");
 			msg = "error";
 		}
+		
+		Record record=new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("删除角色:"+role.getName());
+		record.setTime(getTime());
+		recordService.add(record);
+		
 		roleService.delete(role);
 		map.put("msg", msg);
 		return map;
@@ -233,15 +260,18 @@ public class RoleController extends BaseController{
 	 */
 	@RequestMapping("updateStatus/{id}")
 	@ResponseBody
-	public Map updateStatus(@PathVariable int id) {
+	public Map updateStatus(@PathVariable int id,HttpServletRequest request) {
 		log.info("更改角色状态");
 		String msg = "";
 		Map<String,Object> map = new HashMap<String,Object>();
 		Role role = roleService.load(Role.class, id);
+		String status=null;
 		if (role.getIsEnable() == 0) {
 			role.setIsEnable(1);
+			status="启用";
 		} else {
 			role.setIsEnable(0);
+			status="禁用";
 		}
 		role.setUpdateBy(getSessionUser().getId().toString());
 		role.setUpdateDate(new Date());
@@ -252,6 +282,13 @@ public class RoleController extends BaseController{
 		}else{
 			msg = "禁用成功";
 		}
+		
+		Record record=new Record();
+		record.setUserid(getSessionUser().getId());
+		record.setIpv4(getIpAddr(request));
+		record.setRecord("更新角色:"+role.getName()+",状态:"+status);
+		record.setTime(getTime());
+		recordService.add(record);
 		
 		map.put("isEnable", role.getIsEnable());
 		
