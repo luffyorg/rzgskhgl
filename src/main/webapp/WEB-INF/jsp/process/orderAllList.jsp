@@ -65,6 +65,7 @@
 .tc table tr {
 	margin-top: 20px;
 }
+
 .chart {
 	width: 800px;
 	height: 500px;
@@ -142,17 +143,18 @@
 .inp_btn:hover {
 	background-color: #3c87f0;
 }
-.actionBtn2{
-    float: right;
-    display: inline-block;
-    background-color: #c60700;
-    padding: 0 20px;
-    height: 27px;
-    line-height: 27px;
-    color: #FFFFFF;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
+
+.actionBtn2 {
+	float: right;
+	display: inline-block;
+	background-color: #c60700;
+	padding: 0 20px;
+	height: 27px;
+	line-height: 27px;
+	color: #FFFFFF;
+	font-size: 13px;
+	font-weight: bold;
+	cursor: pointer;
 }
 </style>
 
@@ -340,7 +342,7 @@
 					</table>
 				</div>
 				<!--弹窗结束-->
-				 <div id="count" style="height: 70px;"></div> 
+				<div id="count" style="height: 70px;"></div>
 				<div class="chart" id="chart">
 					<div class="tc1">
 						订单图表（近6个月订单量统计）<img src="${basePath}static/images/closed.png"
@@ -588,46 +590,38 @@ function report(){
 	$("body").append("<div id='mask'></div>");
 	$("#mask").addClass("mask").fadeIn("slow");
 	$(".chart").fadeIn("slow");
-		var salesMan=[];
+		var legends = [];// 准备存放图例数据  
+	    var Series = []; // 准备存放图表数据  
 		$.get("chart",function(data) {
 			for(var i=0;i<data.users.length;i++){
 				var user = data.users[i];
-				salesMan.push(user.name);
-				myChart.setOption({ //载入数据
-					series : [ //填入系列（内容）数据
-					{
-						// 根据名字对应到相应的系列
-						name : 'admin',
-						data : data.admin
-					},{
-						// 根据名字对应到相应的系列
-						name : 'zw',
-						data : data.zw
-					},{
-						// 根据名字对应到相应的系列
-						name : 'ysy',
-						data : data.ysy
-					},{
-						// 根据名字对应到相应的系列
-						name : 'dlm',
-						data : data.dlm
-					},{
-						// 根据名字对应到相应的系列
-						name : 'qsy',
-						data : data.qsy
-					},{
-						// 根据名字对应到相应的系列
-						name : 'test',
-						data : data.test
-					}]
-				});
+				legends.push(user.name);
+				Series.push(data[user.name]);
+				alert(user.name + "==" + data[user.name])
+				for(var j=0;j<data.years.length;j++){
+					myChart.setOption({ //载入数据
+						series : [ //填入系列（内容）数据
+						{
+							// 根据名字对应到相应的系列
+							name : user.name,
+							data : data[user.name]
+						}]
+					}); 
+				}
 				
 			}
+			//option.legend.data = legends;// 设置图例  
+            //option.series = Series; // 设置图表  
+            //option.xAxis[0].data = data.years;
+            alert(Series)
 			myChart.setOption({ //载入数据
+				legend : {
+					data : legends
+				},
 				xAxis : {
 					data : data.years
 				}
-			});
+			}); 
 			$("#main").show();
 		});
 }
@@ -645,7 +639,7 @@ function report(){
 	},
 	
 	legend: {
-		data:['admin','zw','ysy','qsy','dlm','test']
+		data:[]
 	},
 	//
 	xAxis : [  
@@ -675,8 +669,7 @@ function report(){
 	    }
 	}
 	],
-	series: [
-	{
+	series: [{
 	    name:'admin',
 	    type:'line',
 		
@@ -772,8 +765,7 @@ function report(){
        }, 
 		smooth:true,
 	    data:[]
-	}
-	]
+	}]
 	};
 	
 	
