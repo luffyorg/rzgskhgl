@@ -1,7 +1,5 @@
 package cn.yznu.rzgskhgl.controller;
 
-
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +31,7 @@ import net.sf.json.JSONObject;
  * 
  */
 @Controller
-public class LoginController extends BaseController{
+public class LoginController extends BaseController {
 	Logger log = Logger.getLogger(LoginController.class);
 	@Autowired
 	private IUserService userService;
@@ -47,7 +45,8 @@ public class LoginController extends BaseController{
 		mv.setViewName("login");
 		return mv;
 	}
-	@RequestMapping(value = "/login",method = RequestMethod.GET)
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView login() {
 		log.info("跳转到登录界面.");
 		ModelAndView mv = new ModelAndView();// this.getModelAndView();
@@ -57,36 +56,43 @@ public class LoginController extends BaseController{
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody Object login(@RequestBody JSONObject jsonObj,HttpServletRequest request) {
+	public @ResponseBody Object login(@RequestBody JSONObject jsonObj, HttpServletRequest request) {
 		log.info("开始执行登录操作====");
 		String name = jsonObj.getString("name");
 		String pwd = jsonObj.getString("password");
+		String captcha = jsonObj.getString("captcha");
 		String errInfo = "";
-		log.info("获取到的用户名：" + name + ",密码：" + pwd);
-		User user = userService.getUserByNameAndPassword(name, pwd);
-		if (user != null) {
-			// shiro加入身份验证
-			Subject subject = SecurityUtils.getSubject();
-			UsernamePasswordToken token = new UsernamePasswordToken(name, pwd);
-			try {
-				subject.login(token);
-				errInfo = "success"; // 验证成功
-			} catch (AuthenticationException e) {
-				errInfo = "身份验证失败！";
-			}
-
+		log.info("获取到的用户名：" + name + ",密码：" + pwd + ",验证码：" + captcha);
+		String randomString = (String) request.getSession(true).getAttribute("randomString");
+		log.info("缓存中的验证码为：" + randomString);
+		if (!captcha.toUpperCase().equals(randomString)) {
+			errInfo = "验证码错误";
 		} else {
-			errInfo = "usererror"; // 用户名或密码有误
+			User user = userService.getUserByNameAndPassword(name, pwd);
+			if (user != null) {
+				// shiro加入身份验证
+				Subject subject = SecurityUtils.getSubject();
+				UsernamePasswordToken token = new UsernamePasswordToken(name, pwd);
+				try {
+					subject.login(token);
+					errInfo = "success"; // 验证成功
+				} catch (AuthenticationException e) {
+					errInfo = "身份验证失败！";
+				}
+
+			} else {
+				errInfo = "usererror"; // 用户名或密码有误
+			}
+			if (errInfo.equals("success")) {
+				Record record = new Record();
+				record.setUserid(user.getId());
+				record.setIpv4(getIpAddr(request));
+				record.setRecord("登录");
+				record.setTime(getTime());
+				iRecordService.add(record);
+			}
 		}
-		if (errInfo.equals("success")) {
-			Record record = new Record();
-			record.setUserid(user.getId());
-			record.setIpv4(getIpAddr(request));
-			record.setRecord("登录");
-			record.setTime(getTime());
-			iRecordService.add(record);
-		}
-		Map map = new HashMap<String,String>();
+		Map map = new HashMap<String, String>();
 		map.put("result", errInfo);
 		return map;
 	}

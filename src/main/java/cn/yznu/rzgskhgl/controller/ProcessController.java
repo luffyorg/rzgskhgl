@@ -66,7 +66,6 @@ public class ProcessController extends BaseController {
 
 	@Autowired
 	private ICustomerService customerService;
-	
 
 	@Autowired
 	private IRecordService iRecordService;
@@ -193,7 +192,7 @@ public class ProcessController extends BaseController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "buyProduct", method = RequestMethod.POST)
 	@ResponseBody
-	public Map addOrder(@RequestBody JSONObject json,HttpServletRequest request) {
+	public Map addOrder(@RequestBody JSONObject json, HttpServletRequest request) {
 		log.info("购买产品");
 		Map<String, Object> map = new HashMap<String, Object>();
 		String msg = "";
@@ -244,10 +243,11 @@ public class ProcessController extends BaseController {
 				Record record = new Record();
 				record.setUserid(getSessionUser().getId());
 				record.setIpv4(getIpAddr(request));
-				record.setRecord("用户ID:"+customer.getId()+",购买产品:"+product.getName()+",订单号:"+order.getOrderNo());
+				record.setRecord(
+						"用户ID:" + customer.getId() + ",购买产品:" + product.getName() + ",订单号:" + order.getOrderNo());
 				record.setTime(getTime());
 				iRecordService.add(record);
-				
+
 				SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 				String orderStatus2 = sendMsg.orderStatus(orderStatus);
 				SendSms sms = new SendSms();
@@ -362,7 +362,7 @@ public class ProcessController extends BaseController {
 				orders = processService.queryForPage(hql, offset, length); // 该分页的记录
 			}
 		}
-		//获取全部业务员
+		// 获取全部业务员
 		String hqlCustomer = "from Customer";
 		List<Customer> customers = userService.findHql(Customer.class, hqlCustomer);
 		pb.setList(orders);
@@ -416,14 +416,15 @@ public class ProcessController extends BaseController {
 		Customer customer = customerService.load(Customer.class, o.getBuyNameId());
 		SendMsg_webchinese sendMsg = new SendMsg_webchinese();
 		String orderStatus = sendMsg.orderStatus(status);
-		
+
 		Record record = new Record();
 		record.setUserid(getSessionUser().getId());
 		record.setIpv4(getIpAddr(request));
-		record.setRecord("用户ID:"+o.getBuyNameId()+",购买的产品:"+o.getProductName()+",订单号:"+order.getOrderNo()+",状态更新为"+orderStatus);
+		record.setRecord("用户ID:" + o.getBuyNameId() + ",购买的产品:" + o.getProductName() + ",订单号:" + order.getOrderNo()
+				+ ",状态更新为" + orderStatus);
 		record.setTime(getTime());
 		iRecordService.add(record);
-		
+
 		SendSms sms = new SendSms();
 		sms.setCreateBy(getSessionUser().getId().toString());
 		sms.setCreateDate(new Date());
@@ -528,20 +529,24 @@ public class ProcessController extends BaseController {
 			response.setContentType("application/vnd.ms-excel");
 			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
 			workbook.write(response.getOutputStream());
-			
-			Record record = new Record();
-			record.setUserid(getSessionUser().getId());
-			record.setIpv4(getIpAddr(request));
-			record.setRecord("导出订单信息");
-			record.setTime(getTime());
-			iRecordService.add(record);
-			
+			String method = request.getMethod();
+			if (!"GET".equals(method)) {
+				Record record = new Record();
+				record.setUserid(getSessionUser().getId());
+				record.setIpv4(getIpAddr(request));
+				record.setRecord("导出订单信息");
+				record.setTime(getTime());
+				iRecordService.add(record);
+			}
+
 		} catch (IOException e) {
 			log.error(e);
 		}
 	}
+
 	/**
 	 * 导出全部订单
+	 * 
 	 * @param request
 	 * @param response
 	 */
@@ -580,17 +585,20 @@ public class ProcessController extends BaseController {
 			response.setContentType("application/vnd.ms-excel");
 			response.addHeader("Content-Disposition", "attachment;filename=" + msg);
 			workbook.write(response.getOutputStream());
-			
-			Record record = new Record();
-			record.setUserid(getSessionUser().getId());
-			record.setIpv4(getIpAddr(request));
-			record.setRecord("导出全部订单信息");
-			record.setTime(getTime());
-			iRecordService.add(record);
+			String method = request.getMethod();
+			if (!"GET".equals(method)) {
+				Record record = new Record();
+				record.setUserid(getSessionUser().getId());
+				record.setIpv4(getIpAddr(request));
+				record.setRecord("导出全部订单信息");
+				record.setTime(getTime());
+				iRecordService.add(record);
+			}
 		} catch (IOException e) {
 			log.error(e);
 		}
 	}
+
 	@SuppressWarnings("static-access")
 	@RequestMapping("/search")
 	@ResponseBody
@@ -862,24 +870,25 @@ public class ProcessController extends BaseController {
 		return jsonObject;
 
 	}
-	
+
 	/**
 	 * 图表分析
 	 */
 	@RequestMapping(value = "chart", method = RequestMethod.GET)
 	@ResponseBody
-	public JSONObject chart(){
+	public JSONObject chart() {
 		log.info("图表分析");
 		String hql = "from User";
 		List<User> list = userService.findHql(User.class, hql);
 		List<String> m = DateUtil.beforeJune();
-		Map<String,Object> map = new HashMap<String,Object>();
-		for(User c : list){
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (User c : list) {
 			List<Integer> strName = new ArrayList<Integer>();
-			int i=0;
-			for(String str : m){
-				
-				String hql2 = "select count(*) from Order o where salesMan='"+c.getName()+"' and years='"+str+"'";
+			int i = 0;
+			for (String str : m) {
+
+				String hql2 = "select count(*) from Order o where salesMan='" + c.getName() + "' and years='" + str
+						+ "'";
 				int count2 = userService.getCountByParam(hql2);
 				strName.add(i++, count2);
 			}

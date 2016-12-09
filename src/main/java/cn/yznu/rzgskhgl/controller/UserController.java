@@ -91,7 +91,7 @@ public class UserController extends BaseController{
 		return mav;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 	@RequestMapping(value="save" ,method=RequestMethod.POST)
 	@ResponseBody
 	public Map saveUser(@RequestBody JSONObject json,HttpServletRequest request){
@@ -267,7 +267,7 @@ public class UserController extends BaseController{
 	 * @param json
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	@RequestMapping(value="updateUser",method=RequestMethod.POST)
 	@ResponseBody
 	public Object updateUser(@RequestBody JSONObject json,HttpServletRequest request){

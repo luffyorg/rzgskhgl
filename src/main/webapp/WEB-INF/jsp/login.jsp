@@ -17,11 +17,9 @@
 	type="text/css">
 <link href="${basePath }static/css/login.css" rel="stylesheet"
 	type="text/css">
-<script type="text/javascript"
-	src="${basePath }static/js/jquery.min.js"></script>
+<script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
 <script type="text/javascript" src="${basePath }static/js/global.js"></script>
-<script type="text/javascript"
-	src="${basePath }static/js/jquery.tab.js"></script>
+<script type="text/javascript" src="${basePath }static/js/jquery.tab.js"></script>
 </head>
 <body>
 	<!--
@@ -66,17 +64,27 @@
 				<div class="rob">
 					<span class="inputBox">
 						<div
-							style="width: 319px; height: 36px; background: url('${basePath }static/images/password.png'); margin: 0 auto;">
+							style="width: 319px; height: 36px; background: url('${basePath }static/images/account.png'); margin: 0 auto;">
 							<input type="password" id="password" placeholder="密码" />
 						</div>
 					</span>
 					<!-- <a href="javascript:void(0)" title="提示" class="warning" id="warn2">*</a> -->
 				</div>
-				<a style="cursor: pointer;" id="loginbtn"><div class="rob" style="height: 100px;">
-					<div class="lbtn">
-						登录
-					</div>
-				</div></a>
+				<div class="rob">
+					<span class="inputBox">
+						<div style="width: 319px; height: 36px; margin: 0 auto;">
+							<input type="text" id="captcha" name="captcha" class="text"
+								maxlength="4" placeholder="验证码" /> <img id="captchaImage"
+								src="${basePath }captcha" onclick="chageCode()"
+								title="图片看不清？点击重新得到验证码" style="cursor: pointer;" />
+						</div>
+					</span>
+					<!-- <a href="javascript:void(0)" title="提示" class="warning" id="warn2">*</a> -->
+				</div>
+				<a style="cursor: pointer;" id="loginbtn"><div class="rob"
+						style="height: 100px;">
+						<div class="lbtn">登录</div>
+					</div></a>
 			</div>
 		</div>
 		<!--登录框结束-->
@@ -93,35 +101,42 @@
 	</div>
 </body>
 <script type="text/javascript">
-$("#loginbtn").click(function() {
-	var loginname = $("#name").val();
-	var pwd = $("#password").val();
+	function chageCode() {
+		$('#captchaImage').attr('src', 'captcha.do?abc=' + Math.random());//链接后添加Math.random，确保每次产生新的验证码，避免缓存问题。
+	}
+	$("#loginbtn").click(function() {
+		var captcha = $("#captcha").val();
+		var loginname = $("#name").val();
+		var pwd = $("#password").val();
 
-	var sendInfo = {
-		name : loginname,
-		password : pwd
-	};
+		var sendInfo = {
+			name : loginname,
+			password : pwd,
+			captcha : captcha
+		};
 
-	$.ajax({
-		type : "POST",
-		url : "login",
-		dataType : "json",
-		contentType : 'application/json',
-		data : JSON.stringify(sendInfo),
-		success : function(data) {
-			if (data.result == "success") {
-				//alert("登录成功");
-				window.location.href = "admin/index";
-			} else if (data.result == "usererror") {
-				alert("用户名或密码有误");
-			} else {
-				alert("身份验证失败");
+		$.ajax({
+			type : "POST",
+			url : "login",
+			dataType : "json",
+			contentType : 'application/json',
+			data : JSON.stringify(sendInfo),
+			success : function(data) {
+				if (data.result == "success") {
+					//alert("登录成功");
+					window.location.href = "admin/index";
+				} else if (data.result == "usererror") {
+					alert("用户名或密码有误");
+				} else if (data.result == "验证码错误") {
+					alert("验证码错误");
+				} else {
+
+				}
+			},
+			error : function() {
+				alert("没有返回值");
 			}
-		},
-		error : function() {
-			alert("没有返回值");
-		}
+		});
 	});
-});
 </script>
 </html>

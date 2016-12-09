@@ -26,7 +26,7 @@
 				<ul class="bot">
 					<li id="datali"><a href="${basePath}admin/backup/index"><i class="backup"></i><em>数据备份</em></a></li>
 					<li id="managerli"><a href="${basePath}admin/manager/list"><i class="manager"></i><em>网站管理员</em></a></li>
-					<li id="opli"><a href="manager_log.html"><i class="managerLog"></i><em>操作记录</em></a></li>
+					<li id="opli"><a href="${basePath}admin/record/list"><i class="managerLog"></i><em>操作记录</em></a></li>
 				</ul>
 				</shiro:authenticated>
 			</div>
