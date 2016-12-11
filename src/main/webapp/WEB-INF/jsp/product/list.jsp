@@ -370,12 +370,12 @@ $(function(){
 												<a
 													onclick="updateStatus(${product.id },${product.isEnable});"
 													class="updateColor" id="start${product.id }"> 上架</a>
-											</c:if> <c:if test="${product.isEnable eq 1 }">
+										</c:if> <c:if test="${product.isEnable eq 1 }">
 												<span class="start" id="start${product.id }">上架 | </span>
 												<a
 													onclick="updateStatus(${product.id },${product.isEnable});"
 													class="updateColor" id="stop${product.id }"> 下架</a>
-											</c:if></td>
+										</c:if></td>
 										<td align="center"><a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
 										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
 										'${product.solidSurfacing }','${product.suitable }')"
