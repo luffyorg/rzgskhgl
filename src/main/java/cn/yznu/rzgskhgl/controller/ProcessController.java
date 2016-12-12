@@ -502,7 +502,8 @@ public class ProcessController extends BaseController {
 	public void exportOrder(HttpServletRequest request, HttpServletResponse response) {
 		log.info("导出订单");
 		String orderNo = request.getParameter("orderNo");// 订单号
-		String createDate = request.getParameter("createDate");// 创建时间
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
 
 		// 获取需要导出的数据List
@@ -510,8 +511,8 @@ public class ProcessController extends BaseController {
 		if (orderNo != null && !orderNo.equals("")) {
 			hql += "and o.orderNo = '" + orderNo + "' ";
 		}
-		if (createDate != null && !createDate.equals("")) {
-			hql += "and o.createDate < '" + createDate + "' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
 		}
 		if (orderStatus != null && !orderStatus.equals("")) {
 			hql += "and o.orderStatus = " + orderStatus + " ";
@@ -555,7 +556,8 @@ public class ProcessController extends BaseController {
 		log.info("导出全部订单");
 		String orderNo = request.getParameter("orderNo");// 订单号
 		String name = request.getParameter("name");// 业务员账户
-		String createDate = request.getParameter("createDate");// 创建时间
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
 
 		// 获取需要导出的数据List
@@ -563,8 +565,8 @@ public class ProcessController extends BaseController {
 		if (orderNo != null && !orderNo.equals("")) {
 			hql += "and o.orderNo = '" + orderNo + "' ";
 		}
-		if (createDate != null && !createDate.equals("")) {
-			hql += "and o.createDate < '" + createDate + "' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
 		}
 		if (name != null && !name.equals("")) {
 			hql += "and o.salesMan = '" + name + "' ";
@@ -610,7 +612,8 @@ public class ProcessController extends BaseController {
 		String page1 = request.getParameter("page");// 当前页
 		String orderNo = request.getParameter("orderNo");// 订单号
 		String name = request.getParameter("name");// 业务员账户
-		String createDate = request.getParameter("createDate");// 创建时间
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
 
 		if (pagesize == null || pagesize.equals("")) {
@@ -632,9 +635,9 @@ public class ProcessController extends BaseController {
 			hql += "and o.orderNo = '" + orderNo + "' ";
 			hqlCount += "and o.orderNo = '" + orderNo + "' ";
 		}
-		if (createDate != null && !createDate.equals("")) {
-			hql += "and o.createDate < '" + createDate + "' ";
-			hqlCount += "and o.createDate < '" + createDate + "' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
+			hqlCount += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
 		}
 		if (name != null && !name.equals("")) {
 			hql += "and o.salesMan = '" + name + "' ";
@@ -676,9 +679,11 @@ public class ProcessController extends BaseController {
 		String page1 = request.getParameter("page");// 当前页
 		String orderNo = request.getParameter("orderNo");// 订单号
 		String name = request.getParameter("name");// 业务员账户
-		String createDate = request.getParameter("createDate");// 创建时间
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
+		System.out.println("查询的时间范围：" + startTime + "===" + endTime );
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
-
+		
 		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
 		}
@@ -697,9 +702,9 @@ public class ProcessController extends BaseController {
 			hql += "and o.orderNo = '" + orderNo + "' ";
 			hqlCount += "and o.orderNo = '" + orderNo + "' ";
 		}
-		if (createDate != null && !createDate.equals("")) {
-			hql += "and o.createDate < '" + createDate + "' ";
-			hqlCount += "and o.createDate < '" + createDate + "' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
+			hqlCount += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
 		}
 		if (name != null && !name.equals("")) {
 			hql += "and o.salesMan = '" + name + "' ";
@@ -747,7 +752,8 @@ public class ProcessController extends BaseController {
 		String page1 = request.getParameter("page");// 当前页
 		String orderNo = request.getParameter("orderNo");// 订单号
 		String name = request.getParameter("name");// 业务员账户
-		String createDate = request.getParameter("createDate");// 创建时间
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
 
 		if (pagesize == null || pagesize.equals("")) {
@@ -769,9 +775,9 @@ public class ProcessController extends BaseController {
 			hql += "and o.orderNo = " + orderNo + " ";
 			hqlCount += "and o.orderNo = " + orderNo + " ";
 		}
-		if (createDate != null && !createDate.equals("")) {
-			hql += "and o.createDate < '" + createDate + "' ";
-			hqlCount += "and o.createDate < '" + createDate + "' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
+			hqlCount += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
 		}
 		if (name != null && !name.equals("")) {
 			hql += "and o.salesMan = '" + name + "' ";
@@ -818,7 +824,8 @@ public class ProcessController extends BaseController {
 		String page1 = request.getParameter("page");// 当前页
 		String orderNo = request.getParameter("orderNo");// 订单号
 		String name = request.getParameter("name");// 业务员账户
-		String createDate = request.getParameter("createDate");// 创建时间
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
 
 		if (pagesize == null || pagesize.equals("")) {
@@ -839,9 +846,9 @@ public class ProcessController extends BaseController {
 			hql += "and o.orderNo = " + orderNo + " ";
 			hqlCount += "and o.orderNo = " + orderNo + " ";
 		}
-		if (createDate != null && !createDate.equals("")) {
-			hql += "and o.createDate < '" + createDate + "' ";
-			hqlCount += "and o.createDate < '" + createDate + "' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
+			hqlCount += "and o.createDate >= '" + startTime + "' and o.createDate <= '" + endTime + "' ";
 		}
 		if (name != null && !name.equals("")) {
 			hql += "and o.salesMan = '" + name + "' ";

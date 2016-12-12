@@ -30,7 +30,45 @@ cursor:pointer;
 color:#ea8010;
 cursor:pointer;
 }
+.label_select {
+	font-size: 16px;
+	color: #333;
+	font-family: "微软雅黑";
+	margin-top: -5px;
+}
+.inp_name {
+	width: 160px;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #d8d8d8;
+	border-radius: 4px;
+	font-size: 13px;
+	color: #333;
+	font-family: '微软雅黑';
+	margin-left: 10px;
+	padding: 0 14px;
+	margin-top: 8px;
+}
 
+.inp_btn {
+	font-size: 16px;
+	color: #fff;
+	font-family: "微软雅黑";
+	height: 30px;
+	width: 60px;
+	line-height: 30px;
+	text-align: center;
+	border: none;
+	border-radius: 4px;
+	background-color: #5096fa;
+	margin-top: 8px;
+	margin-left: 15px;
+	cursor: pointer;
+}
+
+.inp_btn:hover {
+	background-color: #3c87f0;
+}
 </style>
 
 </head>
@@ -60,6 +98,12 @@ cursor:pointer;
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
 					操作记录 
+					 <input type="text"
+						class="inp_name" placeholder="用户账号" id="username" /> 
+						<label class="label_select">操作时间: </label><input type="date" class="inp_name" id="startTime"/>
+						<label class="label_select">-</label><input type="date" class="inp_name" id="endTime"/>
+						<input type="button" value="搜索" class="inp_btn" id="search"
+						onclick="search();" />
 				</h3>
 				<div><span id="msg"></span></div>
 				<div class="navList">
@@ -137,11 +181,69 @@ cursor:pointer;
 </body>
 
 <script type="text/javascript">
+function search(){
+	var username = $("#username").val();
+	var startTime = $("#startTime").val();
+	var endTime = $("#endTime").val();
+	 $.get("search?pageSize="+10+"&page="+1+"&username="+username+"&startTime="+startTime+"&endTime="+endTime+"", function(data){
+		 //组装表格
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		htmlStr += "<tr> <th width='80'>序号</th>"+
+	      "<th width='80'>用户</th>"+
+	      "<th width='80'>操作</th>"+
+	      "<th width='80'>操作IP</th>"+
+	      "<th width='80'>操作时间</th>";
+		 var pb=data.pb;
+		    for(var i = 0; i < data.pb.list.length; i++){
+		         var record = data.records[i];
+		         var user = data.users[i];
+		         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+					"<td align='center'>"+user.name+" </td>"+
+					"<td align='center'>"+record.record+" </td>"+
+					"<td align='center'>"+record.ipv4+" </td>"+
+					"<td align='center'>"+record.time+" </td></tr>";
+		    }
+	    //组装分页
+	    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
+	   
+	    if(pb.currentPage==1){
+	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
+	    }
+	    else{
+	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
+	    }
+	    if(pb.hasPreviousPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
+	    }
+	    if(pb.hasNextPage==true){
+	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
+	    }
+	    else{
+	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
+	    }
+	    if(pb.totalPage==pb.currentPage){
+	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
+	    }else{
+	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
+	    }
+	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
+	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
+					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
+	    htmlStr += "</table>";
+	   
+	    $(".navList").html(htmlStr);
+	    $(".splitPage").html(htmlPage);
+	   
+	}) 
+}
 //页面跳转
 function nextPage(size,page){
-	var beginTime = $("#beginTime").val();
+	var username = $("#username").val();
+	var startTime = $("#startTime").val();
 	var endTime = $("#endTime").val();
-	var userid = $("#userid").val();
 	 //$.get("nextPage?pageSize="+size+"&page="+page+"&beginTime="+beginTime+"&endTime="+endTime+"&userid="+userid+"", function(data){
 	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
 		 //组装表格

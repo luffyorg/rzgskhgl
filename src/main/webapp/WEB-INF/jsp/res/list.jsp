@@ -161,7 +161,7 @@ cursor:Default;
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
-					<a onclick="tc()" class="actionBtn" style="cursor: pointer;">添加资源</a>资源管理
+					<a onclick="tc()" class="actionBtn" style="cursor: pointer;">添加资源</a>资源管理 
 				</h3>
 				<div class="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
@@ -297,6 +297,7 @@ cursor:Default;
 	<!--end-->
 </body>
 <script type="text/javascript">
+
 function nextPage(size,page){
 	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
 		 //组装表格

@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.common.PageBean;
-import cn.yznu.rzgskhgl.pojo.Product;
+import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.ICommonService;
+import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @deprecated 操作记录控制类
@@ -35,7 +37,7 @@ public class RecordController extends BaseController {
 	@Autowired
 	private ICommonService commonService;
 	
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "rawtypes" })
 	@RequestMapping(value = "list")
 	public ModelAndView list(HttpServletRequest request) {
 		log.info("进入操作记录界面");
@@ -79,7 +81,7 @@ public class RecordController extends BaseController {
 		mav.setViewName("record/list");
 		return mav;
 	}
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "rawtypes" })
 	@RequestMapping(value = "nextPage", method = RequestMethod.GET)
 	@ResponseBody
 	public JSONObject nextPage(HttpServletRequest request) {
@@ -88,9 +90,9 @@ public class RecordController extends BaseController {
 		PageBean pb = new PageBean();
 		String pagesize = request.getParameter("pageSize");
 		String page1 = request.getParameter("page");
-		String userid = request.getParameter("userid");
-		String beginTime = request.getParameter("beginTime");
-		String endTime = request.getParameter("endTime");
+		String name = request.getParameter("username");
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
 
 		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
@@ -105,14 +107,15 @@ public class RecordController extends BaseController {
 		int length = pageSize; // 每页记录数
 		int currentPage = pb.countCurrentPage(page);
 		String hql = "from Record r,User u where r.userid=u.id ";
-		String hqlCount = "select count(*) from Record  where 1=1 ";
-		if (userid != null && !userid.equals("")) {
-			hql += "and userid = " + userid + " ";
-			hqlCount += "and userid = " + userid + " ";
+		String hqlCount = "select count(*) from Record r where 1=1 ";
+		User u = commonService.findUniqueByProperty(User.class , "name", name);
+		if (u != null && !u.equals("")) {
+			hql += "and r.userid = '" + u.getId() + "' ";
+			hqlCount += "and r.userid = '" + u.getId() + "' ";
 		}
-		if (beginTime != null && !beginTime.equals("") && endTime != null && !endTime.equals("")) {
-			hql += "and r.time >= '" + beginTime + " and r.endTime <='"+endTime+"' ";
-			hqlCount += "and time >= '" + beginTime + " and <='"+endTime+"' ";
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and r.time >= '" + startTime + "' and r.time <='"+endTime+"' ";
+			hqlCount += "and time >= '" + startTime + "' and time <='"+endTime+"' ";
 		}
 		
 		hql += "ORDER BY r.time DESC";
@@ -140,5 +143,66 @@ public class RecordController extends BaseController {
 		JSONObject jsonObject = JSONObject.fromObject(map);
 		return jsonObject;
 	}
+	@SuppressWarnings("static-access")
+	@RequestMapping("/search")
+	@ResponseBody
+	public JSONObject search(HttpServletRequest request) {
+		log.info("操作记录---搜索记录");
+		Map<String, Object> map = new HashMap<String, Object>();
+		PageBean pb = new PageBean();
+		String pagesize = request.getParameter("pageSize");// 每页显示的数量
+		String page1 = request.getParameter("page");// 当前页
+		String name = request.getParameter("username");// 业务员账户
+		String startTime = request.getParameter("startTime");// 创建时间
+		String endTime = request.getParameter("endTime");// 创建时间
+		User u = commonService.findUniqueByProperty(User.class , "name", name);
+		if (pagesize == null || pagesize.equals("")) {
+			pagesize = "10";
+		}
+		if (page1 == null || page1.equals("")) {
+			page1 = "1";
+		}
+		int pageSize = Integer.parseInt(pagesize);
+		int page = Integer.parseInt(page1);
 
+		int offset = pb.countOffset(pageSize, page); // 当前页开始记录
+		int length = pageSize; // 每页记录数
+		int currentPage = pb.countCurrentPage(page);
+		String hql = "from Record r,User u where r.userid=u.id ";
+		String hqlCount = "select count(*) from Record r where 1=1 ";
+		if (u != null && !u.equals("")) {
+			hql += "and r.userid = '" + u.getId() + "' ";
+			hqlCount += "and r.userid = '" + u.getId() + "' ";
+		}
+		if (startTime != null && !startTime.equals("") && endTime != null && !endTime.equals("")) {
+			hql += "and r.time >= '" + startTime + "' and r.time <='"+endTime+"' ";
+			hqlCount += "and time >= '" + startTime + "' and time <='"+endTime+"' ";
+		}
+		
+		hql += "ORDER BY r.time DESC";
+		List<Object> list = commonService.queryForPage(hql, offset, length); // 该分页的记录
+		Iterator iterator1 = list.iterator();
+		List<User> users = new ArrayList<User>();
+		List<Record> records = new ArrayList<Record>();
+		while (iterator1.hasNext()) {
+			Object[] o = (Object[]) iterator1.next();
+			User user = (User) o[1];
+			Record record = (Record) o[0];
+			users.add(user);
+			records.add(record);
+		}
+		int count = commonService.getCountByParam(hqlCount);
+		int totalPage = pb.countTotalPage(pageSize, count); // 总页数
+		pb.setList(list);
+		pb.setCurrentPage(currentPage);
+		pb.setPageSize(pageSize);
+		pb.setTotalPage(totalPage);
+		pb.setAllRow(count);
+		map.put("pb", pb);
+		map.put("users", users);
+		map.put("records", records);
+		JSONObject jsonObject = JSONObject.fromObject(map);
+		return jsonObject;
+
+	}
 }

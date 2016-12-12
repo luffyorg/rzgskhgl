@@ -144,6 +144,13 @@
 	background-color: #3c87f0;
 }
 
+.label_select {
+	font-size: 16px;
+	color: #333;
+	font-family: "微软雅黑";
+	margin-top: -5px;
+}
+
 .actionBtn2 {
 	float: right;
 	display: inline-block;
@@ -214,7 +221,10 @@
 						onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单
 					<input type="text" class="inp_name" placeholder="订单号"
 						id="searchOrderNo" /> <input type="text" class="inp_name"
-						placeholder="业务员" id="searchName" /> <input type="button"
+						placeholder="业务员" id="searchName" />
+						<label class="label_select">订单时间: </label><input type="date" class="inp_name" id="startTime"/>
+						<label class="label_select">-</label><input type="date" class="inp_name" id="endTime"/>
+						 <input type="button"
 						value="搜索" class="inp_btn" id="search" onclick="search();" />
 				</h3>
 				<div class="navList" id="navList">
@@ -392,11 +402,13 @@
 	function excelOrder() {
 		var orderNo = $("#searchOrderNo").val();
 	 	var name = $("#searchName").val();
+	 	var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
 		$.ajax({
 			type : "POST",
-			url : "exportAllOrder?orderNo="+orderNo+"&name="+name+"",
+			url : "exportAllOrder?orderNo="+orderNo+"&name="+name+"&startTime="+startTime+"&endTime="+endTime+"",
 			success : function(data) {
-				window.open('exportOrder?orderNo='+orderNo+'&name='+name+'');
+				window.open('exportAllOrder?orderNo='+orderNo+'&name='+name+'&startTime='+startTime+'&endTime='+endTime+'');
 			}
 
 		});
@@ -404,7 +416,9 @@
 	function search(){
 		var orderNo = $("#searchOrderNo").val();
 		var name = $("#searchName").val();
-		 $.get("searchAll?pageSize="+10+"&page="+1+"&orderNo="+orderNo+"&name="+name+"", function(data){
+		var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
+		 $.get("searchAll?pageSize="+10+"&page="+1+"&orderNo="+orderNo+"&name="+name+"&startTime="+startTime+"&endTime="+endTime+"", function(data){
 			 //组装表格
 			var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 			htmlStr += "<tr> <th >序号</th>"+
@@ -485,7 +499,9 @@
 	 function nextPage(size,page){
 	 	var orderNo = $("#searchOrderNo").val();
 	 	var name = $("#searchName").val();
-	 	 $.get("nextPageAllOrder?pageSize="+size+"&page="+page+"&orderNo="+orderNo+"&name="+name+"", function(data){
+	 	var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
+	 	 $.get("nextPageAllOrder?pageSize="+size+"&page="+page+"&orderNo="+orderNo+"&name="+name+"&startTime="+startTime+"&endTime="+endTime+"", function(data){
 	 		 //组装表格
 	 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 	 		htmlStr += "<tr> <th >序号</th>"+
