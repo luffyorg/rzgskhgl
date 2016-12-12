@@ -30,7 +30,7 @@ public class ProductServiceImpl extends CommonServiceimpl implements IProductSer
 
 	@Override
 	public List<Product> getAllProduct() {
-		String hql = "from Product";
+		String hql = "from Product where isEnable=1 ";
 		return common.findHql(Product.class, hql);
 	}
 

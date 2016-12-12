@@ -392,7 +392,6 @@ function updateRes(obj,id){
 }
 
 function update(){
-	alert();
 	var id = $("#upid").val();
 	var name =  $("#upname").val();
 	var url =	$("#upurl").val();

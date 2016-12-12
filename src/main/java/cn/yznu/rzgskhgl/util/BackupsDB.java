@@ -30,7 +30,7 @@ public class BackupsDB {
      * @param backupsSqlFileName  备份文件的名字 
      * @return 
      */  
-    public static String dbBackUp(String root,String rootPass,String dbName,String backupsPath,String backupsSqlFileName)  
+    public static String dbBackUp(String root,String rootPass,String dbName,String backupsPath,String backupsSqlFileName,String tableName)  
     {  
         //生成临时备份文件  
 //      SimpleDateFormat sd=new SimpleDateFordckupsSqlFileName;  
@@ -47,7 +47,8 @@ public class BackupsDB {
             sbs.append(" -u ");  
             sbs.append(root+" ");  
             sbs.append("-p"+rootPass+" ");  
-            sbs.append(dbName);  
+            sbs.append(dbName +" ");  
+            sbs.append(tableName);  
             sbs.append(" --default-character-set=utf8 ");  
 //          sbs.append(">"+pathSql);  
             sbs.append(" --result-file="+pathSql);  
@@ -82,9 +83,10 @@ public class BackupsDB {
         String root = "root";  
         String rootPass = "root";  
         String dbName = "rzgskhgl";  
-        String backupsPath = "D:";  
+        String backupsPath = "D:\\";  
         String backupsSqlFileName = "erpDB_"+sd.format(new Date())+".sql";  
-        dbBackUp(root, rootPass, dbName, backupsPath, backupsSqlFileName);  
+        String tableName="user product role";
+        dbBackUp(root, rootPass, dbName, backupsPath, backupsSqlFileName,tableName);  
         backup();  
         load();  
     }  

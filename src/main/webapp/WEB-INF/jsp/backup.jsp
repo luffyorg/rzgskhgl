@@ -137,23 +137,22 @@
        <td align="center">2048</td>
        <td align="center">0</td>
       </tr>
+           
             <tr>
-       <td colspan="7" align="right">数据库占用 118 KB </td>
+       <td align="center"><input type=checkbox name=tables[] value=dou_page checked></td>
+       <td align="left">record</td>
+       <td align="center">MyISAM</td>
+       <td align="center">${record }</td>
+       <td align="center">2148</td>
+       <td align="center">2048</td>
+       <td align="center">0</td>
       </tr>
-      <tr>
-       <td colspan="7" align="center">分卷备份设置</td>
-      </tr>
-      <tr>
-       <td colspan="7" align="center">
-        文件名：<input type="text" class="inpMain" name="file_name" value="D20160226T220644" size=30>
-        每个分卷文件大小：<input type="text" class="inpMain" name="vol_size" value="2048" size="5">K
-       </td>
-      </tr>
+           
       <tr>
        <td height="26" colspan="7">
         <input type="hidden" name="token" value="82ace968" />
         <input type="hidden" name="totalsize" value="118">
-        <input type="submit" name="submit" class="btn" value="确定备份"  onClick="document.myform.action='backup.php?rec=backup'">
+        <input type="button" name="submit" class="btn" value="确定备份"  onClick="backUp()">
        </td>
       </tr>
      </form>
@@ -178,4 +177,13 @@
 </div>
 <!--end-->
 </body>
+<script type="text/javascript">
+function backUp(){
+	$.get("all", function(data){
+		alert("数据已备份到：" + data)
+	});
+}
+
+
+</script>
 </html>
