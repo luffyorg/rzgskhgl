@@ -105,7 +105,7 @@
 		$('#captchaImage').attr('src', 'captcha.do?abc=' + Math.random());//链接后添加Math.random，确保每次产生新的验证码，避免缓存问题。
 	}
 	$("#loginbtn").click(function() {
-		var captcha = $("#captcha").val();
+		var captcha = $("#captcha").val(); 
 		var loginname = $("#name").val();
 		var pwd = $("#password").val();
 
