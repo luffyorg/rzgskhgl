@@ -395,7 +395,7 @@
 						}
 
 						tcclose();
-						window.location.href = "orderList";
+						window.location.href = "allOrderList";
 					}
 				});
 	}
@@ -457,7 +457,7 @@
 					}
 					htmlStr +="<td align='center'>"+order.createDate+" </td>"+
 					"<td align='center'>"+order.updateDate+" </td>"
-		         htmlStr += "<td align='center'><a onclick=updateRes(this,"+order.id+"); class='updateColor'>更新</a></td></tr>";
+		         htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>";
 		    }
 		    //组装分页
 		    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
@@ -540,7 +540,7 @@
 						}
 						htmlStr +="<td align='center'>"+order.createDate+" </td>"+
 						"<td align='center'>"+order.updateDate+" </td>"
-			         htmlStr += "<td align='center'><a onclick=updateRes(this,"+order.id+"); class='updateColor'>更新</a></td></tr>";
+			         htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>";
 			    }
 	 	    //组装分页
 	 	    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";

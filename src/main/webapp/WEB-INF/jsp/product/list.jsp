@@ -379,7 +379,9 @@ $(function(){
 										<td align="center"><a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
 										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
 										'${product.solidSurfacing }','${product.suitable }')"
-											class="updateColor">更新</a></td>
+											class="updateColor">更新</a>
+											| <a onclick="deleteProduct(this,${product.id})" class="deleteColor">删除</a>
+											</td>
 									</tr>
 								</c:forEach>
 								<!--数据循环结束-->
@@ -824,6 +826,32 @@ function updateUser(){
 	    $("#splitPage").html(htmlPage);
 	   
 	}) 
+}
+
+ function deleteProduct(obj,id){
+	 if(confirm('确定要删除这条记录吗?')==true) 
+	  { 
+		 var tr=obj.parentNode.parentNode; 
+			var tbody=tr.parentNode; 
+			var sendInfo = {
+					"id" : id
+				};
+			$.ajax({ 
+				type : "post", 
+				url : "del", 
+				dataType : "json",
+				contentType : 'application/json',
+				data : JSON.stringify(sendInfo),
+				success : function(data) { 
+					if(data.msg="success"){
+						tbody.removeChild(tr); 
+					}
+					else 
+						alert("删除失败！");
+				}
+			})
+	  } 
+	  return false; 
 }
 
 </script>
