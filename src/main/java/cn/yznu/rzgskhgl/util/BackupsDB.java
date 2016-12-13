@@ -30,7 +30,8 @@ public class BackupsDB {
      * @param backupsSqlFileName  备份文件的名字 
      * @return 
      */  
-    public static String dbBackUp(String root,String rootPass,String dbName,String backupsPath,String backupsSqlFileName,String tableName)  
+    @SuppressWarnings("resource")
+	public static String dbBackUp(String root,String rootPass,String dbName,String backupsPath,String backupsSqlFileName,String tableName)  
     {  
         //生成临时备份文件  
 //      SimpleDateFormat sd=new SimpleDateFordckupsSqlFileName;  
@@ -138,7 +139,7 @@ public class BackupsDB {
         
             System.out.println("/* Output OK! */");    
                             
-            String error="备份成功!";    
+           // String error="备份成功!";    
         
         } catch (Exception e) {    
             e.printStackTrace();    

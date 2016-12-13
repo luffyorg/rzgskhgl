@@ -17,13 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.yznu.rzgskhgl.common.PageBean;
-import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.User;
 import cn.yznu.rzgskhgl.service.ICommonService;
-import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 /**
  * @deprecated 操作记录控制类
@@ -143,7 +140,7 @@ public class RecordController extends BaseController {
 		JSONObject jsonObject = JSONObject.fromObject(map);
 		return jsonObject;
 	}
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "rawtypes" })
 	@RequestMapping("/search")
 	@ResponseBody
 	public JSONObject search(HttpServletRequest request) {
