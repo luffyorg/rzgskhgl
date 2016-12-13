@@ -67,14 +67,14 @@
 }
 
 .chart {
-	width: 800px;
-	height: 500px;
+	width: 70%;
+	height: 70%;
 	display: none;
 	position: absolute;
-	margin: -35% auto;
+	margin: -40% auto;
 	z-index: 999;
 	background: #fff;
-	left: 35%;
+	left: 19%;
 	border-radius: 5px;
 }
 
@@ -221,11 +221,11 @@
 						onclick="excelOrder();" class="actionBtn" style="cursor: pointer;">导出excel</a>订单
 					<input type="text" class="inp_name" placeholder="订单号"
 						id="searchOrderNo" /> <input type="text" class="inp_name"
-						placeholder="业务员" id="searchName" />
-						<label class="label_select">订单时间: </label><input type="date" class="inp_name" id="startTime"/>
-						<label class="label_select">-</label><input type="date" class="inp_name" id="endTime"/>
-						 <input type="button"
-						value="搜索" class="inp_btn" id="search" onclick="search();" />
+						placeholder="业务员" id="searchName" style="width: 100px" /> <label class="label_select">订单时间:
+					</label><input type="date" class="inp_name" id="startTime" style="width: 130px" /> <label
+						class="label_select">-</label><input type="date" class="inp_name"
+						id="endTime" style="width: 130px" /> <input type="button" value="搜索" class="inp_btn"
+						id="search" onclick="search();" />
 				</h3>
 				<div class="navList" id="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
@@ -359,7 +359,7 @@
 							onclick="chartclose()"
 							style="float: right; margin-top: 15px; margin-right: 15px; cursor: pointer;">
 					</div>
-					<div id="main" style="width: 800px; height: 400px;"></div>
+					<div id="main" style="width: 890px; height: 400px;"></div>
 				</div>
 			</div>
 
@@ -592,207 +592,84 @@
 
 
 <script type="text/javascript">
-$(function(){
-	$("#main").hide();
-	$("#count").hide();
-})
- function chartclose(){
-	$(".chart").fadeOut("fast");
-	$("#mask").css({
-		display : 'none'
-	});
-	  };
-function report(){
-	$("body").append("<div id='mask'></div>");
-	$("#mask").addClass("mask").fadeIn("slow");
-	$(".chart").fadeIn("slow");
-		var legends = [];// 准备存放图例数据  
-	    var Series = []; // 准备存放图表数据  
-		$.get("chart",function(data) {
-			for(var i=0;i<data.users.length;i++){
-				var user = data.users[i];
-				legends.push(user.name);
-				Series.push(data[user.name]);
-				alert(user.name + "==" + data[user.name])
-				for(var j=0;j<data.years.length;j++){
-					myChart.setOption({ //载入数据
-						series : [ //填入系列（内容）数据
-						{
-							// 根据名字对应到相应的系列
-							name : user.name,
-							data : data[user.name]
-						}]
-					}); 
-				}
-				
-			}
-			//option.legend.data = legends;// 设置图例  
-            //option.series = Series; // 设置图表  
-            //option.xAxis[0].data = data.years;
-            alert(Series)
-			myChart.setOption({ //载入数据
-				legend : {
-					data : legends
-				},
-				xAxis : {
-					data : data.years
-				}
-			}); 
-			$("#main").show();
+var Series = []; // 准备存放图表数据  
+	$(function(){
+		$("#main").hide();
+		$("#count").hide();
+	})
+	 function chartclose(){
+		$(".chart").fadeOut("fast");
+		$("#mask").css({
+			display : 'none'
 		});
-}
-	var myChart = echarts.init(document.getElementById('main'));
-	
-	// 指定图表的配置项和数据
-	var option = {
-		title : {
-		text: '',
-		
-		x:'left'
-	},
-	tooltip: {
-		trigger: 'axis'
-	},
-	
-	legend: {
-		data:[]
-	},
-	//
-	xAxis : [  
-        {  
-            type : 'category',  
-            boundaryGap : false,  
-            data : [],  
-            show : true,  
-            axisLabel:{  
-                interval:0 ,//设置X轴间隔  
-               
-            }  
-        }  
-    ] , 
-	
-	
-	
-	yAxis: [
-	{
-	    type: 'value',
-	    name: '订单量',
-	    min: 0,
-	    max: 20,
-	    interval: 4,
-	    axisLabel: {
-	        formatter: '{value}'
-	    }
-	}
-	],
-	series: [{
-	    name:'admin',
-	    type:'line',
-		
-		symbol:'none',//去掉折线上的小圆点
-		itemStyle : {  
-	         normal : {  
-	             color:'#00FFf0',  
-	             lineStyle:{  
-	                 color:'#00FFf0'  
-	             }  
-	         }  
-	     }, 
-		smooth:true,
-	    data:[]
-	},
-	{
-	    name:'zw',
-	    type:'line',
-		
-		symbol:'none',//去掉折线上的小圆点
-		itemStyle : {  
-             normal : {  
-                 color:'#00FF00',  
-                 lineStyle:{  
-                     color:'#00FF00'  
-                 }  
-             }  
-         }, 
-		smooth:true,
-	    data:[]
-	},
-	 {
-	    name:'ysy',
-	    type:'line',
-		
-		symbol:'none',//去掉折线上的小圆点
-		itemStyle : {  
-            normal : {  
-                color:'#F447BD',  
-                lineStyle:{  
-                    color:'#F447BD'  
-                }  
-            }  
-        }, 
-		smooth:true,
-	    data:[]
-	},
-	 {
-	    name:'qsy',
-	    type:'line',
-		
-		symbol:'none',//去掉折线上的小圆点
-		itemStyle : {  
-             normal : {  
-                 color:'#F3F149',  
-                 lineStyle:{  
-                     color:'#F3F149'  
-                 }  
-             }  
-         }, 
-		smooth:true,
-	    data:[]
-	},
-	 {
-	    name:'dlm',
-	    type:'line',
-		
-		symbol:'none',//去掉折线上的小圆点
-		itemStyle : {  
-            normal : {  
-                color:'#4A55F2',  
-                lineStyle:{  
-                    color:'#4A55F2'  
-                }  
-            }  
-        }, 
-		smooth:true,
-	    data:[]
-	}
-	,
-	 {
-	    name:'test',
-	    type:'line',
-		
-		symbol:'none',//去掉折线上的小圆点
-		itemStyle : {  
-           normal : {  
-               color:'#4A5502',  
-               lineStyle:{  
-                   color:'#4A5502'  
-               }  
-           }  
-       }, 
-		smooth:true,
-	    data:[]
-	}]
-	};
-	
-	
-	// 使用刚指定的配置项和数据显示图表。
-	myChart.setOption(option);
-	
-	myChart.on('click', function (params) {
-	     loadAll(params.name);  
-	 });
-	
-	
+		  };
+    function report(){
+    	
+    
+     // 另外说一下带主题加载，就是这样的，注意“e_macarons”必须是myTheme.js(上面引入的自定义主题js文件,echarts中也附带了不少主题js文件)中函数的名字  
+    var myChart = echarts.init(document.getElementById('main'));  
+    option = {  
+    	    
+    	    tooltip : {// 这个是鼠标浮动时的工具条，显示鼠标所在区域的数据，trigger这个地方每种图有不同的设置，见官网吧，一两句说不清楚  
+    	        trigger: 'axis'  
+    	    },  
+    	    legend: {// 这个就是图例，也就是每条折线或者项对应的示例，就是这个<a target=_blank href="http://img.blog.csdn.net/20160622094820180?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">图例</a>  
+    	        data:[]  
+    	    },  
+    	    grid: {  
+    	        left: '3%',  
+    	        right: '4%',  
+    	        bottom: '4%',// 这几个属性可以控制图表上下左右的空白尺寸，可以自己试试。  
+    	        containLabel: true  
+    	    },  
+    	    xAxis : [  
+    	        {  
+    	            type : 'category',  
+    	            boundaryGap : false,  
+    	            data : []// X轴的定义  
+    	        }  
+    	    ],  
+    	    yAxis : [  
+    	        {  
+    	            type : 'value'// Y轴的定义  
+    	        }  
+    	    ],  
+    	    series : []// 这里就是数据了  
+    	};  
 
-</script>
+    
+    $.get("chart",function(jsons) {
+        	var Item = function(){  
+                return {  
+                    name:'',  
+                    type:'line',
+                    data:[]  
+                    }  
+                };  
+            var legends = [];  
+            var Series = [];  
+            var json = jsons.users;  
+            for(var i=0;i < json.length;i++){  
+                var it = new Item();  
+                it.name = json[i].name;  
+                legends.push(json[i].name);  
+				//alert(jsons[json[i].name]);
+                it.data = jsons[json[i].name];  
+                Series.push(it);  
+            }  
+            var years = jsons.years;  
+           option.xAxis[0].data = years;   
+                   option.legend.data = legends;  
+                       option.series = Series; // 设置图表  
+                      myChart.setOption(option);// 重新加载图表  
+      
+        // 初次加载图表(无数据)   
+        myChart.setOption(option);   
+        $("#main").show();
+        $("body").append("<div id='mask'></div>");
+		$("#mask").addClass("mask").fadeIn("slow");
+		$(".chart").fadeIn("slow");
+    });
+    }
+    </script>
 </html>
