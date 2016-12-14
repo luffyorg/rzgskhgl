@@ -18,6 +18,10 @@ import com.thoughtworks.xstream.XStream;
 import cn.yznu.rzgskhgl.pojo.weixin.resp.TextMessage;
 
 public class MessageUtil {
+	/**
+	 * token
+	 */
+	public static final String TOKEN = "luffy_zw";
 
 	/**
 	 * 返回消息类型：文本

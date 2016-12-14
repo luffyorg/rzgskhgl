@@ -23,7 +23,7 @@ import cn.yznu.rzgskhgl.service.ICommonService;
 import net.sf.json.JSONObject;
 
 /**
- * @deprecated 操作记录控制类
+ *  操作记录控制类
  * @author 张伟
  *
  */

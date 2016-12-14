@@ -68,7 +68,7 @@
 
 .chart {
 	width: 70%;
-	height: 70%;
+	height: 80%;
 	display: none;
 	position: absolute;
 	margin: -40% auto;
@@ -240,7 +240,7 @@
 								<td>订单状态</td>
 								<td>创建时间</td>
 								<td>更新时间</td>
-								<td>操作</td>
+								<!-- <td>操作</td> -->
 							</tr>
 						</thead>
 						<tbody>
@@ -262,12 +262,12 @@
 											test="${order.orderStatus  eq 7 }">完成服务</c:if></td>
 									<td>${order.createDate }</td>
 									<td>${order.updateDate }</td>
-									<td><c:if test="${order.isEnable  eq 1 }">
+									<%-- <td><c:if test="${order.isEnable  eq 1 }">
 											<a class="updateColor"
 												onclick="tc('${order.orderNo }','${order.buyName }','${order.productName }','${order.orderStatus }');">更新状态</a>
 										</c:if> <c:if test="${order.isEnable  eq 0 }">
 											<a>已失效</a>
-										</c:if></td>
+										</c:if></td> --%>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -428,8 +428,8 @@
 	        "<th >产品名称</th>"+
 	        "<th >订单状态</th>"+
 	        "<th >创建时间</th>"+
-	        "<th >更新时间</th>"+
-	        "<th >操作</th></tr>";
+	        "<th >更新时间</th>";
+	       /*  "<th >操作</th></tr>"; */
 	        var pb=data.pb;
 		    for(var i = 0; i < data.pb.list.length; i++){
 		         var order = data.pb.list[i];
@@ -456,8 +456,8 @@
 						htmlStr +="<td align='center' id='status"+order.id +"'>暂无更新 </td>";
 					}
 					htmlStr +="<td align='center'>"+order.createDate+" </td>"+
-					"<td align='center'>"+order.updateDate+" </td>"
-		         htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>";
+					"<td align='center'>"+order.updateDate+" </td></tr>"
+		        /*  htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>"; */
 		    }
 		    //组装分页
 		    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
@@ -511,8 +511,8 @@
 				        "<th >产品名称</th>"+
 				        "<th >订单状态</th>"+
 				        "<th >创建时间</th>"+
-				        "<th >更新时间</th>"+
-				        "<th >操作</th></tr>";
+				        "<th >更新时间</th>";
+				       /*  "<th >操作</th></tr>"; */
 	 		 var pb=data.pb;
 			    for(var i = 0; i < data.pb.list.length; i++){
 			         var order = data.pb.list[i];
@@ -539,8 +539,8 @@
 							htmlStr +="<td align='center' id='status"+order.id +"'>暂无更新 </td>";
 						}
 						htmlStr +="<td align='center'>"+order.createDate+" </td>"+
-						"<td align='center'>"+order.updateDate+" </td>"
-			         htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>";
+						"<td align='center'>"+order.updateDate+" </td></tr>";
+			         /* htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>"; */
 			    }
 	 	    //组装分页
 	 	    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";

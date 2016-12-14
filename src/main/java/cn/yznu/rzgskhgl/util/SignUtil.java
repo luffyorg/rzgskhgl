@@ -18,7 +18,7 @@ public class SignUtil {
      * @return 
      */  
     public static boolean checkSignature(String signature, String timestamp, String nonce) {  
-        String[] arr = new String[] { Constant.TOKEN, timestamp, nonce };  
+        String[] arr = new String[] { MessageUtil.TOKEN, timestamp, nonce };  
         // 将token、timestamp、nonce三个参数进行字典排序  
         Arrays.sort(arr);  
         StringBuilder content = new StringBuilder();  
