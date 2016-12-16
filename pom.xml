@@ -110,7 +110,7 @@
 				<!-- 扫描项目变更的时间间隔，默认为0不扫描 -->
 				<configuration>
 					<webAppConfig>
-						<contextPath>/rzgskhgl</contextPath>
+						<contextPath></contextPath>
 					</webAppConfig>
 					<scanTargetPatterns>
 						<scanTargetPattern>

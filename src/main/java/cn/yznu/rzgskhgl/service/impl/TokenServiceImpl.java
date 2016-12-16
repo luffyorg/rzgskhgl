@@ -63,4 +63,6 @@ public class TokenServiceImpl extends CommonServiceimpl implements ITokenService
 		WeixinUserInfo user = common.getSingleByHQL(hql, param);
 		return user;
 	}
+	
+	
 }

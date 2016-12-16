@@ -208,6 +208,8 @@ function login(){
 				window.location.href = "myOrder?openid="+openid+"";
 			}else if(data.msg == "error"){
 				alert("姓名或者手机号不正确");
+			}else if(data.msg == "bind"){
+				alert("你以绑定账户，无需重复绑定！")
 			}else{
 				alert("请从微信端登录")
 			}

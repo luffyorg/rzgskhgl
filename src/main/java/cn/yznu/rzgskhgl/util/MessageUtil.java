@@ -18,10 +18,20 @@ import com.thoughtworks.xstream.XStream;
 import cn.yznu.rzgskhgl.pojo.weixin.resp.TextMessage;
 
 public class MessageUtil {
+
+	public static final String APPID = "wx183636fa6c726c68";
+
+	public static final String APPSECRET = "79ada4a6ed3150e83031b20830347a73";
+
 	/**
 	 * token
 	 */
 	public static final String TOKEN = "luffy_zw";
+
+	/**
+	 * 
+	 */
+	public static final String ACCESS_TOKEN = "accessToken";
 
 	/**
 	 * 返回消息类型：文本

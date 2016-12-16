@@ -41,7 +41,7 @@ public class WeixinUserInfo implements Serializable {
     // 用户头像
     private String headImgUrl;
     //客户id
-    private int customerId;
+    private Integer customerId;
 
     public String getOpenId() {
         return openId;
@@ -131,11 +131,11 @@ public class WeixinUserInfo implements Serializable {
 		this.id = id;
 	}
 
-	public int getCustomerId() {
+	public Integer getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(int customerId) {
+	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
     

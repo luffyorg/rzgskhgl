@@ -8,15 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import cn.yznu.rzgskhgl.pojo.Customer;
 import cn.yznu.rzgskhgl.pojo.WeixinUserInfo;
+import cn.yznu.rzgskhgl.pojo.weixin.req.OAuthInfo;
+import cn.yznu.rzgskhgl.pojo.weixin.resp.Template;
 import cn.yznu.rzgskhgl.pojo.weixin.resp.TextMessage;
 import cn.yznu.rzgskhgl.service.ICommonService;
 import cn.yznu.rzgskhgl.service.ICoreService;
 import cn.yznu.rzgskhgl.service.ITokenService;
 import cn.yznu.rzgskhgl.util.CommonUtil;
 import cn.yznu.rzgskhgl.util.MessageUtil;
+import cn.yznu.rzgskhgl.util.ServletContextUtil;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 @Service("coreService")
@@ -29,7 +31,7 @@ public class CoreServiceImpl implements ICoreService {
 	private ITokenService tokenService;
 
 	// 获取接口访问凭证
-	String accessToken = CommonUtil.getToken("wx183636fa6c726c68", "79ada4a6ed3150e83031b20830347a73").getAccessToken();
+	//String accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
 
 	/**
 	 * 处理微信发来的请求
@@ -54,69 +56,21 @@ public class CoreServiceImpl implements ICoreService {
 			String content = requestMap.get("Content");
 
 			log.info("FromUserName is:" + fromUserName + ", ToUserName is:" + toUserName + ", MsgType is:" + msgType);
-			request.getSession().setAttribute("fromUserName", fromUserName);
 			// 文本消息
 			if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
 				TextMessage text = new TextMessage();
 				// 这里根据关键字执行相应的逻辑，只有你想不到的，没有做不到的
-				if (content.equals("1") || content.equals("订单")) {
-					WeixinUserInfo user = tokenService.getWxUserInfo(fromUserName);
-					Customer customer = tokenService.get(Customer.class, user.getCustomerId());
-					if (customer == null) {
-						text.setContent("请绑定账户，获取更好的体验：http://luffy.imwork.net/rzgskhgl/weixin/login.do?openid="+fromUserName+"");
-						text.setToUserName(fromUserName);
-						text.setFromUserName(toUserName);
-						text.setCreateTime(new Date().getTime());
-						text.setMsgType(msgType);
-					}else{
-						text.setContent("点击链接获取你的订单详情：http://luffy.imwork.net/rzgskhgl/weixin/myOrder.do");
-						text.setToUserName(fromUserName);
-						text.setFromUserName(toUserName);
-						text.setCreateTime(new Date().getTime());
-						text.setMsgType(msgType);
-					}
-					
-				} else if (content.equals("2") || content.equals("产品")) {
-					text.setContent("点击链接获取最新的产品信息：http://luffy.imwork.net/rzgskhgl/weixin/newProduct.do");
-					text.setToUserName(fromUserName);
-					text.setFromUserName(toUserName);
-					text.setCreateTime(new Date().getTime());
-					text.setMsgType(msgType);
-				} else {
-					// 自动回复
-					text.setContent("对不起，你输入的关键字有误！回复'订单'或者'1' 获取你的订单信息，回复'产品'或者'2' 获取最新的产品资讯");
-					text.setToUserName(fromUserName);
-					text.setFromUserName(toUserName);
-					text.setCreateTime(new Date().getTime());
-					text.setMsgType(msgType);
-				}
+
+				// 自动回复
+				text.setContent("亲，不好意思，暂时没有客服陪你聊天额！" + "你输入了：" + content);
+				text.setToUserName(fromUserName);
+				text.setFromUserName(toUserName);
+				text.setCreateTime(new Date().getTime());
+				text.setMsgType(msgType);
 
 				respMessage = MessageUtil.textMessageToXml(text);
 
-			} /*
-				 * else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT))
-				 * {// 事件推送 String eventType = requestMap.get("Event");// 事件类型
-				 * 
-				 * if (eventType.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)) {//
-				 * 订阅 respContent = "欢迎关注xxx公众号！"; return
-				 * MessageResponse.getTextMessage(fromUserName , toUserName ,
-				 * respContent); } else if
-				 * (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {//
-				 * 自定义菜单点击事件 String eventKey = requestMap.get("EventKey");//
-				 * 事件KEY值，与创建自定义菜单时指定的KEY值对应 logger.info("eventKey is:"
-				 * +eventKey); return xxx; } } //开启微信声音识别测试 2015-3-30 else
-				 * if(msgType.equals("voice")) { String recvMessage =
-				 * requestMap.get("Recognition"); //respContent =
-				 * "收到的语音解析结果："+recvMessage; if(recvMessage!=null){ respContent
-				 * = TulingApiProcess.getTulingResult(recvMessage); }else{
-				 * respContent = "您说的太模糊了，能不能重新说下呢？"; } return
-				 * MessageResponse.getTextMessage(fromUserName , toUserName ,
-				 * respContent); } //拍照功能 else
-				 * if(msgType.equals("pic_sysphoto")) {
-				 * 
-				 * } else { return MessageResponse.getTextMessage(fromUserName ,
-				 * toUserName , "返回为空"); }
-				 */
+			}
 			// 事件推送
 			else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_EVENT)) {
 				String eventType = requestMap.get("Event");// 事件类型
@@ -125,7 +79,7 @@ public class CoreServiceImpl implements ICoreService {
 
 					TextMessage text = new TextMessage();
 					text.setContent(
-							"欢迎关注snake团队微信公众号，回复'订单'或者'1' 获取你的订单信息，回复'产品'或者'2' 获取最新的产品资讯");
+							"欢迎关注snake团队毕业设计小分队微信公众号。请绑定账户，以便获取更好的体验哟!");
 					text.setToUserName(fromUserName);
 					text.setFromUserName(toUserName);
 					text.setCreateTime(new Date().getTime());
@@ -134,7 +88,7 @@ public class CoreServiceImpl implements ICoreService {
 					// 获取用户信息
 					WeixinUserInfo user = tokenService.getWxUserInfo(fromUserName);
 					if (user == null) {
-						user = getUserInfo(accessToken, fromUserName);
+						user = getUserInfo(ServletContextUtil.getAccessToken().getAccessToken(), fromUserName);
 					} else {
 						user.setSubscribe(1);
 					}
@@ -152,14 +106,22 @@ public class CoreServiceImpl implements ICoreService {
 				// 自定义菜单点击事件
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
 					String eventKey = requestMap.get("EventKey");// 事件KEY值，与创建自定义菜单时指定的KEY值对应
-					if (eventKey.equals("customer_telephone")) {
+					if (eventKey.equals("12")) {
 						TextMessage text = new TextMessage();
-						text.setContent("0755-86671980");
+						text.setContent("你点击了产品查询");
 						text.setToUserName(fromUserName);
 						text.setFromUserName(toUserName);
 						text.setCreateTime(new Date().getTime());
 						text.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
 
+						respMessage = MessageUtil.textMessageToXml(text);
+					} else if (eventKey.equals("21")) {
+						TextMessage text = new TextMessage();
+						text.setContent("你点击了我的信息");
+						text.setToUserName(fromUserName);
+						text.setFromUserName(toUserName);
+						text.setCreateTime(new Date().getTime());
+						text.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
 						respMessage = MessageUtil.textMessageToXml(text);
 					}
 				}
@@ -223,4 +185,52 @@ public class CoreServiceImpl implements ICoreService {
 		return weixinUserInfo;
 	}
 
+	public OAuthInfo getOAuthOpenId(String appid, String secret, String code) {
+		OAuthInfo oAuthInfo = null;
+		String o_auth_openid_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code;";
+		String requestUrl = o_auth_openid_url.replace("APPID", appid).replace("SECRET", secret).replace("CODE", code);
+
+		JSONObject jsonObject = CommonUtil.httpsRequest(requestUrl, "GET", null);
+
+		// oAuthInfo是作者自己把那几个属性参数写在一个类里面了。
+		// 如果请求成功
+		if (null != jsonObject) {
+			try {
+				oAuthInfo = new OAuthInfo();
+				oAuthInfo.setAccessToken(jsonObject.getString("access_token"));
+				oAuthInfo.setExpiresIn(jsonObject.getInt("expires_in"));
+				oAuthInfo.setRefreshToken(jsonObject.getString("refresh_token"));
+				oAuthInfo.setOpenId(jsonObject.getString("openid"));
+				oAuthInfo.setScope(jsonObject.getString("scope"));
+			} catch (JSONException e) {
+				oAuthInfo = null;
+				// 获取token失败
+				log.info("网页授权获取openId失败 errcode:{" + jsonObject.getInt("errcode") + "} errmsg:{"
+						+ jsonObject.getString("errmsg") + "}");
+			}
+		}
+		return oAuthInfo;
+	}
+
+	public boolean sendTemplateMsg(String token, Template template) {
+
+		boolean flag = false;
+
+		String requestUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
+		requestUrl = requestUrl.replace("ACCESS_TOKEN", token);
+
+		JSONObject jsonResult = CommonUtil.httpsRequest(requestUrl, "POST", template.toJSON());
+		if (jsonResult != null) {
+			int errorCode = jsonResult.getInt("errcode");
+			String errorMessage = jsonResult.getString("errmsg");
+			if (errorCode == 0) {
+				flag = true;
+			} else {
+				System.out.println("模板消息发送失败:" + errorCode + "," + errorMessage);
+				flag = false;
+			}
+		}
+		return flag;
+
+	}
 }

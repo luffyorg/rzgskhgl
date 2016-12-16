@@ -33,14 +33,21 @@ import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.Record;
 import cn.yznu.rzgskhgl.pojo.SendSms;
 import cn.yznu.rzgskhgl.pojo.User;
+import cn.yznu.rzgskhgl.pojo.WeixinUserInfo;
+import cn.yznu.rzgskhgl.pojo.weixin.req.TemplateParam;
+import cn.yznu.rzgskhgl.pojo.weixin.resp.Template;
+import cn.yznu.rzgskhgl.service.ICoreService;
 import cn.yznu.rzgskhgl.service.ICustomerService;
 import cn.yznu.rzgskhgl.service.IProcessService;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IRecordService;
+import cn.yznu.rzgskhgl.service.ITokenService;
 import cn.yznu.rzgskhgl.service.IUserService;
 import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import cn.yznu.rzgskhgl.util.DateUtil;
+import cn.yznu.rzgskhgl.util.MessageUtil;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
+import cn.yznu.rzgskhgl.util.ServletContextUtil;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -69,6 +76,10 @@ public class ProcessController extends BaseController {
 
 	@Autowired
 	private IRecordService iRecordService;
+	@Autowired
+	private ICoreService coreService;
+	@Autowired
+	private ITokenService tokenService;
 
 	@SuppressWarnings("static-access")
 	@RequestMapping("/list")
@@ -264,7 +275,31 @@ public class ProcessController extends BaseController {
 				 * log.info("发送短信返回结果：" + result); } catch (Exception e) {
 				 * e.printStackTrace(); }
 				 */
-
+				WeixinUserInfo info = tokenService.findUniqueByProperty(WeixinUserInfo.class , "customerId",order.getBuyNameId());
+				
+				//发送微信模板消息
+				Template tem=new Template();  
+				tem.setTemplateId("hcaDlCO_-1N_rSnZjq6VKIjGUvaCxahc0-uVqg6mYws");  
+				tem.setTopColor("#00DD00");  
+				tem.setToUser(info.getOpenId());  //发送的对象 openid
+				tem.setUrl("");  
+				          
+				List<TemplateParam> paras=new ArrayList<TemplateParam>();  
+				paras.add(new TemplateParam("first","亲，你以成功购买XX融资公司的产品)","#FF3333"));  
+				paras.add(new TemplateParam("产品名称",order.getProductName(),"#0044BB"));  
+				paras.add(new TemplateParam("订单号",order.getOrderNo(),"#0044BB"));  
+				paras.add(new TemplateParam("订单状态",orderStatus2,"#0044BB"));  
+				paras.add(new TemplateParam("Remark","感谢你对我们公司的支持!!!!","#AAAAAA"));  
+				          
+				tem.setTemplateParamList(paras);  
+				          
+				boolean result = coreService.sendTemplateMsg(ServletContextUtil.getAccessToken().getAccessToken(), tem);
+				if(result){
+					log.info("发送模板消息成功");
+				}else{
+					log.info("发送模板消息失败");
+				}
+				
 				msg = "success";
 			}
 		}
@@ -439,6 +474,30 @@ public class ProcessController extends BaseController {
 		 * log.info("发送短信返回结果：" + result); } catch (Exception e) {
 		 * e.printStackTrace(); }
 		 */
+		
+		WeixinUserInfo info = tokenService.findUniqueByProperty(WeixinUserInfo.class , "customerId", o.getBuyNameId());
+		
+		//发送微信模板消息
+		Template tem=new Template();  
+		tem.setTemplateId("hcaDlCO_-1N_rSnZjq6VKIjGUvaCxahc0-uVqg6mYws");  
+		tem.setTopColor("#00DD00");  
+		tem.setToUser(info.getOpenId());  //发送的对象 openid
+		tem.setUrl("");  
+		          
+		List<TemplateParam> paras=new ArrayList<TemplateParam>();  
+		paras.add(new TemplateParam("first","亲，你以成功购买XX融资公司的产品)","#FF3333"));  
+		paras.add(new TemplateParam("订单号",order.getOrderNo(),"#0044BB"));  
+		paras.add(new TemplateParam("订单状态",orderStatus,"#0044BB"));  
+		paras.add(new TemplateParam("Remark","感谢你对我们公司的支持!!!!","#AAAAAA"));  
+		          
+		tem.setTemplateParamList(paras);  
+		          
+		boolean result = coreService.sendTemplateMsg(ServletContextUtil.getAccessToken().getAccessToken(), tem);
+		if(result){
+			log.info("发送模板消息成功");
+		}else{
+			log.info("发送模板消息失败");
+		}
 		return map;
 	}
 
