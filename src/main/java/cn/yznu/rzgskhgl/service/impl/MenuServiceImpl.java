@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import cn.yznu.rzgskhgl.util.CommonUtil;
-import cn.yznu.rzgskhgl.util.ServletContextUtil;  
   
 @Service("menuService")  
 public class MenuServiceImpl  {  
@@ -15,11 +14,11 @@ public class MenuServiceImpl  {
     // 菜单创建（POST） 限100（次/天）  
     public static String MENU_CREATE = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";  
  // 获取接口访问凭证
- 	//String accessToken = CommonUtil.getToken("wx183636fa6c726c68", "79ada4a6ed3150e83031b20830347a73").getAccessToken();
+ 	String accessToken = CommonUtil.getToken("wx183636fa6c726c68", "79ada4a6ed3150e83031b20830347a73").getAccessToken();
     public String CreateMenu(String jsonMenu) {  
         String resultStr = "";  
         // 调用接口获取token  
-        String token = ServletContextUtil.getAccessToken().getAccessToken();  
+        String token = accessToken;  
         if (token != null) {  
             // 调用接口创建菜单  
             int result = createMenu(jsonMenu, token);  

@@ -17,7 +17,6 @@ import cn.yznu.rzgskhgl.service.ICoreService;
 import cn.yznu.rzgskhgl.service.ITokenService;
 import cn.yznu.rzgskhgl.util.CommonUtil;
 import cn.yznu.rzgskhgl.util.MessageUtil;
-import cn.yznu.rzgskhgl.util.ServletContextUtil;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
@@ -31,7 +30,7 @@ public class CoreServiceImpl implements ICoreService {
 	private ITokenService tokenService;
 
 	// 获取接口访问凭证
-	//String accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
+	String accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
 
 	/**
 	 * 处理微信发来的请求
@@ -88,7 +87,7 @@ public class CoreServiceImpl implements ICoreService {
 					// 获取用户信息
 					WeixinUserInfo user = tokenService.getWxUserInfo(fromUserName);
 					if (user == null) {
-						user = getUserInfo(ServletContextUtil.getAccessToken().getAccessToken(), fromUserName);
+						user = getUserInfo(accessToken, fromUserName);
 					} else {
 						user.setSubscribe(1);
 					}

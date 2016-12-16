@@ -43,11 +43,11 @@ import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.service.IRecordService;
 import cn.yznu.rzgskhgl.service.ITokenService;
 import cn.yznu.rzgskhgl.service.IUserService;
+import cn.yznu.rzgskhgl.util.CommonUtil;
 import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import cn.yznu.rzgskhgl.util.DateUtil;
 import cn.yznu.rzgskhgl.util.MessageUtil;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
-import cn.yznu.rzgskhgl.util.ServletContextUtil;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -275,31 +275,40 @@ public class ProcessController extends BaseController {
 				 * log.info("发送短信返回结果：" + result); } catch (Exception e) {
 				 * e.printStackTrace(); }
 				 */
-				WeixinUserInfo info = tokenService.findUniqueByProperty(WeixinUserInfo.class , "customerId",order.getBuyNameId());
-				
-				//发送微信模板消息
-				Template tem=new Template();  
-				tem.setTemplateId("hcaDlCO_-1N_rSnZjq6VKIjGUvaCxahc0-uVqg6mYws");  
-				tem.setTopColor("#00DD00");  
-				tem.setToUser(info.getOpenId());  //发送的对象 openid
-				tem.setUrl("");  
-				          
-				List<TemplateParam> paras=new ArrayList<TemplateParam>();  
-				paras.add(new TemplateParam("first","亲，你以成功购买XX融资公司的产品)","#FF3333"));  
-				paras.add(new TemplateParam("产品名称",order.getProductName(),"#0044BB"));  
-				paras.add(new TemplateParam("订单号",order.getOrderNo(),"#0044BB"));  
-				paras.add(new TemplateParam("订单状态",orderStatus2,"#0044BB"));  
-				paras.add(new TemplateParam("Remark","感谢你对我们公司的支持!!!!","#AAAAAA"));  
-				          
-				tem.setTemplateParamList(paras);  
-				          
-				boolean result = coreService.sendTemplateMsg(ServletContextUtil.getAccessToken().getAccessToken(), tem);
-				if(result){
-					log.info("发送模板消息成功");
-				}else{
-					log.info("发送模板消息失败");
+				WeixinUserInfo info = tokenService.findUniqueByProperty(WeixinUserInfo.class, "customerId",
+						order.getBuyNameId());
+				if (info != null) {
+					// 发送微信模板消息
+					Template tem = new Template();
+					tem.setTemplateId("A_FYoevZgUIIIFyAR89jgxvBXAw6x3xjJWCsZjs96oU");
+					tem.setTopColor("#00DD00");
+					tem.setToUser(info.getOpenId()); // 发送的对象 openid
+					tem.setUrl("");
+
+					List<TemplateParam> paras = new ArrayList<TemplateParam>();
+					paras.add(new TemplateParam("first", "亲，你以成功购买XX融资公司的产品", "#FF3333"));
+					paras.add(new TemplateParam("product_name", order.getProductName(), "#0044BB"));
+					paras.add(new TemplateParam("order_no", order.getOrderNo(), "#0044BB"));
+					paras.add(new TemplateParam("status", orderStatus2, "#0044BB"));
+					paras.add(new TemplateParam("Remark", "感谢你对我们公司的支持!业务员【"+order.getSalesMan()+"】", "#AAAAAA"));
+
+					tem.setTemplateParamList(paras);
+					String accessToken = (String) request.getSession(true).getAttribute(MessageUtil.ACCESS_TOKEN);
+					if (accessToken == null || accessToken.equals("")) {
+						accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
+						request.getSession(true).setAttribute(MessageUtil.ACCESS_TOKEN, accessToken);
+
+					}
+					log.info("1>>>" + accessToken);
+					boolean result = coreService.sendTemplateMsg(
+							CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken(), tem);
+					if (result) {
+						log.info("发送模板消息成功");
+					} else {
+						log.info("发送模板消息失败");
+					}
 				}
-				
+
 				msg = "success";
 			}
 		}
@@ -474,30 +483,41 @@ public class ProcessController extends BaseController {
 		 * log.info("发送短信返回结果：" + result); } catch (Exception e) {
 		 * e.printStackTrace(); }
 		 */
-		
-		WeixinUserInfo info = tokenService.findUniqueByProperty(WeixinUserInfo.class , "customerId", o.getBuyNameId());
-		
-		//发送微信模板消息
-		Template tem=new Template();  
-		tem.setTemplateId("hcaDlCO_-1N_rSnZjq6VKIjGUvaCxahc0-uVqg6mYws");  
-		tem.setTopColor("#00DD00");  
-		tem.setToUser(info.getOpenId());  //发送的对象 openid
-		tem.setUrl("");  
-		          
-		List<TemplateParam> paras=new ArrayList<TemplateParam>();  
-		paras.add(new TemplateParam("first","亲，你以成功购买XX融资公司的产品)","#FF3333"));  
-		paras.add(new TemplateParam("订单号",order.getOrderNo(),"#0044BB"));  
-		paras.add(new TemplateParam("订单状态",orderStatus,"#0044BB"));  
-		paras.add(new TemplateParam("Remark","感谢你对我们公司的支持!!!!","#AAAAAA"));  
-		          
-		tem.setTemplateParamList(paras);  
-		          
-		boolean result = coreService.sendTemplateMsg(ServletContextUtil.getAccessToken().getAccessToken(), tem);
-		if(result){
-			log.info("发送模板消息成功");
-		}else{
-			log.info("发送模板消息失败");
+
+		List<WeixinUserInfo> infos = tokenService.findByProperty(WeixinUserInfo.class, "customerId", o.getBuyNameId());
+		if (infos != null) {
+			for (WeixinUserInfo info : infos) {
+				// 发送微信模板消息
+				Template tem = new Template();
+				tem.setTemplateId("MN1TQav6mFRam_fvU465PV_UBJcTOHvdT61jGbiPak0");
+				tem.setTopColor("#00DD00");
+				tem.setToUser(info.getOpenId()); // 发送的对象 openid
+				tem.setUrl("");
+
+				List<TemplateParam> paras = new ArrayList<TemplateParam>();
+				paras.add(new TemplateParam("first", "亲，你在XX融资公司购买的产品，订单状态更新了。", "#FF3333"));
+				paras.add(new TemplateParam("order_no", order.getOrderNo(), "#0044BB"));
+				paras.add(new TemplateParam("status", orderStatus, "#0044BB"));
+				paras.add(new TemplateParam("Remark", "感谢你对我们公司的支持!业务员【"+order.getSalesMan()+"】", "#AAAAAA"));
+
+				tem.setTemplateParamList(paras);
+				String accessToken = (String) request.getSession(true).getAttribute(MessageUtil.ACCESS_TOKEN);
+				if (accessToken == null || accessToken.equals("")) {
+					accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
+					request.getSession(true).setAttribute(MessageUtil.ACCESS_TOKEN, accessToken);
+
+				}
+				log.info("2>>>" + accessToken);
+				boolean result = coreService.sendTemplateMsg(accessToken, tem);
+				if (result) {
+					log.info("发送模板消息成功");
+				} else {
+					log.info("发送模板消息失败");
+				}
+			}
+
 		}
+
 		return map;
 	}
 
@@ -740,9 +760,9 @@ public class ProcessController extends BaseController {
 		String name = request.getParameter("name");// 业务员账户
 		String startTime = request.getParameter("startTime");// 创建时间
 		String endTime = request.getParameter("endTime");// 创建时间
-		System.out.println("查询的时间范围：" + startTime + "===" + endTime );
+		System.out.println("查询的时间范围：" + startTime + "===" + endTime);
 		String orderStatus = request.getParameter("orderStatus");// 订单状态
-		
+
 		if (pagesize == null || pagesize.equals("")) {
 			pagesize = "10";
 		}

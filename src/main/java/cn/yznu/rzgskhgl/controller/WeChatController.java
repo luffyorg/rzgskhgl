@@ -147,6 +147,29 @@ public class WeChatController {
 		mv.setViewName("weixin/product");
 		mv.addObject("products", products);
 		return mv;
-
 	}
+
+	@RequestMapping("search")
+	public ModelAndView search(HttpServletRequest request) {
+		log.info("微信端页面 -产品切换");
+		// 参数
+		String code = request.getParameter("code");
+		int id = Integer.parseInt(request.getParameter("id"));
+		String openid = "";
+		if (null != code && !"".equals(code)) {
+			log.info("==============[OAuthServlet]获取网页授权code不为空，code=" + code);
+			// 根据code换取openId
+			openid = CommonUtil.getOpenid(code);
+			log.info("获取到openid为：" + openid);
+		} else {
+			log.info("==============获取网页授权code失败！");
+		}
+		log.info("openid :" + openid);
+		ModelAndView mv = new ModelAndView();
+		Product product = tokenService.get(Product.class, id);
+		mv.addObject("product", product);
+		mv.setViewName("weixin/productDetail");
+		return mv;
+	}
+
 }

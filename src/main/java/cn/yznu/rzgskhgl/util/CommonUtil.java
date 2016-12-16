@@ -6,11 +6,12 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URL;
+import java.util.Date;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.servlet.ServletContext;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -103,10 +104,7 @@ public class CommonUtil {
         token = new AccessToken();
         token.setAccessToken(jsonObject.getString("access_token"));
         token.setExpiresIn(jsonObject.getInt("expires_in"));
-        ServletContext sc = ServletContextUtil.get();  
-        sc.removeAttribute(MessageUtil.ACCESS_TOKEN);  
-        sc.setAttribute(MessageUtil.ACCESS_TOKEN, token.getAccessToken());  
-        commonService.save(token);
+        token.setCreateDate(new Date());
       } catch (JSONException e) {
         token = null;
         // 获取token失败

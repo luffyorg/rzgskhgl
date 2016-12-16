@@ -6,44 +6,178 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>我的订单</title>
+<style type="text/css">
+body{
+    margin:0;
+    padding:0;
+    background-color: #fff;
+}
+.publicSearch{
+    width:100%;
+    height:100px;
+    float: left;
+    background-color: #EFEFF4;
+}
+.publicSearchId,.publicSearchStatus{
+    width:40%;
+    height:80px;
+    border-radius: 6px;
+    float: left;
+    margin-left:5%;
+    margin-right:5%;
+    background-color: #fff;
+    margin-top:10px
+
+}
+.icon_search{
+    float: left;
+    margin-top:30px;
+    margin-left:16px;
+    width:20px;
+    height:20px;
+}
+.SearchId_inp,.SearchStatus_inp{
+    width: 80%;
+    float: left;
+    margin-left: 0px;
+    margin-top: 3px;
+    height: 70px;
+    border: none;
+    padding-left: 14px;
+    font-size: 32px;
+    color: #353535;
+    font-family: '微软雅黑';
+}
+input::-webkit-input-placeholder{
+    font-size:32px;
+    color: #ccc;
+    font-family: '微软雅黑';
+}
+input::-moz-placeholder{
+    font-size:32px;
+    color: #ccc;
+    font-family: '微软雅黑';
+}
+.publicBtn{
+    float: left;
+    width:92%;
+    margin-left:4%;
+    margin-right:4%;
+    margin-top:20px;
+    height:100px;
+
+}
+.btnSelect{
+    width:100%;
+    height:100px;
+    background-color: #EDB400;
+    color: #ffffff;
+    font-size:42px;
+    font-family: '微软雅黑';
+    border:none;
+    border-radius: 16px;
+}
+.publicDetail{
+    float: left;
+    width:92%;
+    margin-left:4%;
+    margin-right:4%;
+    margin-top:20px;
+    height:auto;
+}
+.DetailId_control,.DetailName_control,
+.DetailPrice_control,.DetailDescription_control,
+.DetailStatus_control{
+    float: left;
+    height:70px;
+    width:100%;
+}
+.DetailId_control{
+    background-color: #efeff4;
+    border-radius: 6px;
+}
+.DetailDescription_control{
+    height:auto;
+}
+.DetailId_label,.DetailName_label,.DetailPrice_label,.DetailDescription_label,.DetailStatus_label{
+    float: left;
+    line-height: 70px;
+    color: #353535;
+    margin-left:0;
+    font-size:34px;
+    font-family: '微软雅黑';
+    width:20%;
+    text-align: center;
+}
+.DetailDescription_label{
+    line-height:50px;
+}
+.DetailId,.DetailName,.DetailPrice,.DetailDescription,.DetailStatus{
+    width:80%;
+    float: left;
+    line-height: 70px;
+    color: #353535;
+    margin-left:0;
+    font-size:34px;
+    font-family: '微软雅黑';
+    text-align: left;
+}
+.DetailDescription{
+    height:auto;
+    line-height:50px;
+}
+</style>
 </head>
 <body>
-	<table width="100%" border="0" cellpadding="10" cellspacing="0"
-		class="tableBasic">
-		<thead>
-			<tr>
-				<td align="center">序号</td>
-				<td align="center">订单号</td>
-				<td align="center">购买人</td>
-				<td align="center">业务员</td>
-				<td align="center">产品名称</td>
-				<td align="center">订单状态</td>
-				<td align="center">创建时间</td>
-				<td align="center">更新时间</td>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach items="${orders }" var="order" varStatus="status">
-				<tr>
-					<td align='center'>${status.index+1 }</td>
-					<td align='center'>${order.orderNo }</td>
-					<td align='center'>${order.buyName }</td>
-					<td align='center'>${order.salesMan }</td>
-					<td align='center'>${order.productName }</td>
-					<td align='center' id="status${order.id }"><c:if
-							test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
-							test="${order.orderStatus  eq 1 }">签订合同</c:if> <c:if
-							test="${order.orderStatus  eq 2 }">收齐资料</c:if> <c:if
-							test="${order.orderStatus  eq 3 }">递交渠道处</c:if> <c:if
-							test="${order.orderStatus  eq 4 }">审核阶段</c:if> <c:if
-							test="${order.orderStatus  eq 5 }">下款</c:if> <c:if
-							test="${order.orderStatus  eq 6 }">收费</c:if> <c:if
-							test="${order.orderStatus  eq 7 }">完成服务</c:if></td>
-					<td align='center'>${order.createDate }</td>
-					<td align='center'>${order.updateDate }</td>
-				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
+
+	<div class="publicSearch">
+		<div class="publicSearchId">
+			<img src="image/icon_search@2x.png" height="14" width="14"
+				class="icon_search" /> <input class="SearchId_inp" placeholder="订单号" />
+		</div>
+		<div class="publicSearchStatus">
+			<img src="image/icon_search@2x.png" height="14" width="14"
+				class="icon_search" /> <input list="status" class="SearchStatus_inp"
+				placeholder="订单状态" />
+			<datalist id="status">
+			<option value="status1">
+			<option value="status1">
+			<option value="状态二">
+			</datalist>
+		</div>
+	</div>
+	<div class="publicBtn">
+		<button class="btnSelect">筛选</button>
+	</div>
+	<c:forEach items="${orders }" var="order" varStatus="status">
+		<div class="publicDetail">
+			<div class="DetailId_control">
+				<div class="DetailId_label">订&nbsp;单&nbsp;号&nbsp;:</div>
+				<div class="DetailId">${order.orderNo }</div>
+			</div>
+			<div class="DetailName_control">
+				<div class="DetailName_label">产品名称:</div>
+				<div class="DetailName">${order.productName }</div>
+			</div>
+			<div class="DetailPrice_control">
+				<div class="DetailPrice_label">产品定价:</div>
+				<div class="DetailPrice">${order.productPrice }</div>
+			</div>
+
+			<div class="DetailStatus_control">
+				<div class="DetailStatus_label">订单状态:</div>
+				<div class="DetailStatus">
+					<c:if test="${order.orderStatus  eq 0 }">暂未更新</c:if>
+					<c:if test="${order.orderStatus  eq 1 }">签订合同</c:if>
+					<c:if test="${order.orderStatus  eq 2 }">收齐资料</c:if>
+					<c:if test="${order.orderStatus  eq 3 }">递交渠道处</c:if>
+					<c:if test="${order.orderStatus  eq 4 }">审核阶段</c:if>
+					<c:if test="${order.orderStatus  eq 5 }">下款</c:if>
+					<c:if test="${order.orderStatus  eq 6 }">收费</c:if>
+					<c:if test="${order.orderStatus  eq 7 }">完成服务</c:if>
+				</div>
+			</div>
+		</div>
+	</c:forEach>
 </body>
 </html>

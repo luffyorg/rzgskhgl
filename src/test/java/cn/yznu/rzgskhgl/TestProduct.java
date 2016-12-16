@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.yznu.rzgskhgl.pojo.AccessToken;
 import cn.yznu.rzgskhgl.pojo.Order;
 import cn.yznu.rzgskhgl.service.IProductService;
 
@@ -24,13 +25,11 @@ public class TestProduct {
 	private IProductService productService;
 	@Test
 	public void testMyOrder(){
-		String hql = "from Order where isEnable = 1 and buyNameId=?";
-		Object[] param = {1};
-		List<Order> orders = productService.findHql(hql, param);
-		for (Order o : orders){
-			System.out.println(o.getProductName());
+		String hql = "from AccessToken  order by createDate desc  ";
+		List<AccessToken> list = productService.queryForPage(hql, 0, 1);
+		for(AccessToken a : list){
+			System.out.println(a.getAccessToken());
 		}
-		
 	}
 
 }
