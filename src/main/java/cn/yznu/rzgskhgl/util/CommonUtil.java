@@ -17,10 +17,8 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.yznu.rzgskhgl.pojo.AccessToken;
-import cn.yznu.rzgskhgl.service.ICommonService;
 /**
  * @Deprecated 微信通用工具类
  * @author zhangwei
@@ -28,8 +26,7 @@ import cn.yznu.rzgskhgl.service.ICommonService;
  */
 public class CommonUtil {
   private static Logger log = LoggerFactory.getLogger(CommonUtil.class);
-  @Autowired
-  private static ICommonService commonService;
+
   // 凭证获取（GET）
   public final static String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
   /**

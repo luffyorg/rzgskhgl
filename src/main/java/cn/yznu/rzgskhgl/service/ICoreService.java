@@ -2,7 +2,6 @@ package cn.yznu.rzgskhgl.service;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cn.yznu.rzgskhgl.pojo.WeixinUserInfo;
 import cn.yznu.rzgskhgl.pojo.weixin.req.OAuthInfo;
 import cn.yznu.rzgskhgl.pojo.weixin.resp.Template;
 
