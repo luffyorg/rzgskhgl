@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,9 @@ import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.pojo.WeixinUserInfo;
 import cn.yznu.rzgskhgl.service.ITokenService;
 import cn.yznu.rzgskhgl.util.CommonUtil;
+import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 @Controller
 @RequestMapping("weixin")
@@ -66,7 +69,7 @@ public class WeChatController {
 		if (info == null) {
 			map.put("msg", "请用微信登录");
 			return map;
-		} else if (info.getCustomerId() != null && info.getCustomerId() != 0) {
+		} else if (info.getCustomerId() != 0) {
 			map.put("msg", "bind");
 			return map;
 		} else {
@@ -105,14 +108,18 @@ public class WeChatController {
 				log.info("==============获取网页授权code失败！");
 			}
 		}
+		//String openid = "o8TDSwhdSAZMEXulPcR8ExOYbOCk";
 		log.info("openid :" + openid);
+		HttpSession session = request.getSession();
+		session.setAttribute("openid", openid);
+		log.info(">>>" + session.getAttribute("openid"));
 		WeixinUserInfo info = tokenService.getWxUserInfo(openid);
 		Customer customer = tokenService.get(Customer.class, info.getCustomerId());
 		if (customer == null) {
 			mv.setViewName("weixin/login");
 			return mv;
 		} else {
-			String hql = "from Order where isEnable = 1 and buyNameId=?";
+			String hql = "from Order where isEnable = 1 and buyNameId=? order by createDate desc";
 			Object[] param = { info.getCustomerId() };
 			List<Order> orders = tokenService.findHql(hql, param);
 
@@ -165,11 +172,51 @@ public class WeChatController {
 			log.info("==============获取网页授权code失败！");
 		}
 		log.info("openid :" + openid);
+		HttpSession session = request.getSession();
+		session.setAttribute("openid", openid);
 		ModelAndView mv = new ModelAndView();
 		Product product = tokenService.get(Product.class, id);
 		mv.addObject("product", product);
 		mv.setViewName("weixin/productDetail");
 		return mv;
+	}
+
+	@RequestMapping("searchOrder")
+	@ResponseBody
+	public JSONObject searchOrder(HttpServletRequest request) {
+		log.info("微信端页面 -搜索指定产品");
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 参数
+		String orderNo = request.getParameter("orderNo");
+		int orderStatus = Integer.parseInt(request.getParameter("orderStatus"));
+		HttpSession session = request.getSession();
+		String openid = (String) session.getAttribute("openid");
+		//String openid = "o8TDSwhdSAZMEXulPcR8ExOYbOCk";
+		WeixinUserInfo info = tokenService.getWxUserInfo(openid);
+		Customer customer = tokenService.get(Customer.class, info.getCustomerId());
+		JSONObject json = new JSONObject();
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.registerJsonValueProcessor(java.sql.Timestamp.class,
+				new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd HH:mm:ss"));
+		if (customer == null) {
+			return json.fromObject("");
+		} else {
+			String hql = "from Order where isEnable = 1 and buyNameId=" + info.getCustomerId() + " ";
+			if (orderNo != null && !orderNo.equals("")) {
+				hql += "and orderNo = " + orderNo + " ";
+			}
+			if (orderStatus != 0) {
+				hql += "and orderStatus = " + orderStatus + " ";
+			}
+			hql += "order by createDate desc";
+			List<Order> orders = tokenService.findHql(Order.class,hql);
+			map.put("orders2", orders);
+			json = json.fromObject(map,jsonConfig);
+			log.info("json =" + json);
+			
+			return json;
+		}
 	}
 
 }

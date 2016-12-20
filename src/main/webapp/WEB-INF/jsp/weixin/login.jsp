@@ -18,7 +18,7 @@
 	content="width=320, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="apple-touch-icon-precomposed"
 	href="images/apple-touch-icon.png" />
-<title>登录</title>
+<title>绑定账户</title>
 <link href="../${bashPath }static/css/reset.css" rel="stylesheet" type="text/css" />
 <link href="../${bashPath }static/css/head.css" rel="stylesheet" type="text/css" />
 <link href="../${bashPath }static/css/foot.css" rel="stylesheet" type="text/css" />
@@ -29,7 +29,7 @@
 <body>
 	<div class="header" id="header">
 		<a class="back" href="javascript:history.back();"></a> <span
-			class="headline">登录</span> <a class="search"></a>
+			class="headline">绑定账户</span> <a class="search"></a>
 	</div>
 
 	<section class="login">
@@ -41,13 +41,13 @@
 					<li class="sign clearfix"><input id='btn_moblogin'
 						type="button" class="btn" value="手机动态密码登录>" /></li>
 					<li class="user-info name"><input class='tipInput'
-						tiptext='用户名' type="text" placeholder="" value="" name="user_name"
+						placeholder='用户名' type="text" placeholder="" value="" name="user_name"
 						id='user_name'></li>
 					<li class="user-info name"><input class='tipInput'
-						tiptext='手机号' type="text" placeholder="" value="" name="user_tel"
+						placeholder='手机号' type="text" placeholder="" value="" name="user_tel"
 						id='user_tel'></li>
 					<li style="display: none"><input class='tipInput'
-					tiptext='openid' type="text" placeholder="" value="${openid }" name="openid"
+					placeholder='openid' type="text" placeholder="" value="${openid }" name="openid"
 					id='openid'></li>
 					<li class="enter"><input id='btn_enter' type="button"
 						class="btn" value=""  onclick="login()"/></li>
@@ -204,14 +204,14 @@ function login(){
 		data : JSON.stringify(sendInfo),
 		success : function(data) {
 			if (data.msg == "success") {
-				alert("登录成功");
+				alert("绑定成功");
 				window.location.href = "myOrder?openid="+openid+"";
 			}else if(data.msg == "error"){
 				alert("姓名或者手机号不正确");
 			}else if(data.msg == "bind"){
 				alert("你以绑定账户，无需重复绑定！")
 			}else{
-				alert("请从微信端登录")
+				alert("请从微信端登录") 
 			}
 		},
 		error : function() {

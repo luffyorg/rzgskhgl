@@ -42,11 +42,12 @@ body {
 .ProductE_title {
 	color: #999;
 	line-height: 20px;
+	height:20px;
 }
 
 .ProductContent {
 	float: left;
-	margin-top: 40px;
+	margin-top: 0px;
 	width: 92%;
 	margin-left: 4%;
 }

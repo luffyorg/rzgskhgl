@@ -91,6 +91,7 @@ public class CoreServiceImpl implements ICoreService {
 					} else {
 						user.setSubscribe(1);
 					}
+					user.setCustomerId(0);
 					commonService.save(user);
 
 				}
@@ -99,6 +100,7 @@ public class CoreServiceImpl implements ICoreService {
 					// 获取用户信息将关注状态设置为0
 					WeixinUserInfo user = tokenService.getWxUserInfo(fromUserName);
 					user.setSubscribe(0);
+					user.setCustomerId(0);
 					commonService.saveOrUpdate(user);
 
 				}
