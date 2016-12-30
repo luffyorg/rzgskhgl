@@ -25,17 +25,18 @@
  --%>				<li class="M noLeft"> <a href="JavaScript:void(0);">订单</a>
  						<div class="drop mUser">
 							<a href="${basePath }admin/process/orderList" class="updateColor">我的订单</a> 
-							<shiro:hasRole name="ADMIN">
+							<shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
 								<a href="${basePath }admin/process/allOrderList" class="updateColor">全部订单</a> 
-							</shiro:hasRole>
+							</shiro:hasAnyRoles>
 						</div>
  
  					</li>
 			</ul>
 			<ul class="navRight">
+				<li class="noRight"><a
+					href="${path }/main">首页</a></li>
 				<li class="M noLeft"><a href="JavaScript:void(0);">您好， 
-				<shiro:principal /><%-- <img src="${basePath }static/images/icon_select.png" style="position:absolute;
-				top:13px;right: -4%;"> --%></a>
+				<shiro:principal /></a>
 				
 					<div class="drop mUser">
 						<a onclick="updatePwd();" class="updateColor">修改密码</a> 

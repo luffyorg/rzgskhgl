@@ -206,7 +206,7 @@ body, html {
 }
 
 body {
-	background: #f5f5f5;
+	background: #60bbff;
 	color: #D5D6E2;
 	font-weight: 500;
 	font-size: 1.05em;
@@ -297,7 +297,7 @@ a:hover, a:focus {
 			success : function(data) {
 				if (data.result == "success") {
 					//alert("登录成功");
-					window.location.href = "admin/index";
+					window.location.href = "admin/process/orderList";
 				} else if (data.result == "usererror") {
 					alert("用户名或密码有误");
 				} else if (data.result == "验证码错误") {
@@ -307,9 +307,15 @@ a:hover, a:focus {
 				}
 			},
 			error : function() {
-				alert("没有返回值");
+				alert("网络异常，请稍后再试。");
 			}
 		});
 	});
+	
+	$("body").keydown(function() {
+	    if (event.keyCode == "13") {//keyCode=13是回车键
+	        $("#loginbtn").click();
+	    }
+	});    
 </script>
 </html>

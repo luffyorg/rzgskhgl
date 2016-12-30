@@ -48,6 +48,7 @@ import cn.yznu.rzgskhgl.util.DateJsonValueProcessor;
 import cn.yznu.rzgskhgl.util.DateUtil;
 import cn.yznu.rzgskhgl.util.MessageUtil;
 import cn.yznu.rzgskhgl.util.SendMsg_webchinese;
+import cn.yznu.rzgskhgl.util.SingleAccessToken;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -293,12 +294,7 @@ public class ProcessController extends BaseController {
 					paras.add(new TemplateParam("Remark", "感谢你对我们公司的支持!业务员【"+order.getSalesMan()+"】", "#AAAAAA"));
 
 					tem.setTemplateParamList(paras);
-					String accessToken = (String) request.getSession(true).getAttribute(MessageUtil.ACCESS_TOKEN);
-					if (accessToken == null || accessToken.equals("")) {
-						accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
-						request.getSession(true).setAttribute(MessageUtil.ACCESS_TOKEN, accessToken);
-
-					}
+					String accessToken = SingleAccessToken.getInstance().getAccessToken().getAccessToken();
 					log.info("1>>>" + accessToken);
 					boolean result = coreService.sendTemplateMsg(
 							CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken(), tem);
@@ -501,12 +497,7 @@ public class ProcessController extends BaseController {
 				paras.add(new TemplateParam("Remark", "感谢你对我们公司的支持!业务员【"+order.getSalesMan()+"】", "#AAAAAA"));
 
 				tem.setTemplateParamList(paras);
-				String accessToken = (String) request.getSession(true).getAttribute(MessageUtil.ACCESS_TOKEN);
-				if (accessToken == null || accessToken.equals("")) {
-					accessToken = CommonUtil.getToken(MessageUtil.APPID, MessageUtil.APPSECRET).getAccessToken();
-					request.getSession(true).setAttribute(MessageUtil.ACCESS_TOKEN, accessToken);
-
-				}
+				String accessToken = SingleAccessToken.getInstance().getAccessToken().getAccessToken();
 				log.info("2>>>" + accessToken);
 				boolean result = coreService.sendTemplateMsg(accessToken, tem);
 				if (result) {

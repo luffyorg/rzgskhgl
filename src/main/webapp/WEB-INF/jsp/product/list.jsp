@@ -376,11 +376,16 @@ $(function(){
 													onclick="updateStatus(${product.id },${product.isEnable});"
 													class="updateColor" id="stop${product.id }"> 下架</a>
 										</c:if></td>
-										<td align="center"><a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
+										<td align="center"><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
+										<a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
 										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
 										'${product.solidSurfacing }','${product.suitable }')"
 											class="updateColor">更新</a>
 											| <a onclick="deleteProduct(this,${product.id})" class="deleteColor">删除</a>
+											</shiro:hasAnyRoles>
+											<shiro:hasRole name="EMP">
+											无
+											</shiro:hasRole>
 											</td>
 									</tr>
 								</c:forEach>

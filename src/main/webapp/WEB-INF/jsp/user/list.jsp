@@ -262,7 +262,7 @@
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="stop${user.id }"> 停用</a>
 										</c:if></td>
-									<td align="center"><shiro:hasAnyRoles name="ADMIN,EMP">
+									<td align="center"><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
 											<a
 												onclick="tcUpdate('${user.id }','${user.name }','${user.tel }');"
 												class="updateColor">更新</a> | <a
