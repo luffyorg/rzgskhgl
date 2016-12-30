@@ -42,7 +42,7 @@
    <!-- 当前位置 -->
   <div id="urHere">管理中心<b>></b><strong>数据备份</strong> </div>   
   <div class="mainBox" style="height:auto!important;height:550px;min-height:550px;">
-    <h3><a href="backup.html?rec=restore" class="actionBtn">恢复备份</a>数据备份</h3>
+    <h3><!-- <a href="backup.html?rec=restore" class="actionBtn">恢复备份</a> -->数据备份</h3>
         <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
      <form name="myform" method="post" action="backup.php?rec=backup">
       <tr>
