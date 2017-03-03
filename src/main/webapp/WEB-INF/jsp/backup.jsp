@@ -43,109 +43,109 @@
   <div id="urHere">管理中心<b>></b><strong>数据备份</strong> </div>   
   <div class="mainBox" style="height:auto!important;height:550px;min-height:550px;">
     <h3><!-- <a href="backup.html?rec=restore" class="actionBtn">恢复备份</a> -->数据备份</h3>
-        <table width="100%" border="0" cellpadding="8" cellspacing="0" class="tableBasic">
+        <table width="100%" border="0" cellpadding="8" cellspacing="0" class="table table-striped">
      <form name="myform" method="post" action="backup.php?rec=backup">
       <tr>
-       <th align="center">
+       <th>
         <input name='chkall' type='checkbox' id='chkall' onclick='selectcheckbox(this.form)' value='check' checked>
        </th>
-       <th align="left">数据表名</th>
-       <th align="center">类型</th>
-       <th align="center">记录数</th>
-       <th align="center">数据</th>
-       <th align="center">索引</th>
-       <th align="center">碎片</th>
+       <th >数据表名</th>
+       <th>类型</th>
+       <th>记录数</th>
+       <th>数据</th>
+       <th>索引</th>
+       <th>碎片</th>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_admin checked></td>
-       <td align="left">user</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${user }</td>
-       <td align="center">84</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_admin checked></td>
+       <td >user</td>
+       <td>MyISAM</td>
+       <td>${user }</td>
+       <td>84</td>
+       <td>2048</td>
+       <td>0</td>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_admin_log checked></td>
-       <td align="left">user_role</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${userRole }</td>
-       <td align="center">660</td>
-       <td align="center">4096</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_admin_log checked></td>
+       <td >user_role</td>
+       <td>MyISAM</td>
+       <td>${userRole }</td>
+       <td>660</td>
+       <td>4096</td>
+       <td>0</td>
       </tr>
         <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_admin_log checked></td>
-       <td align="left">role</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${role }</td>
-       <td align="center">660</td>
-       <td align="center">4096</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_admin_log checked></td>
+       <td >role</td>
+       <td>MyISAM</td>
+       <td>${role }</td>
+       <td>660</td>
+       <td>4096</td>
+       <td>0</td>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_article checked></td>
-       <td align="left">role_resource</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${roleResource }</td>
-       <td align="center">45KB</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_article checked></td>
+       <td >role_resource</td>
+       <td>MyISAM</td>
+       <td>${roleResource }</td>
+       <td>45KB</td>
+       <td>2048</td>
+       <td>0</td>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_article_category checked></td>
-       <td align="left">resource</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${resource }</td>
-       <td align="center">140</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_article_category checked></td>
+       <td >resource</td>
+       <td>MyISAM</td>
+       <td>${resource }</td>
+       <td>140</td>
+       <td>2048</td>
+       <td>0</td>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_config checked></td>
-       <td align="left">product</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${product }</td>
-       <td align="center">2284</td>
-       <td align="center">1024</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_config checked></td>
+       <td >product</td>
+       <td>MyISAM</td>
+       <td>${product }</td>
+       <td>2284</td>
+       <td>1024</td>
+       <td>0</td>
       </tr>
           <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_config checked></td>
-       <td align="left">customer</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${customer }</td>
-       <td align="center">2284</td>
-       <td align="center">1024</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_config checked></td>
+       <td >customer</td>
+       <td>MyISAM</td>
+       <td>${customer }</td>
+       <td>2284</td>
+       <td>1024</td>
+       <td>0</td>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_nav checked></td>
-       <td align="left">product_order</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${order }</td>
-       <td align="center">1284</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_nav checked></td>
+       <td >product_order</td>
+       <td>MyISAM</td>
+       <td>${order }</td>
+       <td>1284</td>
+       <td>2048</td>
+       <td>0</td>
       </tr>
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_page checked></td>
-       <td align="left">send_sms</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${sendSms }</td>
-       <td align="center">2148</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_page checked></td>
+       <td >send_sms</td>
+       <td>MyISAM</td>
+       <td>${sendSms }</td>
+       <td>2148</td>
+       <td>2048</td>
+       <td>0</td>
       </tr>
            
             <tr>
-       <td align="center"><input type=checkbox name=tables[] value=dou_page checked></td>
-       <td align="left">record</td>
-       <td align="center">MyISAM</td>
-       <td align="center">${record }</td>
-       <td align="center">2148</td>
-       <td align="center">2048</td>
-       <td align="center">0</td>
+       <td><input type=checkbox name=tables[] value=dou_page checked></td>
+       <td >record</td>
+       <td>MyISAM</td>
+       <td>${record }</td>
+       <td>2148</td>
+       <td>2048</td>
+       <td>0</td>
       </tr>
            
       <tr>
@@ -185,5 +185,8 @@ function backUp(){
 }
 
 
+</script>
+<script type="text/javascript">
+$("#datali").addClass("cur");
 </script>
 </html>

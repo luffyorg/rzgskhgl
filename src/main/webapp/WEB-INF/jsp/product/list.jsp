@@ -17,8 +17,7 @@
 <title>产品管理</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="${basePath }static/js/jquery.min.js"></script>
-<script type="text/javascript">
-</script>
+
 </head>
 <style type="text/css">
 .updateColor {
@@ -62,7 +61,7 @@
 	/* height: 700px; */
 	display: none;
 	position: absolute;
-	margin: -660px auto;
+	margin: -42% auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -141,7 +140,7 @@
 }
 .label_select{
 	font-size:16px;
-	color:#333;
+	color:rgba(51, 51, 51, 0.74);
 	font-family:"微软雅黑";
 	margin-top:-5px;
 }
@@ -304,7 +303,7 @@ $(function(){
 					<form name="upform" action="upload" method="POST"
 						onsubmit="return yz();" enctype="multipart/form-data">
 						<div class="R_right" style="float:right;margin-top:-40px;">
-							<input type="file" id="up" value="导入Excel" name="myfile" id="myfile">
+							<input type="file" id="up" value="导入Excel" name="myfile" id="myfile" style="font-size: 14px;">
 							<input type="hidden" name="ftype" value="sheet1">
 							<div>
 								<input class="btn default green-stripe" type="submit" value="导入" />
@@ -335,7 +334,7 @@ $(function(){
 						<!--产品列表开始-->
 						<div id="productList">
 							<table width="100%" border="0" cellpadding="8" cellspacing="0"
-								class="tableBasic">
+								class="table table-striped">
 								<tr>
 									<th width="80">序号</th>
 									<th width="80">产品名称</th>
@@ -351,20 +350,20 @@ $(function(){
 								<!--数据循环开始-->
 								<c:forEach items="${products }" var="product" varStatus="i">
 									<tr>
-										<td align="center">${i.count}</td>
-										<td align="center">${product.name }</td>
-										<td align="center">${product.productNo }</td>
+										<td>${i.count}</td>
+										<td>${product.name }</td>
+										<td>${product.productNo }</td>
 										<td >${product.productPrice }</td>
-										<td align="center"><c:if test="${product.estate eq 0 }">无</c:if>
+										<td><c:if test="${product.estate eq 0 }">无</c:if>
 											<c:if test="${product.estate eq 1 }">有</c:if></td>
-										<td align="center"><c:if test="${product.movable eq 0 }">无</c:if>
+										<td><c:if test="${product.movable eq 0 }">无</c:if>
 											<c:if test="${product.movable eq 1 }">有</c:if></td>
-										<td align="center"><c:if test="${product.company eq 0 }">无</c:if>
+										<td><c:if test="${product.company eq 0 }">无</c:if>
 											<c:if test="${product.company eq 1 }">有</c:if></td>
-										<td align="center"><c:if
+										<td><c:if
 												test="${product.solidSurfacing eq 0 }">无</c:if> <c:if
 												test="${product.solidSurfacing eq 1 }">有</c:if></td>
-										<td align="center" id="updateStatus${product.id }"><c:if
+										<td id="updateStatus${product.id }"><c:if
 												test="${product.isEnable eq 0 }">
 												<span class="stop" id="stop${product.id }">下架 | </span>
 												<a
@@ -376,7 +375,7 @@ $(function(){
 													onclick="updateStatus(${product.id },${product.isEnable});"
 													class="updateColor" id="stop${product.id }"> 下架</a>
 										</c:if></td>
-										<td align="center"><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
+										<td><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
 										<a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
 										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
 										'${product.solidSurfacing }','${product.suitable }')"
@@ -397,7 +396,7 @@ $(function(){
 						<!--添加产品开始-->
 						<div id="addProduct">
 							<table width="100%" border="0" cellpadding="8" cellspacing="0"
-								class="tableBasic">
+								class="table table-hover">
 								<tr>
 									<td align="right" width="5">产品名称：</td>
 									<td width="180"><input type="text" name="productName"
@@ -560,7 +559,7 @@ function nextPage(size,page){
 	var productNo = $("#searchProductNo").val();
 	 $.get("nextPage?pageSize="+size+"&page="+page+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-hover'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
         "<th width='80'>产品名称</th>"+
         "<th width='80'>产品定价</th>"+
@@ -573,40 +572,40 @@ function nextPage(size,page){
         var pb=data.pb;
 	    for(var i = 0; i < data.products.length; i++){
 	         var product = data.products[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+product.name+" </td>"+
-				"<td align='center'>"+product.productPrice+" </td>";
+	         htmlStr += "<tr><td >"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td >"+product.name+" </td>"+
+				"<td >"+product.productPrice+" </td>";
 				if(product.estate==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				
 				if(product.movable==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				
 				if(product.company==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				
 				if(product.solidSurfacing==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				if(product.isEnable==0){
-					htmlStr += "<td align='center' id='updateStatus"+product.id+"'>"+
+					htmlStr += "<td  id='updateStatus"+product.id+"'>"+
 					"<span class='stop' id='stop"+product.id +"'>下架 | </span>"+
 					"<a onclick='updateStatus("+product.id +","+product.isEnable+")'"+
 					"class='updateColor' id='start"+product.id+"'> 上架</a></td>";
 				}else{
-					htmlStr += "<td align='center' id='updateStatus"+product.id+"'>"+
+					htmlStr += "<td  id='updateStatus"+product.id+"'>"+
 					"<span class='stop' id='stop${product.id }'>上架 | </span>"+
 					"<a onclick='updateStatus("+product.id +","+product.isEnable+")'"+
 					"class='updateColor' id='start"+product.id+"'> 下架</a></td>";
 				}
-	         htmlStr += "<td align='center'><a onclick=updateRes(this,"+product.id+"); class='updateColor'>更新</a></td></tr>";
+	         htmlStr += "<td ><a onclick=updateRes(this,"+product.id+"); class='updateColor'>更新</a></td></tr>";
 	    }
 	    htmlStr += "</table>";
 	   
@@ -744,12 +743,11 @@ function updateUser(){
 	var productNo = $("#searchProductNo").val();
 	 $.get("search?pageSize="+10+"&page="+1+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-hover'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
         "<th width='80'>产品名称</th>"+
         "<th width='80'>产品编号</th>"+
         "<th width='80'>产品价格</th>"+
-        "<th width='80'>产品介绍</th>"+
         "<th width='80'>房产</th>"+
         "<th width='80'>动产</th>"+
         "<th width='80'>公司</th>"+
@@ -759,76 +757,46 @@ function updateUser(){
         var pb=data.pb;
 	    for(var i = 0; i < data.products.length; i++){
 	         var product = data.products[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+product.name+" </td>"+
-				"<td align='center'>"+product.productNo+" </td>"+
-				"<td align='center'>"+product.productPrice+" </td>"+
-				"<td align='center'>"+product.description+" </td>"
+	         htmlStr += "<tr><td >"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td >"+product.name+" </td>"+
+				"<td >"+product.productNo+" </td>"+
+				"<td >"+product.productPrice+" </td>"
 				if(product.estate==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				
 				if(product.movable==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				
 				if(product.company==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				
 				if(product.solidSurfacing==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td >无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td >有";
 				if(product.isEnable==0){
-					htmlStr += "<td align='center' id='updateStatus"+product.id+"'>"+
+					htmlStr += "<td  id='updateStatus"+product.id+"'>"+
 					"<span class='stop' id='stop"+product.id +"'>下架 | </span>"+
 					"<a onclick='updateStatus("+product.id +","+product.isEnable+")'"+
 					"class='updateColor' id='start"+product.id+"'> 上架</a></td>";
 				}else{
-					htmlStr += "<td align='center' id='updateStatus"+product.id+"'>"+
+					htmlStr += "<td  id='updateStatus"+product.id+"'>"+
 					"<span class='stop' id='stop${product.id }'>上架 | </span>"+
 					"<a onclick='updateStatus("+product.id +","+product.isEnable+")'"+
 					"class='updateColor' id='start"+product.id+"'> 下架</a></td>";
 				}
-	         htmlStr += "<td align='center'><a onclick=updateRes(this,"+product.id+"); class='updateColor'>更新</a></td></tr>";
+	         htmlStr += "<td ><a onclick=tcUpdate("+product.id +",'"+product.name+"','"+product.productNo+", '"+product.productPrice+"',"+
+	        		 "'"+product.description+"','"+product.estate+"','"+product.movable+"','"+product.company+"','"+product.solidSurfacing+"','"+product.suitable+"')' class='updateColor'>更新</a> | <a onclick='deleteProduct(this,"+product.id+")' class='deleteColor'>删除</a></td></tr>";
 	    }
-	    //组装分页
-	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";
-	   
-	    if(pb.currentPage==1){
-	    	htmlPage += "<a  class='cursorauto'>首页</a> ";
-	    }
-	    else{
-	    	htmlPage += "<a onclick='nextPage(10,1)' class='cursorpointer'>首页</a>";
-	    }
-	    if(pb.hasPreviousPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage-1)+")' class='cursorpointer'> ◄上一页 </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>◄上一页 </a> ";
-	    }
-	    if(pb.hasNextPage==true){
-	    	htmlPage += "<a onclick='nextPage(10,"+(pb.currentPage+1)+")' class='cursorpointer'> 下一页► </a>";
-	    }
-	    else{
-	    	htmlPage += "<a  class='cursorauto'>下一页► </a> ";
-	    }
-	    if(pb.totalPage==pb.currentPage){
-	    	htmlPage += "<a  class='cursorauto'> 末页</a> ";
-	    }else{
-	    	htmlPage += "<a onclick='nextPage(10,"+pb.totalPage+")' class='cursorpointer'> 末页</a> ";
-	    }
-	    htmlPage += " 总"+pb.allRow+"条，第"+pb.currentPage+"/"+pb.totalPage+" 页，到第"+
-	   				"<input  id='goInput' value='' style='border:1px solid #d8d8d8;width:40px ;height:17px;line-height:17px;text-align:center;' />页,"+
-					"<input type='button' value='搜索' class='cursorpointer' onclick='gotoPageByInput("+pb.currentPage+","+pb.totalPage+");' />"
+	  
 	    htmlStr += "</table>";
-	   
 	    $("#productList").html(htmlStr);
-	    $("#splitPage").html(htmlPage);
 	   
 	}) 
 }

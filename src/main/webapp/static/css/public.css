@@ -569,10 +569,10 @@ select {
  
 }
 .mainBox h3 {
- border-bottom: 1px solid #D7D7D7;
- color: #333;
+ border-bottom: 0px solid #D7D7D7;
+ color: #60bbff;
  font-size: 28px;
- padding-bottom: 20px;
+ padding-bottom: 2px;
  margin-bottom: 30px;
 }
 .mainBox h3 .actionBtn {

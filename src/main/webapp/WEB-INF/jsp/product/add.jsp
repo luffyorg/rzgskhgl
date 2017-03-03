@@ -8,53 +8,53 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-<div id="content">
+<div id="content"  class="form-group">
 	<sf:form method="post" modelAttribute="product" id="addForm">
-	<table width="800" cellspacing="0" cellPadding="0">
+	<table width="800" cellspacing="0" cellPadding="0" class="table table-hover"> 
 		<thead><tr><td colspan="2">添加产品功能</td></tr></thead>
 		<tr>
-			<td class="rightTd" width="200px">产品名称:</td>
-			<td class="leftTd"><sf:input path="name" size="30"/></td>
+			<td  width="200px">产品名称:</td>
+			<td><sf:input path="name" size="30" class="form-control"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd">产品编号:</td><td><sf:input path="productNo" size="30"/></td>
+			<td >产品编号:</td><td><sf:input path="productNo" size="30"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">总资产:</td>
-			<td class="leftTd"><sf:input path="totalAssets" size="30"/></td>
+			<td  width="200px">总资产:</td>
+			<td><sf:input path="totalAssets" size="30" class="form-control"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">总负债:</td>
-			<td class="leftTd"><sf:input path="totalLiability" size="30"/></td>
+			<td  width="200px">总负债:</td>
+			<td><sf:input path="totalLiability" size="30" class="form-control"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">征信情况:</td>
-			<td class="leftTd"><sf:input path="creditConditions" size="30"/></td>
+			<td  width="200px">征信情况:</td>
+			<td><sf:input path="creditConditions" size="30" class="form-control"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">行业:</td>
-			<td class="leftTd"><sf:input path="industry" size="30"/></td>
+			<td  width="200px">行业:</td>
+			<td><sf:input path="industry" size="30" class="form-control"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">房产:</td>
-			<td class="leftTd"><sf:input path="estate" size="30"/></td>
+			<td  width="200px">房产:</td>
+			<td><sf:input path="estate" size="30" class="form-control"/></td>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">动产:</td>
-			<td class="leftTd"><sf:input path="movable" size="30"/></td>
-		</tr>
-		</tr>
-		<tr>
-			<td class="rightTd" width="200px">公司:</td>
-			<td class="leftTd"><sf:input path="company" size="30"/></td>
+			<td  width="200px">动产:</td>
+			<td><sf:input path="movable" size="30"/></td>
 		</tr>
 		</tr>
 		<tr>
-			<td class="rightTd" width="200px">实体铺面:</td>
-			<td class="leftTd"><sf:input path="solidSurfacing" size="30"/></td>
+			<td  width="200px">公司:</td>
+			<td><sf:input path="company" size="30"/></td>
+		</tr>
 		</tr>
 		<tr>
-			<td class="rightTd">状态:</td>
+			<td  width="200px">实体铺面:</td>
+			<td><sf:input path="solidSurfacing" size="30"/></td>
+		</tr>
+		<tr>
+			<td >状态:</td>
 			<td>
 				<sf:select path="isEnable">
 					<sf:option value="0">停用</sf:option>

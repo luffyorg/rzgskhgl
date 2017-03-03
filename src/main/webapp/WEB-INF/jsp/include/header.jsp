@@ -3,9 +3,12 @@
 
 <link href="${basePath}static/css/public.css" rel="stylesheet"
 	type="text/css">
+<link rel="stylesheet"
+	href="${basePath }static/bootstrap/css/bootstrap.min.css">
 <script type="text/javascript" src="${basePath}static/js/jquery.min.js"></script>
 <script type="text/javascript" src="${basePath}static/js/global.js"></script>
 <script type="text/javascript" src="${basePath}static/js/jquery.tab.js"></script>
+<script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <!--头部导航开始-->
 <div id="dcHead">
 	<div id="head">

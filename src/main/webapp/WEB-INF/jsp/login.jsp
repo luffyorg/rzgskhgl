@@ -297,7 +297,7 @@ a:hover, a:focus {
 			success : function(data) {
 				if (data.result == "success") {
 					//alert("登录成功");
-					window.location.href = "admin/process/orderList";
+					window.location.href = "admin/index";
 				} else if (data.result == "usererror") {
 					alert("用户名或密码有误");
 				} else if (data.result == "验证码错误") {

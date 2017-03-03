@@ -72,9 +72,11 @@ public class LoginController extends BaseController {
 			if (user != null) {
 				// shiro加入身份验证
 				Subject subject = SecurityUtils.getSubject();
+				
 				UsernamePasswordToken token = new UsernamePasswordToken(name, pwd);
 				try {
 					subject.login(token);
+					
 					errInfo = "success"; // 验证成功
 				} catch (AuthenticationException e) {
 					errInfo = "身份验证失败！";
@@ -84,6 +86,10 @@ public class LoginController extends BaseController {
 				errInfo = "usererror"; // 用户名或密码有误
 			}
 			if (errInfo.equals("success")) {
+				request.getSession(true).setAttribute("user", user);//将用户信息存入缓存
+				/**
+				 * 记录日志
+				 */
 				Record record = new Record();
 				record.setUserid(user.getId());
 				record.setIpv4(getIpAddr(request));

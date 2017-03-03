@@ -175,37 +175,37 @@ cursor:pointer;
 				<div><span id="msg"></span></div>
 				<div class="navList">
  					<table width="100%" border="0" cellpadding="10" cellspacing="0"
-						class="tableBasic">
+						class="table table-striped">
 						<tr >
-							<th  align="center">序号</th>
-							<th  align="center">角色名称</th>
-							<th align="center">角色代码</th>
+							<th  >序号</th>
+							<th  >角色名称</th>
+							<th >角色代码</th>
 							
-							<th align="center">创建人</th>
-							<th align="center">创建时间</th>
-							<th  align="center">更新人</th>
-							<th  align="center">更新时间</th>
-							<th  align="center">角色状态</th>
-							<th  align="center">操作</th>
+							<th >创建人</th>
+							<th >创建时间</th>
+							<th  >更新人</th>
+							<th  >更新时间</th>
+							<th  >角色状态</th>
+							<th  >操作</th>
 						</tr>
 						<c:forEach items="${roles }" var="role" varStatus="i">
-							<tr class="success">
-								<td align="center">${i.count + (pb.currentPage-1)*10}</td>
-								<td align="center" id="name">${role.name}</td>
-								<td align="center" id="sn">${role.sn }</td>
+							<tr >
+								<td >${i.count + (pb.currentPage-1)*10}</td>
+								<td  id="name">${role.name}</td>
+								<td  id="sn">${role.sn }</td>
 								
-								<td align="center" id="createName">${role.createName }</td>
-								<td align="center" id="createDate">${role.createDate }</td>
-								<td align="center" id="updateName">${role.updateName }</td>
-								<td align="center" id="updateDate">${role.updateDate }</td>
-								<%-- <td align="center"><c:if test="${role.isEnable eq 0 }">
+								<td  id="createName">${role.createName }</td>
+								<td  id="createDate">${role.createDate }</td>
+								<td  id="updateName">${role.updateName }</td>
+								<td  id="updateDate">${role.updateDate }</td>
+								<%-- <td ><c:if test="${role.isEnable eq 0 }">
 											<span class="emp">停用  | </span>
 											<a href="updateStatus/${role.id }"  class="updateColor">启用</a> 
 										</c:if> <c:if test="${role.isEnable eq 1 }">
 											<span>启用 | </span>
 											<a href="updateStatus/${role.id }" class="updateColor">停用</a>
 										</c:if> &nbsp;</td> --%>
-								<td align="center" id="updateStatus${role.id }"><c:if
+								<td  id="updateStatus${role.id }"><c:if
 									test="${role.isEnable eq 0 }">
 									<span class="stop" id="stop${role.id }">停用 | </span>
 									<a onclick="updateStatus(${role.id },${role.isEnable});"
@@ -215,7 +215,7 @@ cursor:pointer;
 									<a onclick="updateStatus(${role.id },${role.isEnable});"
 										class="updateColor" id="stop${role.id }"> 停用</a>
 								</c:if></td>
-								<td align="center"><a  onclick="updateRole(this,${role.id});" class="updateColor">更新</a> | 
+								<td ><a  onclick="updateRole(this,${role.id});" class="updateColor">更新</a> | 
 								<a onclick="delRole(this,${role.id});" class="deleteColor">删除</a> |  
 								<a href="listRes/${role.id}" class="setReColor" >设置资源</a>
 								</td>

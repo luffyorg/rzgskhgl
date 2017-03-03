@@ -237,7 +237,7 @@
 				</h3>
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
-						class="tableBasic">
+						class="table table-striped">
 						<tr>
 							<th>序号</th>
 							<th>登录名称</th>
@@ -248,10 +248,10 @@
 						<tbody>
 							<c:forEach items="${users }" var="user" varStatus="i">
 								<tr>
-									<td align="center">${i.count }</td>
-									<td align="center">${user.name }</td>
-									<td align="center">${user.tel }</td>
-									<td align="center" id="updateStatus${user.id }"><c:if
+									<td >${i.count }</td>
+									<td >${user.name }</td>
+									<td >${user.tel }</td>
+									<td  id="updateStatus${user.id }"><c:if
 											test="${user.isEnable eq 0 }">
 											<span class="stop" id="stop${user.id }">停用 | </span>
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
@@ -261,7 +261,7 @@
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="stop${user.id }"> 停用</a>
 										</c:if></td>
-									<td align="center"><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
+									<td ><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
 											<a
 												onclick="tcUpdate('${user.id }','${user.name }','${user.tel }');"
 												class="updateColor">更新</a> | <a
@@ -406,7 +406,7 @@ function nextPage(size,page){
 	var name = $("#searchName").val();
 	 $.get("nextPage?pageSize="+size+"&page="+page+"&name="+name+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
 			      "<th width='80'>登录名称</th>"+
 			      "<th width='80'>电话</th>"+
@@ -415,22 +415,22 @@ function nextPage(size,page){
       var pb=data.pb;
 	    for(var i = 0; i < data.users.length; i++){
 	         var user = data.users[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+user.tel+" </td>";
+	         htmlStr += "<tr><td >"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td >"+user.name+" </td>"+
+				"<td >"+user.tel+" </td>";
 				
 				if(user.isEnable==0){
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td  id='updateStatus"+user.id +"'>"+
 								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
 								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
 				}else{
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td  id='updateStatus"+user.id +"'>"+
 							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
 							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
 				}
-	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
+	       	  	htmlStr += "<td ><shiro:hasAnyRoles name='ADMIN,EMP'>"+
 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"'); class='updateColor'>更新</a> | "+
 							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
 	    }
@@ -658,7 +658,7 @@ function search() {
 	var name = $("#searchName").val();
 		$.get("search?pageSize="+10+"&page="+1+"&name="+name+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
 			      "<th width='80'>姓名</th>"+
 			      "<th width='80'>电话</th>"+
@@ -667,21 +667,21 @@ function search() {
       var pb=data.pb;
 	    for(var i = 0; i < data.users.length; i++){
 	         var user = data.users[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+user.tel+" </td>";
+	         htmlStr += "<tr><td >"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td >"+user.name+" </td>"+
+				"<td >"+user.tel+" </td>";
 				if(user.isEnable==0){
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td  id='updateStatus"+user.id +"'>"+
 								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
 								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
 				}else{
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td  id='updateStatus"+user.id +"'>"+
 							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
 							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
 				}
-	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
+	       	  	htmlStr += "<td ><shiro:hasAnyRoles name='ADMIN,EMP'>"+
 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"'); class='updateColor'>更新</a> | "+
 							"<a href=listRes/"+user.id+" class='setReColor'>查看资源</a></shiro:hasAnyRoles></td></tr>";
 	    }

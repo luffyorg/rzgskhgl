@@ -108,23 +108,23 @@ cursor:pointer;
 				<div><span id="msg"></span></div>
 				<div class="navList">
  					<table width="100%" border="0" cellpadding="10" cellspacing="0"
-						class="tableBasic">
+						class="table table-striped">
 						<tr >
-							<th  align="center">序号</th>
-							<th  align="center">用户</th>
-							<th align="center">操作</th>
-							<th align="center">IP</th>
-							<th align="center">操作时间</th>
+							<th >序号</th>
+							<th >用户</th>
+							<th>操作</th>
+							<th>IP</th>
+							<th>操作时间</th>
 						</tr>
 						
 						<c:forEach items="${pb.list }" var="list" varStatus="i">
-							<tr class="success">
-								<td align="center">${i.count + (pb.currentPage-1)*10}</td>
-								<td align="center" >${list[1].name}</td>
-								<td align="center" >${list[0].record }</td>
+							<tr>
+								<td>${i.count + (pb.currentPage-1)*10}</td>
+								<td >${list[1].name}</td>
+								<td >${list[0].record }</td>
 								
-								<td align="center" >${list[0].ipv4 }</td>
-								<td align="center" >${list[0].time }</td>
+								<td >${list[0].ipv4 }</td>
+								<td >${list[0].time }</td>
 							</tr>
 						</c:forEach>
 						
@@ -187,7 +187,7 @@ function search(){
 	var endTime = $("#endTime").val();
 	 $.get("search?pageSize="+10+"&page="+1+"&username="+username+"&startTime="+startTime+"&endTime="+endTime+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
 	      "<th width='80'>用户</th>"+
 	      "<th width='80'>操作</th>"+
@@ -197,11 +197,11 @@ function search(){
 		    for(var i = 0; i < data.pb.list.length; i++){
 		         var record = data.records[i];
 		         var user = data.users[i];
-		         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-					"<td align='center'>"+user.name+" </td>"+
-					"<td align='center'>"+record.record+" </td>"+
-					"<td align='center'>"+record.ipv4+" </td>"+
-					"<td align='center'>"+record.time+" </td></tr>";
+		         htmlStr += "<tr><td >"+((pb.currentPage-1)*10+1+i)+" </td>"+
+					"<td >"+user.name+" </td>"+
+					"<td >"+record.record+" </td>"+
+					"<td >"+record.ipv4+" </td>"+
+					"<td >"+record.time+" </td></tr>";
 		    }
 	    //组装分页
 	    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
@@ -247,7 +247,7 @@ function nextPage(size,page){
 	 //$.get("nextPage?pageSize="+size+"&page="+page+"&beginTime="+beginTime+"&endTime="+endTime+"&userid="+userid+"", function(data){
 	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
 		htmlStr += "<tr> <th width='80'>序号</th>"+
 			      "<th width='80'>用户</th>"+
 			      "<th width='80'>操作</th>"+
@@ -257,11 +257,11 @@ function nextPage(size,page){
 	    for(var i = 0; i < data.pb.list.length; i++){
 	         var record = data.records[i];
 	         var user = data.users[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+record.record+" </td>"+
-				"<td align='center'>"+record.ipv4+" </td>"+
-				"<td align='center'>"+record.time+" </td></tr>";
+	         htmlStr += "<tr><td >"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td >"+user.name+" </td>"+
+				"<td >"+record.record+" </td>"+
+				"<td >"+record.ipv4+" </td>"+
+				"<td >"+record.time+" </td></tr>";
 	    }
 	    //组装分页
 	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";

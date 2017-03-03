@@ -126,13 +126,13 @@
 }
 
 .inp_name {
-	width: 120px;
+	width: 150px;
 	height: 30px;
 	line-height: 30px;
 	border: 1px solid #d8d8d8;
 	border-radius: 4px;
 	font-size: 16px;
-	color: #333;
+	color: rgba(51, 51, 51, 0.58);
 	font-family: '微软雅黑';
 	margin-left: 10px;
 	padding: 0 14px;
@@ -141,7 +141,7 @@
 
 .label_select {
 	font-size: 16px;
-	color: #333;
+	color: rgba(51, 51, 51, 0.58);
 	font-family: "微软雅黑";
 	margin-top: -5px;
 }
@@ -319,7 +319,7 @@
 					<form name="upform" action="upload" method="POST"
 						onsubmit="return yz();" enctype="multipart/form-data">
 						<div class="R_right" style="float: right; margin-top: -40px;">
-							<input type="file" id="up" value="导入Excel" name="myfile"
+							<input type="file" id="up" value="导入Excel" name="myfile" style="font-size: 14px;"
 								id="myfile"> <input type="hidden" name="ftype"
 								value="sheet1">
 							<div>
@@ -337,7 +337,7 @@
 
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
-						class="tableBasic">
+						class="table table-striped">
 						<tr>
 							<th>序号</th>
 							<th>姓名</th>
@@ -353,30 +353,32 @@
 							<th>公司</th>
 							<th>实体铺面</th>
 							<th>客户状态</th>
+							<shiro:hasAnyRoles name="SUPERADMIN,ADMIN,EMP">
 							<th>用户操作</th>
+							</shiro:hasAnyRoles>
 						</tr>
 						<tbody>
 							<c:forEach items="${customers }" var="user" varStatus="i">
 								<tr>
-									<td align="center">${i.count + (pb.currentPage-1)*10}</td>
-									<td align="center">${user.name }</td>
-									<td align="center">${user.tel }</td>
-									<td align="center">${user.address }</td>
-									<td align="center">${user.gender }</td>
-									<td align="center">${user.totalAssets }</td>
-									<td align="center">${user.totalLiability }</td>
-									<td align="center">${user.creditConditions }</td>
-									<td align="center">${user.industry }</td>
-									<td align="center"><c:if test="${user.estate eq 0 }">无</c:if>
+									<td>${i.count + (pb.currentPage-1)*10}</td>
+									<td>${user.name }</td>
+									<td>${user.tel }</td>
+									<td>${user.address }</td>
+									<td>${user.gender }</td>
+									<td>${user.totalAssets }</td>
+									<td>${user.totalLiability }</td>
+									<td>${user.creditConditions }</td>
+									<td>${user.industry }</td>
+									<td><c:if test="${user.estate eq 0 }">无</c:if>
 										<c:if test="${user.estate eq 1 }">有</c:if></td>
-									<td align="center"><c:if test="${user.movable eq 0 }">无</c:if>
+									<td><c:if test="${user.movable eq 0 }">无</c:if>
 										<c:if test="${user.movable eq 1 }">有</c:if></td>
-									<td align="center"><c:if test="${user.company eq 0 }">无</c:if>
+									<td><c:if test="${user.company eq 0 }">无</c:if>
 										<c:if test="${user.company eq 1 }">有</c:if></td>
-									<td align="center"><c:if
+									<td><c:if
 											test="${user.solidSurfacing eq 0 }">无</c:if> <c:if
 											test="${user.solidSurfacing eq 1 }">有</c:if></td>
-									<td align="center" id="updateStatus${user.id }"><c:if
+									<td id="updateStatus${user.id }"><c:if
 											test="${user.isEnable eq 0 }">
 											<span class="stop" id="stop${user.id }">停用 | </span>
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
@@ -386,7 +388,7 @@
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="stop${user.id }"> 停用</a>
 										</c:if></td>
-									<td align="center"><shiro:hasAnyRoles name="ADMIN,EMP">
+									<td><shiro:hasAnyRoles name="SUPERADMIN,ADMIN,EMP">
 											<a
 												onclick="tcUpdate('${user.id }','${user.name }','${user.tel }','${user.address }',
 											'${user.gender }','${user.totalAssets }','${user.totalLiability }','${user.creditConditions }','${user.industry }',
@@ -652,65 +654,65 @@ function nextPage(size,page){
 	var name = $("#searchName").val();
 	 $.get("nextPage?pageSize="+size+"&page="+page+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&name="+name+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-		htmlStr += "<tr> <th width='80'>序号</th>"+
-			      "<th width='80'>姓名</th>"+
-			      "<th width='80'>电话</th>"+
-			      "<th width='80'>地址</th>"+
-			      "<th width='80'>性别</th>"+
-			      "<th width='80'>总资产</th>"+
-			      "<th width='80'>总负债</th>"+
-			      "<th width='80'>征信情况</th>"+
-			      "<th width='80'>行业</th>"+
-			      "<th width='80'>房产</th>"+
-			      "<th width='80'>动产</th>"+
-			      "<th width='80'>公司</th>"+
-			      "<th width='80'>实体</th>"+
-			      "<th width='80'>产品状态</th>"+
-			      "<th width='80'>操作</th></tr>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
+		htmlStr += "<tr> <th>序号</th>"+
+			      "<th>姓名</th>"+
+			      "<th>电话</th>"+
+			      "<th>地址</th>"+
+			      "<th>性别</th>"+
+			      "<th>总资产</th>"+
+			      "<th>总负债</th>"+
+			      "<th>征信情况</th>"+
+			      "<th>行业</th>"+
+			      "<th>房产</th>"+
+			      "<th>动产</th>"+
+			      "<th>公司</th>"+
+			      "<th>实体</th>"+
+			      "<th>产品状态</th>"+
+			      "<th>操作</th></tr>";
       var pb=data.pb;
 	    for(var i = 0; i < data.customers.length; i++){
 	         var user = data.customers[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+user.tel+" </td>"+
-				"<td align='center'>"+user.address+" </td>"+
-				"<td align='center'>"+user.gender+" </td>"+
-				"<td align='center'>"+user.totalAssets+" </td>"+
-				"<td align='center'>"+user.totalLiability+" </td>"+
-				"<td align='center'>"+user.creditConditions+" </td>"+
-				"<td align='center'>"+user.industry+" </td>"
+	         htmlStr += "<tr><td>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td>"+user.name+" </td>"+
+				"<td>"+user.tel+" </td>"+
+				"<td>"+user.address+" </td>"+
+				"<td>"+user.gender+" </td>"+
+				"<td>"+user.totalAssets+" </td>"+
+				"<td>"+user.totalLiability+" </td>"+
+				"<td>"+user.creditConditions+" </td>"+
+				"<td>"+user.industry+" </td>"
 				if(user.estate==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				
 				if(user.movable==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				
 				if(user.company==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				
 				if(user.solidSurfacing==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				if(user.isEnable==0){
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td id='updateStatus"+user.id +"'>"+
 								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
 								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
 				}else{
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td id='updateStatus"+user.id +"'>"+
 							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
 							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
 				}
-	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
+	       	  	htmlStr += "<td><shiro:hasAnyRoles name='SUPERADMIN,ADMIN,EMP'>"+
 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"','"+user.tel+"','"+user.address+"',"+
 											"'"+user.gender+"','"+user.totalAssets+"','"+user.totalLiability+"','"+user.creditConditions+"','"+user.industry+"',"+
 											"'"+user.estate+"','"+user.movable+"','"+user.company+"','"+user.solidSurfacing+"'); class='updateColor'>更新</a> | "+
@@ -983,65 +985,65 @@ function search() {
 	var name = $("#searchName").val();
 		$.get("search?pageSize="+10+"&page="+1+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&name="+name+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-		htmlStr += "<tr> <th width='80'>序号</th>"+
-			      "<th width='80'>姓名</th>"+
-			      "<th width='80'>电话</th>"+
-			      "<th width='80'>地址</th>"+
-			      "<th width='80'>性别</th>"+
-			      "<th width='80'>总资产</th>"+
-			      "<th width='80'>总负债</th>"+
-			      "<th width='80'>征信情况</th>"+
-			      "<th width='80'>行业</th>"+
-			      "<th width='80'>房产</th>"+
-			      "<th width='80'>动产</th>"+
-			      "<th width='80'>公司</th>"+
-			      "<th width='80'>实体</th>"+
-			      "<th width='80'>产品状态</th>"+
-			      "<th width='80'>操作</th></tr>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
+		htmlStr += "<tr> <th>序号</th>"+
+			      "<th>姓名</th>"+
+			      "<th>电话</th>"+
+			      "<th>地址</th>"+
+			      "<th>性别</th>"+
+			      "<th>总资产</th>"+
+			      "<th>总负债</th>"+
+			      "<th>征信情况</th>"+
+			      "<th>行业</th>"+
+			      "<th>房产</th>"+
+			      "<th>动产</th>"+
+			      "<th>公司</th>"+
+			      "<th>实体</th>"+
+			      "<th>产品状态</th>"+
+			      "<shiro:hasAnyRoles name='SUPERADMIN,ADMIN,EMP'><th>操作</th></shiro:hasAnyRoles></tr>";
       var pb=data.pb;
 	    for(var i = 0; i < data.customers.length; i++){
 	         var user = data.customers[i];
-	         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+user.tel+" </td>"+
-				"<td align='center'>"+user.address+" </td>"+
-				"<td align='center'>"+user.gender+" </td>"+
-				"<td align='center'>"+user.totalAssets+" </td>"+
-				"<td align='center'>"+user.totalLiability+" </td>"+
-				"<td align='center'>"+user.creditConditions+" </td>"+
-				"<td align='center'>"+user.industry+" </td>"
+	         htmlStr += "<tr><td>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+				"<td>"+user.name+" </td>"+
+				"<td>"+user.tel+" </td>"+
+				"<td>"+user.address+" </td>"+
+				"<td>"+user.gender+" </td>"+
+				"<td>"+user.totalAssets+" </td>"+
+				"<td>"+user.totalLiability+" </td>"+
+				"<td>"+user.creditConditions+" </td>"+
+				"<td>"+user.industry+" </td>"
 				if(user.estate==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				
 				if(user.movable==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				
 				if(user.company==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				
 				if(user.solidSurfacing==0){
-					htmlStr += "<td align='center'>无";
+					htmlStr += "<td>无";
 				}else
-					htmlStr += "<td align='center'>有";
+					htmlStr += "<td>有";
 				if(user.isEnable==0){
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td id='updateStatus"+user.id +"'>"+
 								"<span class='stop' id='stop"+user.id +"'>停用 | </span>"+
 								"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 								"class='updateColor' id='start"+user.id +"''> 启用</a></td>";
 				}else{
-					htmlStr += "<td align='center' id='updateStatus"+user.id +"'>"+
+					htmlStr += "<td id='updateStatus"+user.id +"'>"+
 							"<span class='stop' id='stop"+user.id +"'>启用 | </span>"+
 							"<a onclick=updateStatus("+user.id +","+user.isEnable+"); "+
 							"class='updateColor' id='start"+user.id +"''> 停用</a></td>";
 				}
-	       	  	htmlStr += "<td align='center'><shiro:hasAnyRoles name='ADMIN,EMP'>"+
+	       	  	htmlStr += "<td><shiro:hasAnyRoles name='SUPERADMIN,ADMIN,EMP'>"+
 							"<a onclick=tcUpdate('"+user.id+"','"+user.name+"','"+user.tel+"','"+user.address+"',"+
 											"'"+user.gender+"','"+user.totalAssets+"','"+user.totalLiability+"','"+user.creditConditions+"','"+user.industry+"',"+
 											"'"+user.estate+"','"+user.movable+"','"+user.company+"','"+user.solidSurfacing+"'); class='updateColor'>更新</a> | "+

@@ -47,7 +47,7 @@
 	height: 300px;
 	display: none;
 	position: absolute;
-	margin: -10% auto;
+	margin: -32% auto;
 	z-index: 999;
 	background: #fff;
 	left: 35%;
@@ -140,7 +140,7 @@
 }
 
 .inp_name, .inp_customer {
-	width: 120px;
+	width: 150px;
 	height: 30px;
 	line-height: 30px;
 	border: 1px solid #d8d8d8;
@@ -155,12 +155,12 @@
 
 .inp_customer {
 	margin-left: 10%;
-	width: 150px;
+	width: 180px;
 }
 
 .label_select {
-	font-size: 16px;
-	color: #333;
+	font-size: 14px;
+	color: rgba(51, 51, 51, 0.74);
 	font-family: "微软雅黑";
 	margin-top: -5px;
 }
@@ -287,18 +287,18 @@
 				</h3>
 				<div class="navList" id="main">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
-						class="tableBasic">
+						class="table table-striped">
 						<tr>
 							<td>序号</td>
 							<td>产品名称</td>
 							<td>产品编号</td>
 							<td>产品定价</td>
-							<td align="center">房产</td>
-							<td align="center">动产</td>
-							<td align="center">公司</td>
-							<td align="center">实体</td>
+							<td >房产</td>
+							<td >动产</td>
+							<td >公司</td>
+							<td >实体</td>
 
-							<td align="center">产品状态</td>
+							<td >产品状态</td>
 							<td>操作</td>
 						</tr>
 						<tbody>
@@ -308,16 +308,16 @@
 									<td>${product.name }</td>
 									<td>${product.productNo }</td>
 									<td>${product.productPrice }</td>
-									<td align="center"><c:if test="${product.estate eq 0 }">无</c:if>
+									<td ><c:if test="${product.estate eq 0 }">无</c:if>
 										<c:if test="${product.estate eq 1 }">有</c:if></td>
-									<td align="center"><c:if test="${product.movable eq 0 }">无</c:if>
+									<td ><c:if test="${product.movable eq 0 }">无</c:if>
 										<c:if test="${product.movable eq 1 }">有</c:if></td>
-									<td align="center"><c:if test="${product.company eq 0 }">无</c:if>
+									<td ><c:if test="${product.company eq 0 }">无</c:if>
 										<c:if test="${product.company eq 1 }">有</c:if></td>
-									<td align="center"><c:if
+									<td ><c:if
 											test="${product.solidSurfacing eq 0 }">无</c:if> <c:if
 											test="${product.solidSurfacing eq 1 }">有</c:if></td>
-									<td align="center"><c:if test="${product.isEnable eq 0 }">
+									<td ><c:if test="${product.isEnable eq 0 }">
 										下架
 										</c:if> <c:if test="${product.isEnable eq 1 }">
 											上架
@@ -328,7 +328,7 @@
 											<a>购买</a>
 										</c:if> <c:if test="${product.isEnable eq 1 }">
 											<a
-												onclick="buy(${product.productNo },'${product.name }','${product.productPrice }');"
+												onclick="buy('${product.productNo }','${product.name }','${product.productPrice }');"
 												class="setReColor">购买 </a>
 										</c:if></td>
 								</tr>
@@ -467,28 +467,28 @@ function buyProduct(){
 
 function queryBuyUser(id){
 	$.get("queryBuyUser?id="+id+"", function(data){
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-		htmlStr += "<tr> <th width='80'>序号</th>"+
-			      "<th width='80'>姓名</th>"+
-			      "<th width='80'>电话</th>"+
-			      "<th width='80'>地址</th>"+
-			      "<th width='80'>性别</th>"+
-			      "<th width='80'>总资产</th>"+
-			      "<th width='80'>总负债</th>"+
-			      "<th width='80'>征信情况</th>"+
-			      "<th width='80'>行业</th>"
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
+		htmlStr += "<tr> <th >序号</th>"+
+			      "<th >姓名</th>"+
+			      "<th >电话</th>"+
+			      "<th >地址</th>"+
+			      "<th >性别</th>"+
+			      "<th >总资产</th>"+
+			      "<th >总负债</th>"+
+			      "<th >征信情况</th>"+
+			      "<th >行业</th>"
       var pb=data.pb;
 	    for(var i = 0; i < data.customers.length; i++){
 	         var user = data.customers[i];
-	         htmlStr += "<tr><td align='center'>"+(i+1)+" </td>"+
-				"<td align='center'>"+user.name+" </td>"+
-				"<td align='center'>"+user.tel+" </td>"+
-				"<td align='center'>"+user.address+" </td>"+
-				"<td align='center'>"+user.gender+" </td>"+
-				"<td align='center'>"+user.totalAssets+" </td>"+
-				"<td align='center'>"+user.totalLiability+" </td>"+
-				"<td align='center'>"+user.creditConditions+" </td>"+
-				"<td align='center'>"+user.industry+" </td>";
+	         htmlStr += "<tr><td>"+(i+1)+" </td>"+
+				"<td>"+user.name+" </td>"+
+				"<td>"+user.tel+" </td>"+
+				"<td>"+user.address+" </td>"+
+				"<td>"+user.gender+" </td>"+
+				"<td>"+user.totalAssets+" </td>"+
+				"<td>"+user.totalLiability+" </td>"+
+				"<td>"+user.creditConditions+" </td>"+
+				"<td>"+user.industry+" </td>";
 	    }
 	    htmlStr += "</table>";
 	    $("#main").hide();
@@ -506,28 +506,28 @@ function queryUserByNameOrCode(){
 		if(data.msg == "error"){
 			alert("没有此产品");
 		}else{
-			var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-			htmlStr += "<tr> <th width='80'>序号</th>"+
-				      "<th width='80'>姓名</th>"+
-				      "<th width='80'>电话</th>"+
-				      "<th width='80'>地址</th>"+
-				      "<th width='80'>性别</th>"+
-				      "<th width='80'>总资产</th>"+
-				      "<th width='80'>总负债</th>"+
-				      "<th width='80'>征信情况</th>"+
-				      "<th width='80'>行业</th>"
+			var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
+			htmlStr += "<tr> <th >序号</th>"+
+				      "<th >姓名</th>"+
+				      "<th >电话</th>"+
+				      "<th >地址</th>"+
+				      "<th >性别</th>"+
+				      "<th >总资产</th>"+
+				      "<th >总负债</th>"+
+				      "<th >征信情况</th>"+
+				      "<th >行业</th>"
 	      var pb=data.pb;
 		    for(var i = 0; i < data.customers.length; i++){
 		         var user = data.customers[i];
-		         htmlStr += "<tr><td align='center'>"+(i+1)+" </td>"+
-					"<td align='center'>"+user.name+" </td>"+
-					"<td align='center'>"+user.tel+" </td>"+
-					"<td align='center'>"+user.address+" </td>"+
-					"<td align='center'>"+user.gender+" </td>"+
-					"<td align='center'>"+user.totalAssets+" </td>"+
-					"<td align='center'>"+user.totalLiability+" </td>"+
-					"<td align='center'>"+user.creditConditions+" </td>"+
-					"<td align='center'>"+user.industry+" </td>";
+		         htmlStr += "<tr><td>"+(i+1)+" </td>"+
+					"<td>"+user.name+" </td>"+
+					"<td>"+user.tel+" </td>"+
+					"<td>"+user.address+" </td>"+
+					"<td>"+user.gender+" </td>"+
+					"<td>"+user.totalAssets+" </td>"+
+					"<td>"+user.totalLiability+" </td>"+
+					"<td>"+user.creditConditions+" </td>"+
+					"<td>"+user.industry+" </td>";
 		    }
 		    htmlStr += "</table>";
 		    $("#main").hide();
@@ -547,51 +547,51 @@ function search(){
 	var company = $("#searchCompany").val();
 	var solidSurfacing = $("#searchSolidSurfacing").val();
 	var productNo = $("#searchName").val();
-		$.get("search?pageSize="+10+"&page="+1+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
+		$.get("${basePath }admin/product/search?pageSize="+10+"&page="+1+"&estate="+estate+"&movable="+movable+"&company="+company+"&solidSurfacing="+solidSurfacing+"&productNo="+productNo+"", function(data){
 			 //组装表格
-			var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-			htmlStr += "<tr> <th width='80'>序号</th>"+
-	       "<th width='80'>产品名称</th>"+
-	       "<th width='80'>产品编号</th>"+
-	       "<th width='80'>产品价格</th>"+
-	       "<th width='80'>房产</th>"+
-	       "<th width='80'>动产</th>"+
-	       "<th width='80'>公司</th>"+
-	       "<th width='80'>实体</th>"+
-	       "<th width='80'>产品状态</th>"+
-	       "<th width='80'>操作</th></tr>";
+			var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
+			htmlStr += "<tr> <th >序号</th>"+
+	       "<th >产品名称</th>"+
+	       "<th >产品编号</th>"+
+	       "<th >产品价格</th>"+
+	       "<th >房产</th>"+
+	       "<th >动产</th>"+
+	       "<th >公司</th>"+
+	       "<th >实体</th>"+
+	       "<th >产品状态</th>"+
+	       "<th >操作</th></tr>";
 	       var pb=data.pb;
 		    for(var i = 0; i < data.products.length; i++){
 		         var product = data.products[i];
-		         htmlStr += "<tr><td align='center'>"+((pb.currentPage-1)*10+1+i)+" </td>"+
-					"<td align='center'>"+product.name+" </td>"+
-					"<td align='center'>"+product.productNo+" </td>"+
-					"<td align='center'>"+product.productPrice+" </td>";
+		         htmlStr += "<tr><td>"+((pb.currentPage-1)*10+1+i)+" </td>"+
+					"<td>"+product.name+" </td>"+
+					"<td>"+product.productNo+" </td>"+
+					"<td>"+product.productPrice+" </td>";
 					if(product.estate==0){
-						htmlStr += "<td align='center'>无";
+						htmlStr += "<td>无";
 					}else
-						htmlStr += "<td align='center'>有";
+						htmlStr += "<td>有";
 					
 					if(product.movable==0){
-						htmlStr += "<td align='center'>无";
+						htmlStr += "<td>无";
 					}else
-						htmlStr += "<td align='center'>有";
+						htmlStr += "<td>有";
 					
 					if(product.company==0){
-						htmlStr += "<td align='center'>无";
+						htmlStr += "<td>无";
 					}else
-						htmlStr += "<td align='center'>有";
+						htmlStr += "<td>有";
 					
 					if(product.solidSurfacing==0){
-						htmlStr += "<td align='center'>无";
+						htmlStr += "<td>无";
 					}else
-						htmlStr += "<td align='center'>有";
+						htmlStr += "<td>有";
 					if(product.isEnable==0){
-						htmlStr += "<td align='center'>下架";
+						htmlStr += "<td>下架";
 					}else{
-						htmlStr += "<td align='center'>上架</td>";
+						htmlStr += "<td>上架</td>";
 					}
-		       	  	htmlStr += "<td align='center'><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索客户</a>  | ";
+		       	  	htmlStr += "<td><a onclick='queryBuyUser("+product.productNo +")' class='updateColor'>搜索客户</a>  | ";
 		       		if(product.isEnable==0){
 		         		htmlStr += "<a>购买</a></td></td></tr>";
 		       		}else{

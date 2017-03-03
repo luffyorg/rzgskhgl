@@ -165,21 +165,21 @@ cursor:Default;
 				</h3>
 				<div class="navList">
 					<table width="100%" border="0" cellpadding="10" cellspacing="0"
-						class="tableBasic">
+						class="table table-striped">
 						<tr>
-							<th align="center">序号</th>
-							<th align="center">资源名称</th>
+							<th >序号</th>
+							<th >资源名称</th>
 							<th align="left">资源地址</th>
 							<th align="left">权限字符串</th>
-							<th align="center">操作</th>
+							<th >操作</th>
 						</tr>
 						<c:forEach items="${ress }" var="res" varStatus="i">
 							<tr>
-								<td align="center">${i.count + (pb.currentPage-1)*10}</td>
-								<td align="center" id="resname">${res.name}</td>
+								<td >${i.count + (pb.currentPage-1)*10}</td>
+								<td  id="resname">${res.name}</td>
 								<td align="left" id="resurl">${res.url }</td>
 								<td align="left" id="respermission">${res.permission }</td>
-								<td align="center"><a onclick="updateRes(this,${res.id});" class="updateColor">更新</a> | <a onclick="delRes(this,${res.id});" class="deleteColor">删除</a></td>
+								<td ><a onclick="updateRes(this,${res.id});" class="updateColor">更新</a> | <a onclick="delRes(this,${res.id});" class="deleteColor">删除</a></td>
 							</tr>
 						</c:forEach>
 					</table>
@@ -301,12 +301,12 @@ cursor:Default;
 function nextPage(size,page){
 	 $.get("nextPage?pageSize="+size+"&page="+page+"", function(data){
 		 //组装表格
-		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
-		htmlStr += "<tr> <th align='center'>序号</th><th align='center'>资源名称</th><th align='left'>资源地址</th><th align='left'>权限字符串</th><th align='center'>操作</th></tr>";
+		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='table table-striped'>";
+		htmlStr += "<tr> <th >序号</th><th >资源名称</th><th align='left'>资源地址</th><th align='left'>权限字符串</th><th >操作</th></tr>";
 	    for(var i = 0; i < data.ress.length; i++){
 	         var res = data.ress[i];
-	         htmlStr += "<tr><td align='center' id='resid'>"+res.id+"</td><td align='center' id='resname'>"+res.name+"</td><td align='center' id='resurl'>"+res.url+"</td><td align='center' id='respermission'>"+res.permission+"</td>";
-	         htmlStr += "<td align='center'><a onclick=updateRes(this,"+res.id+"); class='updateColor'>更新</a> | <a onclick=delRes(this,"+res.id+"); class='deleteColor'>删除</a></td></tr>";
+	         htmlStr += "<tr><td  id='resid'>"+res.id+"</td><td  id='resname'>"+res.name+"</td><td  id='resurl'>"+res.url+"</td><td  id='respermission'>"+res.permission+"</td>";
+	         htmlStr += "<td ><a onclick=updateRes(this,"+res.id+"); class='updateColor'>更新</a> | <a onclick=delRes(this,"+res.id+"); class='deleteColor'>删除</a></td></tr>";
 	    }
 	    //组装分页
 	    var htmlPage = "<div style='float:right;margin-top:15px;' class='splitPage'>";

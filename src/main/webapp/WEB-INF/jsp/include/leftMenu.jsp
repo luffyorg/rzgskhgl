@@ -3,9 +3,9 @@
 <!--左侧边栏导航开始-->
 		<div id="dcLeft">
 			<div id="menu">
-				<%-- <ul class="top">
-					<li  id="indexli"><a href="${basePath}admin/index"><i class="home"></i><em>管理首页</em></a></li>
-				</ul> --%>
+				<ul class="top">
+					<li  id="indexli"><a href="${basePath}admin/index"><i class="home"></i><em>个人主页</em></a></li>
+				</ul>
 				<shiro:authenticated>
 				<shiro:hasAnyRoles  name="ADMIN,SUPERADMIN">
 					<ul>
