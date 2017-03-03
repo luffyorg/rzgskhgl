@@ -29,7 +29,7 @@ import net.sf.json.JSONObject;
 
 
 /**
- * @deprecated 网址管理员控制类
+ *  网址管理员控制类
  * @author 张伟
  * @date  2016-12-2
  */
@@ -52,7 +52,7 @@ public class ManagerController extends BaseController{
 		mv.addObject("roles",roleService.listRole());
 		return mv;
 	}
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
 	@RequestMapping(value="save" ,method=RequestMethod.POST)
 	@ResponseBody
 	public Map saveUser(@RequestBody JSONObject json){

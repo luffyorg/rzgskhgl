@@ -6,25 +6,27 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URL;
+import java.util.Date;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.yznu.rzgskhgl.pojo.Token;
+import cn.yznu.rzgskhgl.pojo.AccessToken;
 /**
-* 类名: CommonUtil </br>
-* 描述: 通用工具类 </br>
-* 开发人员： souvc </br>
-* 创建时间： 2015-11-27 </br>
-* 发布版本：V1.0 </br>
+ * @Deprecated 微信通用工具类
+ * @author zhangwei
+ *
  */
 public class CommonUtil {
   private static Logger log = LoggerFactory.getLogger(CommonUtil.class);
+
   // 凭证获取（GET）
   public final static String token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
   /**
@@ -89,16 +91,17 @@ public class CommonUtil {
    * @param appsecret 密钥
    * @return
    */
-  public static Token getToken(String appid, String appsecret) {
-    Token token = null;
+  public static AccessToken getToken(String appid, String appsecret) {
+    AccessToken token = null;
     String requestUrl = token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
     // 发起GET请求获取凭证
     JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
     if (null != jsonObject) {
       try {
-        token = new Token();
+        token = new AccessToken();
         token.setAccessToken(jsonObject.getString("access_token"));
         token.setExpiresIn(jsonObject.getInt("expires_in"));
+        token.setCreateDate(new Date());
       } catch (JSONException e) {
         token = null;
         // 获取token失败
@@ -142,4 +145,34 @@ public class CommonUtil {
       fileExt = ".mp4";
     return fileExt;
   }
+  
+  /** 
+   * 获取openid 
+   *  
+   * @param code 凭证 
+   * @return 
+   */  
+    
+  public static String getOpenid(String code) {  
+      String openid = null;  
+      // 第三方用户唯一凭证  
+      String appid = MessageUtil.APPID;  
+      // 第三方用户唯一凭证密钥  
+      String appsecret = MessageUtil.APPSECRET;  
+      String openid_url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=APPSECRET&code=CODE&grant_type=authorization_code";  
+      String requestUrl = openid_url.replace("APPID", appid).replace("APPSECRET", appsecret).replace("CODE", code);  
+      // 发起GET请求获取凭证  
+      JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);  
+
+      if (null != jsonObject) {  
+          try {  
+              openid=jsonObject.getString("openid");  
+          } catch (JSONException e) {  
+              openid = null;  
+              // 获取openid失败  
+              log.error("获取openid失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));  
+          }  
+      }  
+      return openid;  
+  }  
 }

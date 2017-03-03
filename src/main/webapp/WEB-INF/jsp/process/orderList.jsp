@@ -98,6 +98,13 @@
 	display: block;
 }
 /**弹窗样式结束**/
+.label_select {
+	font-size: 16px;
+	color: #333;
+	font-family: "微软雅黑";
+	margin-top: -5px;
+}
+
 .inp_name {
 	width: 160px;
 	height: 30px;
@@ -179,15 +186,19 @@
 		<!--主体内容部分开始-->
 		<div id="dcMain">
 			<!-- 当前位置 -->
-			<div id="urHere">订单列表<b>></b><strong>我的订单</strong></div>
+			<div id="urHere">
+				订单列表<b>></b><strong>我的订单</strong>
+			</div>
 			<div class="mainBox"
 				style="height: auto !important; height: 550px; min-height: 550px;">
 				<h3>
 					<a onclick="excelOrder();" class="actionBtn"
 						style="cursor: pointer;">导出excel</a>订单 <input type="text"
-						class="inp_name" placeholder="订单号" id="searchOrderNo" /> <input
-						type="button" value="搜索" class="inp_btn" id="search"
-						onclick="search();" />
+						class="inp_name" placeholder="订单号" id="searchOrderNo" /> <label
+						class="label_select">订单时间: </label><input type="date"
+						class="inp_name" id="startTime" /> <label class="label_select">-</label><input
+						type="date" class="inp_name" id="endTime" /> <input type="button"
+						value="搜索" class="inp_btn" id="search" onclick="search();" />
 				</h3>
 				<div id="msg"></div>
 				<div class="navList" id="navList">
@@ -214,7 +225,7 @@
 									<td align='center'>${order.buyName }</td>
 									<td align='center'>${order.salesMan }</td>
 									<td align='center'>${order.productName }</td>
-									<td  align='center' id="status${order.id }"><c:if
+									<td align='center' id="status${order.id }"><c:if
 											test="${order.orderStatus  eq 0 }">暂未更新</c:if> <c:if
 											test="${order.orderStatus  eq 1 }">签订合同</c:if> <c:if
 											test="${order.orderStatus  eq 2 }">收齐资料</c:if> <c:if
@@ -360,18 +371,22 @@
 	}
 	function excelOrder() {
 		var orderNo = $("#searchOrderNo").val();
+		var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
 		$.ajax({
 			type : "POST",
-			url : "exportOrder?orderNo="+orderNo+"",
+			url : "exportOrder?orderNo="+orderNo+"&startTime="+startTime+"&endTime="+endTime+"",
 			success : function(data) {
-				window.open('exportOrder?orderNo='+orderNo+'');
+				window.open('exportOrder?orderNo='+orderNo+'&startTime='+startTime+'&endTime='+endTime+'');
 			}
 
 		});
 	}
 	 function search(){
 			var orderNo = $("#searchOrderNo").val();
-			 $.get("search?pageSize="+10+"&page="+1+"&orderNo="+orderNo+"", function(data){
+			var startTime = $("#startTime").val();
+			var endTime = $("#endTime").val();
+			 $.get("search?pageSize="+10+"&page="+1+"&orderNo="+orderNo+"&startTime="+startTime+"&endTime="+endTime+"", function(data){
 				 //组装表格
 				var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 				htmlStr += "<tr> <th >序号</th>"+
@@ -410,7 +425,7 @@
 						}
 						htmlStr +="<td align='center'>"+order.createDate+" </td>"+
 						"<td align='center'>"+order.updateDate+" </td>"
-			         htmlStr += "<td align='center'><a onclick=updateRes(this,"+order.id+"); class='updateColor'>更新</a></td></tr>";
+			         htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>";
 			    }
 			    //组装分页
 			    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";
@@ -451,7 +466,9 @@
 	//页面跳转
 	 function nextPage(size,page){
 	 	var orderNo = $("#searchOrderNo").val();
-	 	 $.get("nextPageOrder?pageSize="+size+"&page="+page+"&orderNo="+orderNo+"", function(data){
+		var startTime = $("#startTime").val();
+		var endTime = $("#endTime").val();
+	 	 $.get("nextPageOrder?pageSize="+size+"&page="+page+"&orderNo="+orderNo+"&startTime="+startTime+"&endTime="+endTime+"", function(data){
 	 		 //组装表格
 	 		var htmlStr = "<table width='100%'  border='0' cellpadding='10' cellspacing='0' class='tableBasic'>";
 	 		htmlStr += "<tr> <th >序号</th>"+
@@ -490,7 +507,7 @@
 						}
 						htmlStr +="<td align='center'>"+order.createDate+" </td>"+
 						"<td align='center'>"+order.updateDate+" </td>"
-			         htmlStr += "<td align='center'><a onclick=updateRes(this,"+order.id+"); class='updateColor'>更新</a></td></tr>";
+			         htmlStr += "<td align='center'><a onclick=tc('"+order.orderNo +"','"+order.buyName +"','"+order.productName +"','"+order.orderStatus +"'); class='updateColor'>更新</a></td></tr>";
 			    }
 	 	    //组装分页
 	 	    var htmlPage = "<div style='float:right;margin-top:12px;' class='splitPage'>";

@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%
 	String path = request.getContextPath();
@@ -263,7 +262,7 @@
 											<a onclick="updateStatus(${user.id },${user.isEnable});"
 												class="updateColor" id="stop${user.id }"> 停用</a>
 										</c:if></td>
-									<td align="center"><shiro:hasAnyRoles name="ADMIN,EMP">
+									<td align="center"><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
 											<a
 												onclick="tcUpdate('${user.id }','${user.name }','${user.tel }');"
 												class="updateColor">更新</a> | <a

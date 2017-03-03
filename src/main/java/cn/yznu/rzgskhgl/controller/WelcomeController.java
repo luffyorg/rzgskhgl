@@ -1,7 +1,9 @@
 package cn.yznu.rzgskhgl.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import cn.yznu.rzgskhgl.pojo.Product;
 import cn.yznu.rzgskhgl.service.IProductService;
 import cn.yznu.rzgskhgl.util.CaptchaUtil;
+import net.sf.json.JSONObject;
 
 @Controller
 public class WelcomeController {
@@ -59,7 +63,20 @@ public class WelcomeController {
 		mv.addObject("products", products);
 		return mv;
 	}
-
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("search")
+	@ResponseBody
+	public Map search(@RequestBody JSONObject jsonObj,HttpServletRequest request){
+		log.info("前台页面 -产品切换");
+		Map<String,Product> map = new HashMap<String,Product>();
+		int id = jsonObj.getInt("id");
+		Product product = productService.get(Product.class, id);
+		log.info(product.getName());
+		map.put("product", product);
+		return map;
+	}
+	
+	
 	@RequestMapping(value = "/captcha", method = RequestMethod.GET)
 	@ResponseBody
 	public void captcha(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -376,10 +376,17 @@ $(function(){
 													onclick="updateStatus(${product.id },${product.isEnable});"
 													class="updateColor" id="stop${product.id }"> 下架</a>
 										</c:if></td>
-										<td align="center"><a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
+										<td align="center"><shiro:hasAnyRoles name="ADMIN,SUPERADMIN">
+										<a onclick="tcUpdate(${product.id },'${product.name }','${product.productNo }',
 										'${product.productPrice }','${product.description }','${product.estate }','${product.movable }','${product.company }',
 										'${product.solidSurfacing }','${product.suitable }')"
-											class="updateColor">更新</a></td>
+											class="updateColor">更新</a>
+											| <a onclick="deleteProduct(this,${product.id})" class="deleteColor">删除</a>
+											</shiro:hasAnyRoles>
+											<shiro:hasRole name="EMP">
+											无
+											</shiro:hasRole>
+											</td>
 									</tr>
 								</c:forEach>
 								<!--数据循环结束-->
@@ -824,6 +831,32 @@ function updateUser(){
 	    $("#splitPage").html(htmlPage);
 	   
 	}) 
+}
+
+ function deleteProduct(obj,id){
+	 if(confirm('确定要删除这条记录吗?')==true) 
+	  { 
+		 var tr=obj.parentNode.parentNode; 
+			var tbody=tr.parentNode; 
+			var sendInfo = {
+					"id" : id
+				};
+			$.ajax({ 
+				type : "post", 
+				url : "del", 
+				dataType : "json",
+				contentType : 'application/json',
+				data : JSON.stringify(sendInfo),
+				success : function(data) { 
+					if(data.msg="success"){
+						tbody.removeChild(tr); 
+					}
+					else 
+						alert("删除失败！");
+				}
+			})
+	  } 
+	  return false; 
 }
 
 </script>

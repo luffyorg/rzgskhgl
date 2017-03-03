@@ -24,6 +24,7 @@ import cn.yznu.rzgskhgl.common.QRParamsException;
  * @author zhangwei
  *
  */  
+@SuppressWarnings("deprecation")
 public class QRCodeUtil {  
     private static int width = 300;              //二维码宽度  
     private static int height = 300;             //二维码高度  

@@ -14,10 +14,10 @@ import cn.yznu.rzgskhgl.common.BaseEntity;
  * @author zhangw
  *
  */
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "product")
 public class Product extends BaseEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 产品名称
 	 */
@@ -141,6 +141,13 @@ public class Product extends BaseEntity implements Serializable {
 
 	public void setSuitable(String suitable) {
 		this.suitable = suitable;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [name=" + name + ", productNo=" + productNo + ", suitable=" + suitable + ", description="
+				+ description + ", productPrice=" + productPrice + ", estate=" + estate + ", movable=" + movable
+				+ ", company=" + company + ", solidSurfacing=" + solidSurfacing + "]";
 	}
 
 }

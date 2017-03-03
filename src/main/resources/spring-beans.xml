@@ -10,6 +10,8 @@
            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
 	default-autowire="byName" default-lazy-init="false">
+	
+	<task:annotation-driven /> <!-- 定时器开关-->
 	<!-- 启用注解 -->
 	<context:annotation-config />
 

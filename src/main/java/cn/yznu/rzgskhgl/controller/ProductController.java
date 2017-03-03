@@ -120,6 +120,39 @@ public class ProductController extends BaseController {
 	}
 
 	/**
+	 * 删除产品
+	 * 
+	 * @param json
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/del", method = RequestMethod.POST)
+	@ResponseBody
+	public Map del(@RequestBody JSONObject json, HttpServletRequest request) {
+		log.info("执行删除产品>>>delete");
+		Map<String, String> map = new HashMap<String, String>();
+		String msg = "";
+		int id = json.getInt("id");
+		// 获取角色
+		Product product = productService.load(Product.class, id);
+		if (product != null) {
+			productService.delete(product);
+			Record record = new Record();
+			record.setUserid(getSessionUser().getId());
+			record.setIpv4(getIpAddr(request));
+			record.setRecord("删除产品:" + product.getName());
+			record.setTime(getTime());
+			iRecordService.add(record);
+			msg = "success";
+		} else {
+			msg = "error";
+		}
+		map.put("msg", msg);
+		return map;
+	}
+
+	/**
 	 * 更新产品状态
 	 * 
 	 * @param id
